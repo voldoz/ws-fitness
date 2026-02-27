@@ -36,11 +36,14 @@
     <option value="female">أنثى</option>
   </select>
 
-  <label id="activityLabel">مستوى النشاط</label>
-  <select id="activity">
-    <option value="low">قليل</option>
-    <option value="medium">متوسط</option>
-    <option value="high">عالي</option>
+  <label id="activityDaysLabel">عدد أيام النشاط</label>
+  <select id="activityDays">
+    <option value="1">1 يوم</option>
+    <option value="2">2 أيام</option>
+    <option value="3" selected>3 أيام</option>
+    <option value="4">4 أيام</option>
+    <option value="5">5 أيام</option>
+    <option value="6">6 أيام</option>
   </select>
 
   <label id="goalLabel">الهدف</label>
@@ -50,11 +53,16 @@
     <option value="bulk">تضخيم</option>
   </select>
 
+  <label id="proteinFactorLabel">ضرب البروتين بكمية معينة (حسب وزن الجسم)</label>
+  <input type="number" id="proteinFactor" placeholder="2" step="0.1">
+
   <label id="mealsLabel">عدد الوجبات</label>
   <select id="meals">
     <option value="2">2 وجبات</option>
-    <option value="3" selected>3 وجبات</option>
+    <option value="3">3 وجبات</option>
     <option value="4">4 وجبات</option>
+    <option value="5">5 وجبات</option>
+    <option value="6" selected>6 وجبات</option>
   </select>
 
   <button onclick="calculate()">احسب / Calculate</button>
@@ -78,8 +86,9 @@ function toggleLang() {
   document.getElementById('heightLabel').innerText = lang==='ar' ? 'الطول (سم)' : 'Height (cm)';
   document.getElementById('ageLabel').innerText = lang==='ar' ? 'العمر' : 'Age';
   document.getElementById('genderLabel').innerText = lang==='ar' ? 'الجنس' : 'Gender';
-  document.getElementById('activityLabel').innerText = lang==='ar' ? 'مستوى النشاط' : 'Activity Level';
+  document.getElementById('activityDaysLabel').innerText = lang==='ar' ? 'عدد أيام النشاط' : 'Activity Days';
   document.getElementById('goalLabel').innerText = lang==='ar' ? 'الهدف' : 'Goal';
+  document.getElementById('proteinFactorLabel').innerText = lang==='ar' ? 'ضرب البروتين بكمية معينة (حسب وزن الجسم)' : 'Protein multiplier';
   document.getElementById('mealsLabel').innerText = lang==='ar' ? 'عدد الوجبات' : 'Number of Meals';
 }
 
@@ -88,8 +97,9 @@ function calculate() {
   const height = parseFloat(document.getElementById('height').value);
   const age = parseFloat(document.getElementById('age').value);
   const gender = document.getElementById('gender').value;
-  const activity = document.getElementById('activity').value;
+  const activityDays = parseInt(document.getElementById('activityDays').value);
   const goal = document.getElementById('goal').value;
+  const proteinFactor = parseFloat(document.getElementById('proteinFactor').value) || 2; 
   const meals = parseInt(document.getElementById('meals').value);
 
   if (!weight || !height || !age) return alert(lang==='ar' ? 'أدخل جميع القيم' : 'Enter all values');
@@ -97,8 +107,9 @@ function calculate() {
   // BMR
   let bmr = gender==='male' ? 10*weight + 6.25*height - 5*age +5 : 10*weight + 6.25*height - 5*age -161;
 
-  // مستوى النشاط
-  let activityMult = activity==='low' ? 1.2 : activity==='medium' ? 1.55 : 1.9;
+  // نشاط حسب عدد الأيام
+  let activityMult = 1.2 + (activityDays-1)*0.1; 
+  if(activityMult>1.9) activityMult = 1.9; 
 
   let tdee = bmr * activityMult;
 
@@ -106,8 +117,8 @@ function calculate() {
   if(goal==='cut') tdee -= 500;
   if(goal==='bulk') tdee += 500;
 
-  // الماكروز
-  const protein = weight * 2; 
+  // البروتين حسب الضرب
+  const protein = weight * proteinFactor; 
   const fat = weight * 0.8;
   const carbs = (tdee - (protein*4 + fat*9))/4;
 
@@ -116,7 +127,7 @@ function calculate() {
   const carbsPerMeal = carbs / meals;
   const fatPerMeal = fat / meals;
 
-  // تحويل إلى وزن الأكل بالميزان
+  // تحويل لكل وجبة إلى وزن الأكل بالميزان
   const proteinFood = proteinPerMeal * 4; // صدر دجاج
   const carbsFood = carbsPerMeal * 3.5; // أرز
   const fatFood = fatPerMeal * 1; // زيت

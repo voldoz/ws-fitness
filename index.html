@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WS Fitness</title>
+
+<style>
+body{
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  color:#fff;
+  font-family:Arial;
+  padding:20px;
+  margin:0;
+}
+
+h1{
+  text-align:center;
+  color:#38bdf8;
+  margin-bottom:18px;
+}
+
+label{
+  display:block;
+  margin-top:14px;
+  font-weight:bold;
+}
+
+select{
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  border:none;
+  border-radius:12px;
+  background:#1e293b;
+  color:#fff;
+  font-size:15px;
+  outline:none;
+}
+
+/* Scroll احترافي داخل القوائم (يظهر في بعض المتصفحات) */
+select::-webkit-scrollbar{
+  width:7px;
+}
+select::-webkit-scrollbar-track{
+  background:#0b1220;
+  border-radius:10px;
+}
+select::-webkit-scrollbar-thumb{
+  background:#2563eb;
+  border-radius:10px;
+}
+
+button{
+  margin-top:24px;
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(90deg,#0ea5e9,#2563eb);
+  color:#fff;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.25s;
+}
+button:active{
+  transform:scale(0.99);
+}
+
+.results{
+  margin-top:22px;
+  background:#0f172a;
+  padding:18px;
+  border-radius:16px;
+  display:none;
+}
+
+.box{
+  background:#1e293b;
+  padding:14px;
+  border-radius:12px;
+  margin-bottom:12px;
+  line-height:1.7;
+}
+</style>
+</head>
+<body>
+
+<h1>WS Fitness</h1>
+
+<label>Weight</label>
+<select id="weight"></select>
+
+<label>Height</label>
+<select id="height"></select>
+
+<label>Age</label>
+<select id="age"></select>
+
+<label>Gender</label>
+<select id="gender">
+  <option value="male">Male</option>
+  <option value="female">Female</option>
+</select>
+
+<label>Activity Days</label>
+<select id="activityDays">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3" selected>3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+</select>
+
+<label>Goal</label>
+<select id="goal">
+  <option value="cut">Cut</option>
+  <option value="maintain">Maintain</option>
+  <option value="bulk">Bulk</option>
+</select>
+
+<label>Protein Multiplier</label>
+<select id="proteinFactor">
+  <option value="1.5">1.5</option>
+  <option value="1.8">1.8</option>
+  <option value="2" selected>2</option>
+  <option value="2.2">2.2</option>
+  <option value="2.5">2.5</option>
+  <option value="2.8">2.8</option>
+  <option value="3">3</option>
+</select>
+
+<label>Meals</label>
+<select id="meals">
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6" selected>6</option>
+</select>
+
+<label>Weekly Goal</label>
+<select id="weeklyGoal">
+  <option value="0.5">0.5 kg</option>
+  <option value="1">1 kg</option>
+  <option value="1.5">1.5 kg</option>
+  <option value="2">2 kg</option>
+</select>
+
+<button id="calcBtn">Calculate</button>
+
+<div class="results" id="results">
+  <div class="box" id="calories"></div>
+  <div class="box" id="macros"></div>
+  <div class="box" id="perMeal"></div>
+  <div class="box" id="burn"></div>
+</div>
+
+<script>
+/* مراجع العناصر */
+const weightEl = document.getElementById("weight");
+const heightEl = document.getElementById("height");
+const ageEl = document.getElementById("age");
+const genderEl = document.getElementById("gender");
+const activityDaysEl = document.getElementById("activityDays");
+const goalEl = document.getElementById("goal");
+const proteinFactorEl = document.getElementById("proteinFactor");
+const mealsEl = document.getElementById("meals");
+const weeklyGoalEl = document.getElementById("weeklyGoal");
+
+const resultsEl = document.getElementById("results");
+const caloriesOut = document.getElementById("calories");
+const macrosOut = document.getElementById("macros");
+const perMealOut = document.getElementById("perMeal");
+const burnOut = document.getElementById("burn");
+
+/* توليد القوائم */
+for(let i=30;i<=200;i++){
+  const opt=document.createElement("option");
+  opt.value=i;
+  opt.textContent=i+" kg";
+  if(i===80) opt.selected=true;
+  weightEl.appendChild(opt);
+}
+
+for(let i=130;i<=210;i++){
+  const opt=document.createElement("option");
+  opt.value=i;
+  opt.textContent=i+" cm";
+  if(i===170) opt.selected=true;
+  heightEl.appendChild(opt);
+}
+
+for(let i=14;i<=80;i++){
+  const opt=document.createElement("option");
+  opt.value=i;
+  opt.textContent=i+" years";
+  if(i===30) opt.selected=true;
+  ageEl.appendChild(opt);
+}
+
+/* الحساب */
+function calculate(){
+  const weight = parseFloat(weightEl.value);
+  const height = parseFloat(heightEl.value);
+  const age = parseFloat(ageEl.value);
+  const gender = genderEl.value;
+  const activityDays = parseInt(activityDaysEl.value, 10);
+  const goal = goalEl.value;
+  const proteinFactor = parseFloat(proteinFactorEl.value);
+  const meals = parseInt(mealsEl.value, 10);
+  const weeklyGoal = parseFloat(weeklyGoalEl.value);
+
+  if(weeklyGoal === 2){
+    alert("Warning: 2 kg per week is very aggressive.");
+  }
+
+  // BMR (Mifflin-St Jeor)
+  const bmr = (gender === "male")
+    ? (10*weight + 6.25*height - 5*age + 5)
+    : (10*weight + 6.25*height - 5*age - 161);
+
+  // Activity multiplier based on days
+  let activityMult = 1.2 + (activityDays - 1) * 0.1;
+  if(activityMult > 1.9) activityMult = 1.9;
+
+  let calories = bmr * activityMult;
+
+  if(goal === "cut") calories -= 500;
+  if(goal === "bulk") calories += 500;
+
+  const protein = weight * proteinFactor;      // g
+  const fat = weight * 0.8;                    // g
+  const carbs = (calories - (protein*4 + fat*9)) / 4; // g
+
+  const proteinMeal = protein / meals;
+  const carbsMeal = carbs / meals;
+  const fatMeal = fat / meals;
+
+  // Food scale approximations
+  const chickenGrams = proteinMeal * 4; // 100g chicken ~25g protein
+  const riceGrams = carbsMeal * 3.5;    // approx mapping used previously
+  const oilGrams = fatMeal;             // g fat ~ g oil
+
+  const weeklyCalories = weeklyGoal * 7700;
+  const dailyBurn = weeklyCalories / 7;
+
+  caloriesOut.textContent = `Daily Calories: ${Math.round(calories)} kcal`;
+  macrosOut.innerHTML = `Protein: ${Math.round(protein)} g<br>Carbs: ${Math.round(carbs)} g<br>Fat: ${Math.round(fat)} g`;
+
+  perMealOut.innerHTML =
+    `Per Meal (${meals} meals):<br><br>` +
+    `Protein: ${Math.round(proteinMeal)} g ≈ ${Math.round(chickenGrams)} g chicken<br>` +
+    `Carbs: ${Math.round(carbsMeal)} g ≈ ${Math.round(riceGrams)} g rice<br>` +
+    `Fat: ${Math.round(fatMeal)} g ≈ ${Math.round(oilGrams)} g oil`;
+
+  burnOut.textContent = `Calories to burn daily to reach goal: ${Math.round(dailyBurn)} kcal`;
+
+  resultsEl.style.display = "block";
+}
+
+/* زر الحساب */
+document.getElementById("calcBtn").addEventListener("click", calculate);
+</script>
+
+</body>
+</html>

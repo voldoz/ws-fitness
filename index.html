@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WS Fitness</title>
+<style>
+  body { background-color: #121212; color: #eee; font-family: Arial, sans-serif; margin:0; padding:20px; }
+  h1 { text-align:center; color:#0af; }
+  label { display:block; margin-top:10px; }
+  input, select { width:100%; padding:8px; margin-top:5px; border:none; border-radius:5px; }
+  button { margin-top:15px; padding:10px; width:100%; border:none; border-radius:5px; background-color:#0af; color:#121212; font-weight:bold; cursor:pointer; }
+  .results { margin-top:20px; background:#1e1e1e; padding:15px; border-radius:10px; white-space: pre-line; }
+  .lang-btn { position:absolute; top:20px; right:20px; padding:5px 10px; cursor:pointer; background:#0af; color:#121212; border:none; border-radius:5px; }
+</style>
+</head>
+<body>
+
+<button class="lang-btn" onclick="toggleLang()">EN / AR</button>
+
+<h1 id="title">WS Fitness</h1>
+
+<div>
+  <label id="weightLabel">الوزن (كجم)</label>
+  <input type="number" id="weight" placeholder="105">
+
+  <label id="heightLabel">الطول (سم)</label>
+  <input type="number" id="height" placeholder="185">
+
+  <label id="ageLabel">العمر</label>
+  <input type="number" id="age" placeholder="37">
+
+  <label id="genderLabel">الجنس</label>
+  <select id="gender">
+    <option value="male">ذكر</option>
+    <option value="female">أنثى</option>
+  </select>
+
+  <label id="activityLabel">مستوى النشاط</label>
+  <select id="activity">
+    <option value="low">قليل</option>
+    <option value="medium">متوسط</option>
+    <option value="high">عالي</option>
+  </select>
+
+  <label id="goalLabel">الهدف</label>
+  <select id="goal">
+    <option value="cut">تنشيف</option>
+    <option value="maintain">تثبيت</option>
+    <option value="bulk">تضخيم</option>
+  </select>
+
+  <label id="mealsLabel">عدد الوجبات</label>
+  <select id="meals">
+    <option value="2">2 وجبات</option>
+    <option value="3" selected>3 وجبات</option>
+    <option value="4">4 وجبات</option>
+  </select>
+
+  <button onclick="calculate()">احسب / Calculate</button>
+
+  <div class="results" id="results" style="display:none;">
+    <p id="caloriesResult"></p>
+    <p id="proteinResult"></p>
+    <p id="carbResult"></p>
+    <p id="fatResult"></p>
+    <p id="perMealResult"></p>
+  </div>
+</div>
+
+<script>
+let lang = 'ar';
+
+function toggleLang() {
+  lang = lang === 'ar' ? 'en' : 'ar';
+  document.getElementById('title').innerText = 'WS Fitness';
+  document.getElementById('weightLabel').innerText = lang==='ar' ? 'الوزن (كجم)' : 'Weight (kg)';
+  document.getElementById('heightLabel').innerText = lang==='ar' ? 'الطول (سم)' : 'Height (cm)';
+  document.getElementById('ageLabel').innerText = lang==='ar' ? 'العمر' : 'Age';
+  document.getElementById('genderLabel').innerText = lang==='ar' ? 'الجنس' : 'Gender';
+  document.getElementById('activityLabel').innerText = lang==='ar' ? 'مستوى النشاط' : 'Activity Level';
+  document.getElementById('goalLabel').innerText = lang==='ar' ? 'الهدف' : 'Goal';
+  document.getElementById('mealsLabel').innerText = lang==='ar' ? 'عدد الوجبات' : 'Number of Meals';
+}
+
+function calculate() {
+  const weight = parseFloat(document.getElementById('weight').value);
+  const height = parseFloat(document.getElementById('height').value);
+  const age = parseFloat(document.getElementById('age').value);
+  const gender = document.getElementById('gender').value;
+  const activity = document.getElementById('activity').value;
+  const goal = document.getElementById('goal').value;
+  const meals = parseInt(document.getElementById('meals').value);
+
+  if (!weight || !height || !age) return alert(lang==='ar' ? 'أدخل جميع القيم' : 'Enter all values');
+
+  // BMR
+  let bmr = gender==='male' ? 10*weight + 6.25*height - 5*age +5 : 10*weight + 6.25*height - 5*age -161;
+
+  // مستوى النشاط
+  let activityMult = activity==='low' ? 1.2 : activity==='medium' ? 1.55 : 1.9;
+
+  let tdee = bmr * activityMult;
+
+  // تعديل الهدف
+  if(goal==='cut') tdee -= 500;
+  if(goal==='bulk') tdee += 500;
+
+  // الماكروز
+  const protein = weight * 2; 
+  const fat = weight * 0.8;
+  const carbs = (tdee - (protein*4 + fat*9))/4;
+
+  // تقسيم الوجبات
+  const proteinPerMeal = protein / meals;
+  const carbsPerMeal = carbs / meals;
+  const fatPerMeal = fat / meals;
+
+  // تحويل إلى وزن الأكل بالميزان
+  const proteinFood = proteinPerMeal * 4; // صدر دجاج
+  const carbsFood = carbsPerMeal * 3.5; // أرز
+  const fatFood = fatPerMeal * 1; // زيت
+
+  document.getElementById('results').style.display='block';
+  document.getElementById('caloriesResult').innerText = lang==='ar' ? `السعرات اليومية: ${Math.round(tdee)} كالوري` : `Calories: ${Math.round(tdee)} kcal`;
+  document.getElementById('proteinResult').innerText = lang==='ar' ? `البروتين: ${Math.round(protein)} جم` : `Protein: ${Math.round(protein)} g`;
+  document.getElementById('carbResult').innerText = lang==='ar' ? `الكارب: ${Math.round(carbs)} جم` : `Carbs: ${Math.round(carbs)} g`;
+  document.getElementById('fatResult').innerText = lang==='ar' ? `الدهون: ${Math.round(fat)} جم` : `Fat: ${Math.round(fat)} g`;
+
+  document.getElementById('perMealResult').innerText = lang==='ar' ? 
+    `لكل وجبة (${meals} وجبات):\nبروتين ${Math.round(proteinPerMeal)} جم (~${Math.round(proteinFood)} جم صدور دجاج)\nكارب ${Math.round(carbsPerMeal)} جم (~${Math.round(carbsFood)} جم أرز)\nدهون ${Math.round(fatPerMeal)} جم (~${Math.round(fatFood)} جم زيت)` :
+    `Per meal (${meals} meals):\nProtein ${Math.round(proteinPerMeal)} g (~${Math.round(proteinFood)} g chicken)\nCarbs ${Math.round(carbsPerMeal)} g (~${Math.round(carbsFood)} g rice)\nFat ${Math.round(fatPerMeal)} g (~${Math.round(fatFood)} g oil)`;
+}
+</script>
+
+</body>
+</html>

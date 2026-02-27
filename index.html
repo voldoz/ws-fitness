@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WS Fitness</title>
+
+<style>
+body {
+  background: linear-gradient(135deg,#0f172a,#1e293b);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  margin:0;
+  padding:20px;
+}
+
+h1 {
+  text-align:center;
+  color:#38bdf8;
+  margin-bottom:20px;
+}
+
+label {
+  display:block;
+  margin-top:12px;
+  font-weight:bold;
+}
+
+input, select {
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  border:none;
+  border-radius:8px;
+  background:#1e293b;
+  color:#fff;
+  font-size:15px;
+}
+
+button {
+  margin-top:20px;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(90deg,#0ea5e9,#2563eb);
+  color:#fff;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.results {
+  margin-top:25px;
+  background:#0f172a;
+  padding:18px;
+  border-radius:12px;
+  line-height:1.6;
+  display:none;
+}
+
+.result-box {
+  background:#1e293b;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:8px;
+}
+</style>
+</head>
+<body>
+
+<h1>WS Fitness</h1>
+
+<label>الوزن (كجم)</label>
+<input type="number" id="weight">
+
+<label>الطول (سم)</label>
+<input type="number" id="height">
+
+<label>العمر</label>
+<input type="number" id="age">
+
+<label>الجنس</label>
+<select id="gender">
+  <option value="male">ذكر</option>
+  <option value="female">أنثى</option>
+</select>
+
+<label>عدد أيام النشاط</label>
+<select id="activityDays">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3" selected>3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+</select>
+
+<label>نوع النشاط</label>
+<select id="activityType">
+  <option value="weights">رفع أثقال</option>
+  <option value="walking">مشي</option>
+  <option value="both">الاثنان معاً</option>
+</select>
+
+<label>الهدف</label>
+<select id="goal">
+  <option value="cut">تنشيف</option>
+  <option value="maintain">تثبيت</option>
+  <option value="bulk">تضخيم</option>
+</select>
+
+<label>ضرب البروتين × وزن الجسم</label>
+<input type="number" id="proteinFactor" value="2" step="0.1">
+
+<label>عدد الوجبات</label>
+<select id="meals">
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6" selected>6</option>
+</select>
+
+<label>الهدف الأسبوعي (0.5 – 2 كجم)</label>
+<input type="number" id="weeklyGoal" step="0.1" min="0.5" max="2" value="0.5">
+
+<button onclick="calculate()">احسب</button>
+
+<div class="results" id="results">
+  <div class="result-box" id="calories"></div>
+  <div class="result-box" id="protein"></div>
+  <div class="result-box" id="carbs"></div>
+  <div class="result-box" id="fat"></div>
+  <div class="result-box" id="perMeal"></div>
+  <div class="result-box" id="dailyBurn"></div>
+  <div class="result-box" id="stepsResult"></div>
+</div>
+
+<script>
+function calculate(){
+
+let weight = parseFloat(document.getElementById("weight").value);
+let height = parseFloat(document.getElementById("height").value);
+let age = parseFloat(document.getElementById("age").value);
+let gender = document.getElementById("gender").value;
+let activityDays = parseInt(document.getElementById("activityDays").value);
+let activityType = document.getElementById("activityType").value;
+let goal = document.getElementById("goal").value;
+let proteinFactor = parseFloat(document.getElementById("proteinFactor").value);
+let meals = parseInt(document.getElementById("meals").value);
+let weeklyGoal = parseFloat(document.getElementById("weeklyGoal").value);
+
+if(!weight || !height || !age){
+  alert("أدخل جميع القيم");
+  return;
+}
+
+let bmr = gender=="male"
+? 10*weight + 6.25*height - 5*age +5
+: 10*weight + 6.25*height - 5*age -161;
+
+let activityMult = 1.2 + (activityDays-1)*0.1;
+if(activityMult>1.9) activityMult=1.9;
+
+let calories = bmr * activityMult;
+
+if(goal=="cut") calories -= 500;
+if(goal=="bulk") calories += 500;
+
+let protein = weight * proteinFactor;
+let fat = weight * 0.8;
+let carbs = (calories - (protein*4 + fat*9))/4;
+
+let weeklyCalories = weeklyGoal * 7700;
+let dailyBurn = weeklyCalories / 7;
+
+let caloriesPerStep = 0.04 * weight;
+let steps = dailyBurn / caloriesPerStep;
+
+document.getElementById("calories").innerHTML = "السعرات اليومية: " + Math.round(calories) + " كالوري";
+document.getElementById("protein").innerHTML = "البروتين: " + Math.round(protein) + " جم";
+document.getElementById("carbs").innerHTML = "الكارب: " + Math.round(carbs) + " جم";
+document.getElementById("fat").innerHTML = "الدهون: " + Math.round(fat) + " جم";
+
+document.getElementById("perMeal").innerHTML =
+"لكل وجبة ("+meals+" وجبات):<br>" +
+"بروتين: "+Math.round(protein/meals)+" جم<br>" +
+"كارب: "+Math.round(carbs/meals)+" جم<br>" +
+"دهون: "+Math.round(fat/meals)+" جم";
+
+document.getElementById("dailyBurn").innerHTML =
+"السعرات المطلوب حرقها يومياً لتحقيق الهدف: "
++ Math.round(dailyBurn) + " كالوري";
+
+if(activityType=="walking" || activityType=="both"){
+  document.getElementById("stepsResult").innerHTML =
+  "عدد الخطوات اليومية المطلوبة: " + Math.round(steps) + " خطوة";
+} else {
+  document.getElementById("stepsResult").innerHTML = "";
+}
+
+document.getElementById("results").style.display="block";
+
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WS Fitness</title>
+
+<style>
+  body{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;font-family:Arial,sans-serif;padding:20px;margin:0;}
+  h1{text-align:center;color:#38bdf8;margin:0 0 14px 0;}
+
+  .profile-pill{
+    background:#0b1220;border-radius:14px;padding:10px 12px;margin-bottom:12px;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+  }
+  .profile-pill b{color:#38bdf8;}
+  .pill-btn{margin:0;max-width:180px;}
+
+  .tabs{display:flex;gap:10px;margin:12px 0 18px 0;flex-wrap:wrap;}
+  .tab-btn{flex:1;min-width:110px;padding:12px;border:none;border-radius:12px;cursor:pointer;font-weight:bold;color:#fff;background:#1e293b;transition:.2s;}
+  .tab-btn.active{background:linear-gradient(90deg,#0ea5e9,#2563eb);}
+
+  label{display:block;margin-top:14px;font-weight:bold;}
+  select, input{
+    width:100%;padding:12px;margin-top:6px;border:none;border-radius:12px;background:#1e293b;color:#fff;font-size:15px;outline:none;
+  }
+
+  select::-webkit-scrollbar{width:7px;}
+  select::-webkit-scrollbar-track{background:#0b1220;border-radius:10px;}
+  select::-webkit-scrollbar-thumb{background:#2563eb;border-radius:10px;}
+
+  button.primary{
+    margin-top:22px;width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(90deg,#0ea5e9,#2563eb);
+    color:#fff;font-size:18px;font-weight:bold;cursor:pointer;transition:.2s;
+  }
+  button.primary:active{transform:scale(.99);}
+
+  .results{margin-top:18px;background:#0f172a;padding:16px;border-radius:16px;display:none;}
+  .box{background:#1e293b;padding:14px;border-radius:12px;margin-bottom:12px;line-height:1.7;}
+
+  .page{display:none;}
+  .page.active{display:block;}
+
+  .small-note{opacity:.9;font-size:13px;margin-top:8px;}
+  .danger{color:#fecaca;}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+  @media (max-width:520px){.grid{grid-template-columns:1fr;}}
+
+  .mini-btn{margin-top:12px;width:100%;padding:12px;border:none;border-radius:12px;background:#1e293b;color:#fff;font-weight:bold;cursor:pointer;}
+  .mini-btn:hover{filter:brightness(1.08);}
+
+  /* Workouts accordion */
+  .day-card{background:#0f172a;border-radius:16px;padding:12px;margin-bottom:12px;}
+  .day-header{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;padding:10px;border-radius:12px;background:#0b1220;}
+  .day-header:hover{filter:brightness(1.07);}
+  .day-name{color:#38bdf8;font-weight:bold;}
+  .chev{opacity:.9;font-weight:bold;}
+  .day-content{display:none;margin-top:10px;}
+  .day-content.open{display:block;}
+
+  .row-actions{margin-top:10px;display:flex;gap:10px;}
+  .row-actions button{flex:1;}
+  .add-btn{border:none;background:linear-gradient(90deg,#0ea5e9,#2563eb);color:#fff;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:bold;}
+
+  /* ---- Compact workout row with buttons ---- */
+  .exercise{
+    background:#1e293b;border-radius:12px;padding:8px 10px;margin-top:8px;
+    display:flex;align-items:center;gap:8px;font-size:14px;
+  }
+  .exercise-name{
+    flex:1;background:#0f172a;border:none;border-radius:8px;padding:8px;color:#fff;font-size:14px;margin:0;
+  }
+  .counter{
+    display:flex;align-items:center;gap:4px;background:#0f172a;border-radius:8px;padding:4px 6px;white-space:nowrap;
+  }
+  .counter button{
+    background:#2563eb;border:none;color:#fff;width:24px;height:24px;border-radius:6px;
+    font-weight:bold;cursor:pointer;font-size:14px;line-height:24px;padding:0;
+  }
+  .counter span{min-width:46px;text-align:center;font-weight:bold;}
+  .del-btn{
+    background:#ef4444;border:none;color:#fff;width:28px;height:28px;border-radius:8px;
+    cursor:pointer;font-weight:bold;line-height:28px;padding:0;
+  }
+  @media (max-width:420px){
+    .exercise{flex-wrap:wrap;}
+    .exercise-name{flex:1 1 100%;}
+  }
+
+  /* Weight tracker rows */
+  .wrow{
+    background:#1e293b;border-radius:12px;padding:10px;margin-top:10px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .wrow b{color:#38bdf8;}
+  .wrow input{
+    margin:0;padding:10px;border-radius:10px;background:#0f172a;flex:1;
+  }
+  .wtag{
+    background:#0f172a;border-radius:10px;padding:8px 10px;font-weight:bold;min-width:92px;text-align:center;
+  }
+</style>
+</head>
+
+<body>
+<h1>WS Fitness</h1>
+
+<div class="profile-pill">
+  <div>Active Profile: <b id="activeProfileName">—</b></div>
+  <button class="mini-btn pill-btn" onclick="showPage('profiles')">Profiles</button>
+</div>
+
+<!-- Tabs order: Profiles -> Calculator -> Workouts -> Weekly Burn -> Weight -->
+<div class="tabs">
+  <button class="tab-btn active" id="tabProfiles" onclick="showPage('profiles')">Profiles</button>
+  <button class="tab-btn" id="tabCalc" onclick="showPage('calc')">Calculator</button>
+  <button class="tab-btn" id="tabWork" onclick="showPage('work')">Workouts</button>
+  <button class="tab-btn" id="tabWeek" onclick="showPage('week')">Weekly</button>
+  <button class="tab-btn" id="tabWeight" onclick="showPage('weight')">Weight</button>
+</div>
+
+<!-- PAGE: PROFILES -->
+<div class="page active" id="pageProfiles">
+  <div class="box">
+    <div style="font-weight:bold;color:#38bdf8;">Profiles</div>
+    <div class="small-note">كل بروفايل له بياناته الخاصة: (الحاسبة + المتابعة + التمارين + الوزن).</div>
+  </div>
+
+  <label>Select Profile</label>
+  <select id="profileSelect"></select>
+
+  <label>Enter PIN (3 digits) to open selected profile</label>
+  <input id="profilePinInput" type="password" inputmode="numeric" placeholder="***" maxlength="3" />
+  <div class="small-note">✅ إذا دخلت Admin PIN يفتح أي بروفايل.</div>
+
+  <button class="mini-btn" onclick="setSelectedProfile()">Open Selected Profile</button>
+
+  <label>Create New Profile</label>
+  <input id="newProfileName" placeholder="Example: Waleed" />
+
+  <label>Create Profile PIN (3 digits)</label>
+  <input id="newProfilePin" type="password" inputmode="numeric" placeholder="***" maxlength="3" />
+  <button class="mini-btn" onclick="createProfile()">Create Profile</button>
+
+  <label>Delete Current Profile</label>
+  <button class="mini-btn" style="background:#ef4444;" onclick="deleteCurrentProfile()">Delete Active Profile</button>
+
+  <!-- Admin -->
+  <div class="box" style="margin-top:14px;">
+    <div style="font-weight:bold;color:#38bdf8;">Admin</div>
+    <div class="small-note">Admin PIN يفتح كل البروفايلات.</div>
+
+    <label>Set / Change Admin PIN (3 digits)</label>
+    <input id="adminPinSet" type="password" inputmode="numeric" placeholder="***" maxlength="3" />
+    <button class="mini-btn" onclick="setAdminPin()">Save Admin PIN</button>
+
+    <label>Remove Admin PIN</label>
+    <button class="mini-btn" style="background:#ef4444;" onclick="removeAdminPin()">Remove Admin PIN</button>
+  </div>
+
+  <div class="small-note danger" id="profileMsg"></div>
+</div>
+
+<!-- PAGE: CALCULATOR -->
+<div class="page" id="pageCalc">
+  <label>Weight</label>
+  <select id="weight"></select>
+
+  <label>Height</label>
+  <select id="height"></select>
+
+  <label>Age</label>
+  <select id="age"></select>
+
+  <label>Gender</label>
+  <select id="gender">
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+  </select>
+
+  <label>Activity Days</label>
+  <select id="activityDays">
+    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+    <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+  </select>
+
+  <label>Goal</label>
+  <select id="goal">
+    <option value="cut">Cut</option>
+    <option value="maintain">Maintain</option>
+    <option value="bulk">Bulk</option>
+  </select>
+
+  <label>Protein Multiplier</label>
+  <select id="proteinFactor">
+    <option value="1.5">1.5</option><option value="1.8">1.8</option><option value="2">2</option>
+    <option value="2.2">2.2</option><option value="2.5">2.5</option><option value="2.8">2.8</option><option value="3">3</option>
+  </select>
+
+  <label>Meals</label>
+  <select id="meals">
+    <option value="2">2</option><option value="3">3</option><option value="4">4</option>
+    <option value="5">5</option><option value="6">6</option>
+  </select>
+
+  <label>Weekly Goal</label>
+  <select id="weeklyGoal">
+    <option value="0.5">0.5 kg</option><option value="1">1 kg</option><option value="1.5">1.5 kg</option><option value="2">2 kg</option>
+  </select>
+
+  <button class="primary" id="calcBtn">Calculate</button>
+
+  <div class="results" id="resultsCalc">
+    <div class="box" id="outCalories"></div>
+    <div class="box" id="outMacros"></div>
+    <div class="box" id="outPerMeal"></div>
+    <div class="box" id="outBurn"></div>
+    <div class="small-note">✅ الحاسبة مرتبطة بالبروفايل الحالي ويتم حفظ الإعدادات تلقائياً.</div>
+  </div>
+</div>
+
+<!-- PAGE: WORKOUTS -->
+<div class="page" id="pageWork">
+  <div class="box">
+    <div style="font-weight:bold;color:#38bdf8;">Weekly Workout Plan</div>
+    <div class="small-note">ترتيب الأيام: Sunday → Saturday. كل تمرين سطر صغير (اسم + Sets + Weight بأزرار).</div>
+  </div>
+
+  <div id="workoutContainer"></div>
+  <button class="mini-btn" onclick="resetWorkouts()">Reset workouts for active profile</button>
+</div>
+
+<!-- PAGE: WEEKLY BURN TRACKER -->
+<div class="page" id="pageWeek">
+  <div class="box">
+    <div id="weeklyTargetLabel">Weekly target burn: -- kcal</div>
+    <div class="small-note">ادخل كم سعرة حرقتها كل يوم. التطبيق يحسب الهدف المتبقي وهدف بكرة.</div>
+  </div>
+
+  <label>Today</label>
+  <select id="todayIndex">
+    <option value="1">Day 1</option><option value="2">Day 2</option><option value="3">Day 3</option>
+    <option value="4">Day 4</option><option value="5">Day 5</option><option value="6">Day 6</option><option value="7">Day 7</option>
+  </select>
+
+  <div class="grid" id="daysGrid"></div>
+
+  <button class="mini-btn" onclick="recalcWeek()">Update</button>
+  <button class="mini-btn" onclick="resetWeek()">Reset week for active profile</button>
+
+  <div class="results" id="resultsWeek" style="display:block;">
+    <div class="box" id="wkBurned"></div>
+    <div class="box" id="wkRemaining"></div>
+    <div class="box" id="wkPerDay"></div>
+    <div class="box" id="wkTomorrow"></div>
+    <div class="small-note danger" id="wkWarn"></div>
+  </div>
+</div>
+
+<!-- PAGE: WEIGHT TRACKER -->
+<div class="page" id="pageWeight">
+  <div class="box">
+    <div style="font-weight:bold;color:#38bdf8;">Weekly Weight Tracker</div>
+    <div class="small-note">سجل وزن كل أسبوع. كل شيء محفوظ داخل البروفايل الحالي.</div>
+  </div>
+
+  <label>مدة المتابعة (Weeks)</label>
+  <select id="weightWeeks"></select>
+
+  <div class="results" id="weightSummary" style="display:block;">
+    <div class="box" id="wStart">Start: --</div>
+    <div class="box" id="wCurrent">Current: --</div>
+    <div class="box" id="wChange">Change: --</div>
+    <div class="box" id="wAvg">Avg / Week: --</div>
+  </div>
+
+  <div id="weightRows"></div>
+
+  <button class="mini-btn" onclick="resetWeight()">Reset weight log for active profile</button>
+</div>
+
+<script>
+/* ===================== Crypto helpers (PIN) ===================== */
+async function sha256(text){
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest("SHA-256", enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+function pinValid3(pin){ return /^[0-9]{3}$/.test(pin); }
+function getAdminHash(){ return localStorage.getItem("ws_admin_pin_hash") || ""; }
+
+/* ===================== Profiles Layer ===================== */
+function safeProfileName(name){
+  return (name || "").trim().replace(/\s+/g," ").slice(0,24);
+}
+function getProfiles(){
+  const raw = localStorage.getItem("ws_profiles");
+  if(!raw) return [];
+  try{ const arr = JSON.parse(raw); return Array.isArray(arr)?arr:[]; }catch(e){ return []; }
+}
+function saveProfiles(list){ localStorage.setItem("ws_profiles", JSON.stringify(list)); }
+function getActiveProfile(){ return localStorage.getItem("ws_active_profile") || ""; }
+
+function pkey(key){
+  const p = getActiveProfile() || "Default";
+  return `ws_${p}_${key}`;
+}
+function pget(key){ return localStorage.getItem(pkey(key)); }
+function pset(key, value){ localStorage.setItem(pkey(key), value); }
+function premove(key){ localStorage.removeItem(pkey(key)); }
+
+function setActiveProfile(name){
+  localStorage.setItem("ws_active_profile", name);
+  document.getElementById("activeProfileName").textContent = name || "—";
+
+  loadCalcFromProfile();
+  syncWeeklyTargetUI();
+  rebuildWeekInputsFromStorage();
+  renderWorkouts();
+  loadWeightTracker();
+}
+
+/* ensure default profile */
+function ensureDefaultProfile(){
+  let profiles = getProfiles();
+  let active = getActiveProfile();
+
+  if(profiles.length === 0){
+    profiles = ["Default"];
+    saveProfiles(profiles);
+  }
+  if(!active || !profiles.includes(active)){
+    active = profiles[0];
+    // Default profile might not have PIN; we set it later if you want
+    setActiveProfile(active);
+  } else {
+    document.getElementById("activeProfileName").textContent = active;
+  }
+}
+
+/* ===================== Tabs/Pages ===================== */
+function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+function showPage(which){
+  ["profiles","calc","work","week","weight"].forEach(k=>{
+    document.getElementById("page"+cap(k)).classList.remove("active");
+    document.getElementById("tab"+cap(k)).classList.remove("active");
+  });
+  document.getElementById("page"+cap(which)).classList.add("active");
+  document.getElementById("tab"+cap(which)).classList.add("active");
+
+  if(which==="calc"){ loadCalcFromProfile(); }
+  if(which==="work"){ renderWorkouts(); }
+  if(which==="week"){ syncWeeklyTargetUI(); recalcWeek(); }
+  if(which==="profiles"){ refreshProfilesUI(); }
+  if(which==="weight"){ loadWeightTracker(); }
+}
+
+/* ===================== Profiles UI ===================== */
+const profileSelect = document.getElementById("profileSelect");
+const newProfileName = document.getElementById("newProfileName");
+const newProfilePin = document.getElementById("newProfilePin");
+const profilePinInput = document.getElementById("profilePinInput");
+const adminPinSet = document.getElementById("adminPinSet");
+const profileMsg = document.getElementById("profileMsg");
+
+function refreshProfilesUI(){
+  const profiles = getProfiles();
+  const active = getActiveProfile();
+  profileSelect.innerHTML = "";
+  profiles.forEach(p=>{
+    const opt = document.createElement("option");
+    opt.value = p; opt.textContent = p;
+    if(p === active) opt.selected = true;
+    profileSelect.appendChild(opt);
+  });
+  profileMsg.textContent = "";
+}
+
+async function setAdminPin(){
+  const pin = (adminPinSet.value || "").trim();
+  if(!pinValid3(pin)){
+    profileMsg.textContent = "Admin PIN لازم يكون 3 أرقام.";
+    return;
+  }
+  const h = await sha256(pin);
+  localStorage.setItem("ws_admin_pin_hash", h);
+  adminPinSet.value = "";
+  profileMsg.textContent = "✅ Admin PIN saved.";
+}
+
+function removeAdminPin(){
+  if(!confirm("Remove Admin PIN?")) return;
+  localStorage.removeItem("ws_admin_pin_hash");
+  profileMsg.textContent = "✅ Admin PIN removed.";
+}
+
+async function createProfile(){
+  const name = safeProfileName(newProfileName.value);
+  const pin = (newProfilePin.value || "").trim();
+
+  if(!name){ profileMsg.textContent = "اكتب اسم بروفايل."; return; }
+  if(!pinValid3(pin)){ profileMsg.textContent = "PIN لازم يكون 3 أرقام."; return; }
+
+  let profiles = getProfiles();
+  if(profiles.includes(name)){ profileMsg.textContent = "هذا الاسم موجود."; return; }
+
+  profiles.push(name);
+  saveProfiles(profiles);
+
+  const pinHash = await sha256(pin);
+  localStorage.setItem(`ws_profilepin_${name}`, pinHash);
+
+  newProfileName.value = "";
+  newProfilePin.value = "";
+
+  refreshProfilesUI();
+  setActiveProfile(name);
+  recalcWeek();
+  profileMsg.textContent = `Created & activated: ${name}`;
+}
+
+async function setSelectedProfile(){
+  const name = profileSelect.value;
+  if(!name) return;
+
+  const inputPin = (profilePinInput.value || "").trim();
+  if(!pinValid3(inputPin)){
+    profileMsg.textContent = "اكتب PIN صحيح (3 أرقام).";
+    return;
+  }
+
+  const inputHash = await sha256(inputPin);
+
+  // Admin unlock
+  const adminHash = getAdminHash();
+  if(adminHash && inputHash === adminHash){
+    profilePinInput.value = "";
+    setActiveProfile(name);
+    recalcWeek();
+    profileMsg.textContent = `✅ Admin unlocked: ${name}`;
+    return;
+  }
+
+  // Profile unlock
+  const profileHash = localStorage.getItem(`ws_profilepin_${name}`);
+  if(!profileHash){
+    profileMsg.textContent = "هذا البروفايل ما له PIN (قديم). احذفه وسوه من جديد.";
+    return;
+  }
+
+  if(inputHash !== profileHash){
+    profileMsg.textContent = "PIN غلط.";
+    return;
+  }
+
+  profilePinInput.value = "";
+  setActiveProfile(name);
+  recalcWeek();
+  profileMsg.textContent = `Unlocked: ${name}`;
+}
+
+function deleteCurrentProfile(){
+  const active = getActiveProfile();
+  let profiles = getProfiles();
+  if(profiles.length <= 1){ profileMsg.textContent = "لا يمكن حذف آخر بروفايل."; return; }
+  if(!confirm(`Delete profile: ${active} ?`)) return;
+
+  // remove PIN
+  localStorage.removeItem(`ws_profilepin_${active}`);
+
+  profiles = profiles.filter(p => p !== active);
+  saveProfiles(profiles);
+
+  setActiveProfile(profiles[0]);
+  refreshProfilesUI();
+  recalcWeek();
+  profileMsg.textContent = `Deleted: ${active}`;
+}
+
+/* ===================== Calculator ===================== */
+const weightEl = document.getElementById("weight");
+const heightEl = document.getElementById("height");
+const ageEl = document.getElementById("age");
+const genderEl = document.getElementById("gender");
+const activityDaysEl = document.getElementById("activityDays");
+const goalEl = document.getElementById("goal");
+const proteinFactorEl = document.getElementById("proteinFactor");
+const mealsEl = document.getElementById("meals");
+const weeklyGoalEl = document.getElementById("weeklyGoal");
+
+const resultsCalc = document.getElementById("resultsCalc");
+const outCalories = document.getElementById("outCalories");
+const outMacros = document.getElementById("outMacros");
+const outPerMeal = document.getElementById("outPerMeal");
+const outBurn = document.getElementById("outBurn");
+
+/* dropdowns */
+for(let i=30;i<=200;i++){
+  const opt=document.createElement("option");
+  opt.value=i; opt.textContent=i+" kg";
+  if(i===80) opt.selected=true;
+  weightEl.appendChild(opt);
+}
+for(let i=130;i<=210;i++){
+  const opt=document.createElement("option");
+  opt.value=i; opt.textContent=i+" cm";
+  if(i===170) opt.selected=true;
+  heightEl.appendChild(opt);
+}
+for(let i=14;i<=80;i++){
+  const opt=document.createElement("option");
+  opt.value=i; opt.textContent=i+" years";
+  if(i===30) opt.selected=true;
+  ageEl.appendChild(opt);
+}
+
+function saveCalcToProfile(){
+  const payload = {
+    weight: weightEl.value,
+    height: heightEl.value,
+    age: ageEl.value,
+    gender: genderEl.value,
+    activityDays: activityDaysEl.value,
+    goal: goalEl.value,
+    proteinFactor: proteinFactorEl.value,
+    meals: mealsEl.value,
+    weeklyGoal: weeklyGoalEl.value
+  };
+  pset("calc_inputs", JSON.stringify(payload));
+}
+function loadCalcFromProfile(){
+  const raw = pget("calc_inputs");
+  if(!raw) return;
+  try{
+    const v = JSON.parse(raw);
+    if(v.weight) weightEl.value = v.weight;
+    if(v.height) heightEl.value = v.height;
+    if(v.age) ageEl.value = v.age;
+    if(v.gender) genderEl.value = v.gender;
+    if(v.activityDays) activityDaysEl.value = v.activityDays;
+    if(v.goal) goalEl.value = v.goal;
+    if(v.proteinFactor) proteinFactorEl.value = v.proteinFactor;
+    if(v.meals) mealsEl.value = v.meals;
+    if(v.weeklyGoal) weeklyGoalEl.value = v.weeklyGoal;
+  }catch(e){}
+}
+[
+  weightEl,heightEl,ageEl,genderEl,activityDaysEl,goalEl,proteinFactorEl,mealsEl,weeklyGoalEl
+].forEach(el=> el.addEventListener("change", saveCalcToProfile));
+
+function calculate(){
+  const weight = parseFloat(weightEl.value);
+  const height = parseFloat(heightEl.value);
+  const age = parseFloat(ageEl.value);
+  const gender = genderEl.value;
+  const activityDays = parseInt(activityDaysEl.value,10);
+  const goal = goalEl.value;
+  const proteinFactor = parseFloat(proteinFactorEl.value);
+  const meals = parseInt(mealsEl.value,10);
+  const weeklyGoalKg = parseFloat(weeklyGoalEl.value);
+
+  if(weeklyGoalKg === 2) alert("تنبيه: 2 kg/week هدف قوي جداً (عجز عالي).");
+
+  const bmr = (gender === "male")
+    ? (10*weight + 6.25*height - 5*age + 5)
+    : (10*weight + 6.25*height - 5*age - 161);
+
+  let activityMult = 1.2 + (activityDays - 1) * 0.1;
+  if(activityMult > 1.9) activityMult = 1.9;
+
+  let calories = bmr * activityMult;
+  if(goal === "cut") calories -= 500;
+  if(goal === "bulk") calories += 500;
+
+  const protein = weight * proteinFactor;
+  const fat = weight * 0.8;
+  const carbs = (calories - (protein*4 + fat*9)) / 4;
+
+  const proteinMeal = protein / meals;
+  const carbsMeal = carbs / meals;
+  const fatMeal = fat / meals;
+
+  const chickenGrams = proteinMeal * 4;
+  const riceGrams = carbsMeal * 3.5;
+  const oilGrams = fatMeal;
+
+  const weeklyTarget = weeklyGoalKg * 7700;
+  const dailyBurn = weeklyTarget / 7;
+
+  outCalories.textContent = `Daily Calories: ${Math.round(calories)} kcal`;
+  outMacros.innerHTML = `Protein: ${Math.round(protein)} g<br>Carbs: ${Math.round(carbs)} g<br>Fat: ${Math.round(fat)} g`;
+  outPerMeal.innerHTML =
+    `Per Meal (${meals} meals):<br><br>`+
+    `Protein: ${Math.round(proteinMeal)} g ≈ ${Math.round(chickenGrams)} g chicken<br>`+
+    `Carbs: ${Math.round(carbsMeal)} g ≈ ${Math.round(riceGrams)} g rice<br>`+
+    `Fat: ${Math.round(fatMeal)} g ≈ ${Math.round(oilGrams)} g oil`;
+  outBurn.textContent = `Calories to burn daily to reach weekly goal: ${Math.round(dailyBurn)} kcal`;
+
+  resultsCalc.style.display = "block";
+
+  pset("weekly_target", String(weeklyTarget));
+  saveCalcToProfile();
+  syncWeeklyTargetUI();
+}
+document.getElementById("calcBtn").addEventListener("click", calculate);
+
+/* ===================== Weekly Burn Tracker ===================== */
+const weeklyTargetLabel = document.getElementById("weeklyTargetLabel");
+const daysGrid = document.getElementById("daysGrid");
+const todayIndexEl = document.getElementById("todayIndex");
+const wkBurned = document.getElementById("wkBurned");
+const wkRemaining = document.getElementById("wkRemaining");
+const wkPerDay = document.getElementById("wkPerDay");
+const wkTomorrow = document.getElementById("wkTomorrow");
+const wkWarn = document.getElementById("wkWarn");
+
+function buildDays(){
+  daysGrid.innerHTML = "";
+  for(let d=1; d<=7; d++){
+    const wrap = document.createElement("div");
+    const lbl = document.createElement("label");
+    lbl.textContent = `Day ${d} burned (kcal)`;
+    lbl.style.marginTop = "0";
+
+    const inp = document.createElement("input");
+    inp.type = "number";
+    inp.min = "0";
+    inp.step = "10";
+    inp.id = `day_${d}`;
+    inp.placeholder = "0";
+
+    inp.addEventListener("input", () => {
+      pset(`day_${d}`, inp.value || "");
+      recalcWeek();
+    });
+
+    wrap.appendChild(lbl);
+    wrap.appendChild(inp);
+    daysGrid.appendChild(wrap);
+  }
+
+  todayIndexEl.addEventListener("change", () => {
+    pset("today_index", todayIndexEl.value);
+    recalcWeek();
+  });
+}
+function rebuildWeekInputsFromStorage(){
+  for(let d=1; d<=7; d++){
+    const el = document.getElementById(`day_${d}`);
+    if(!el) continue;
+    el.value = pget(`day_${d}`) ?? "";
+  }
+  const savedToday = pget("today_index");
+  if(savedToday) todayIndexEl.value = savedToday;
+}
+function getWeeklyTarget(){
+  const v = pget("weekly_target");
+  if(!v) return 0;
+  const n = parseFloat(v);
+  return isFinite(n) ? n : 0;
+}
+function syncWeeklyTargetUI(){
+  const target = getWeeklyTarget();
+  weeklyTargetLabel.textContent = `Weekly target burn: ${Math.round(target)} kcal`;
+}
+function recalcWeek(){
+  const target = getWeeklyTarget();
+  if(target <= 0){
+    wkWarn.textContent = "⚠️ احسب من الحاسبة أولاً عشان ينعرف هدف الأسبوع (داخل نفس البروفايل).";
+    wkBurned.textContent = "Burned so far: --";
+    wkRemaining.textContent = "Remaining: --";
+    wkPerDay.textContent = "Required per remaining day: --";
+    wkTomorrow.textContent = "Tomorrow target: --";
+    return;
+  } else wkWarn.textContent = "";
+
+  let burned = 0;
+  for(let d=1; d<=7; d++){
+    const val = parseFloat((document.getElementById(`day_${d}`).value || "").trim());
+    if(!isNaN(val) && val > 0) burned += val;
+  }
+
+  const remaining = Math.max(0, target - burned);
+  const today = parseInt(todayIndexEl.value,10);
+  const remainingDaysAfterToday = Math.max(0, 7 - today);
+  const requiredPerDay = remainingDaysAfterToday > 0 ? (remaining / remainingDaysAfterToday) : remaining;
+
+  wkBurned.textContent = `Burned so far: ${Math.round(burned)} kcal`;
+  wkRemaining.textContent = `Remaining to reach weekly target: ${Math.round(remaining)} kcal`;
+
+  if(remainingDaysAfterToday > 0){
+    wkPerDay.textContent = `Required per day for remaining days (${remainingDaysAfterToday}): ${Math.round(requiredPerDay)} kcal/day`;
+    wkTomorrow.textContent = `Tomorrow target burn: ${Math.round(requiredPerDay)} kcal`;
+  } else {
+    wkPerDay.textContent = `Week finished. Remaining: ${Math.round(remaining)} kcal`;
+    wkTomorrow.textContent = `Tomorrow target: 0 kcal`;
+  }
+}
+function resetWeek(){
+  for(let d=1; d<=7; d++){
+    premove(`day_${d}`);
+    const el = document.getElementById(`day_${d}`);
+    if(el) el.value = "";
+  }
+  premove("today_index");
+  todayIndexEl.value = "1";
+  recalcWeek();
+}
+
+/* ===================== Workouts (Sunday -> Saturday) ===================== */
+const workoutContainer = document.getElementById("workoutContainer");
+const weekDays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+function defaultWorkouts(){
+  const obj = {};
+  weekDays.forEach(d => obj[d] = []);
+  return obj;
+}
+function loadWorkouts(){
+  const raw = pget("workouts");
+  if(!raw) return defaultWorkouts();
+  try{
+    const parsed = JSON.parse(raw);
+    weekDays.forEach(d => { if(!Array.isArray(parsed[d])) parsed[d] = []; });
+    return parsed;
+  }catch(e){ return defaultWorkouts(); }
+}
+function saveWorkouts(data){ pset("workouts", JSON.stringify(data)); }
+
+function addExercise(day){
+  const data = loadWorkouts();
+  data[day].push({ name:"", sets:3, maxWeight:0 });
+  saveWorkouts(data);
+  renderWorkouts();
+}
+function deleteExercise(day, idx){
+  const data = loadWorkouts();
+  data[day].splice(idx,1);
+  saveWorkouts(data);
+  renderWorkouts();
+}
+function updateExercise(day, idx, key, value){
+  const data = loadWorkouts();
+  if(!data[day] || !data[day][idx]) return;
+  data[day][idx][key] = value;
+  saveWorkouts(data);
+}
+function toggleDay(day){
+  const safe = day.replace(/\s+/g,"_");
+  const content = document.getElementById(`content_${safe}`);
+  const chev = document.getElementById(`chev_${safe}`);
+  const isOpen = content.classList.toggle("open");
+  content.style.display = isOpen ? "block" : "none";
+  chev.textContent = isOpen ? "▲" : "▼";
+  pset(`day_open_${safe}`, isOpen ? "1" : "0");
+}
+
+function renderWorkouts(){
+  const data = loadWorkouts();
+  workoutContainer.innerHTML = "";
+
+  weekDays.forEach(day=>{
+    const safe = day.replace(/\s+/g,"_");
+
+    const card = document.createElement("div");
+    card.className = "day-card";
+
+    const header = document.createElement("div");
+    header.className = "day-header";
+
+    const left = document.createElement("div");
+    left.className = "day-name";
+    left.textContent = day;
+
+    const chev = document.createElement("div");
+    chev.className = "chev";
+    chev.id = `chev_${safe}`;
+
+    header.appendChild(left);
+    header.appendChild(chev);
+    header.onclick = () => toggleDay(day);
+
+    card.appendChild(header);
+
+    const content = document.createElement("div");
+    content.className = "day-content";
+    content.id = `content_${safe}`;
+
+    const openState = pget(`day_open_${safe}`);
+    const open = openState === "1";
+    content.style.display = open ? "block" : "none";
+    chev.textContent = open ? "▲" : "▼";
+    if(open) content.classList.add("open");
+
+    const actions = document.createElement("div");
+    actions.className = "row-actions";
+
+    const addBtn = document.createElement("button");
+    addBtn.className = "add-btn";
+    addBtn.textContent = "+ Add Exercise";
+    addBtn.onclick = (e)=>{ e.stopPropagation(); addExercise(day); };
+
+    actions.appendChild(addBtn);
+    content.appendChild(actions);
+
+    if(data[day].length === 0){
+      const empty = document.createElement("div");
+      empty.className = "small-note";
+      empty.textContent = "No exercises yet.";
+      content.appendChild(empty);
+    } else {
+      data[day].forEach((ex, idx)=>{
+        const row = document.createElement("div");
+        row.className = "exercise";
+
+        const name = document.createElement("input");
+        name.className = "exercise-name";
+        name.placeholder = "Exercise";
+        name.value = ex.name || "";
+        name.oninput = (ev)=> updateExercise(day, idx, "name", ev.target.value);
+
+        const setsCounter = document.createElement("div");
+        setsCounter.className = "counter";
+
+        const setsMinus = document.createElement("button");
+        setsMinus.textContent = "-";
+        setsMinus.onclick = ()=>{
+          const cur = parseInt(ex.sets ?? 3, 10);
+          if(cur > 1){
+            updateExercise(day, idx, "sets", cur - 1);
+            renderWorkouts();
+          }
+        };
+
+        const setsValue = document.createElement("span");
+        setsValue.textContent = `S:${parseInt(ex.sets ?? 3,10)}`;
+
+        const setsPlus = document.createElement("button");
+        setsPlus.textContent = "+";
+        setsPlus.onclick = ()=>{
+          const cur = parseInt(ex.sets ?? 3, 10);
+          updateExercise(day, idx, "sets", cur + 1);
+          renderWorkouts();
+        };
+
+        setsCounter.appendChild(setsMinus);
+        setsCounter.appendChild(setsValue);
+        setsCounter.appendChild(setsPlus);
+
+        const weightCounter = document.createElement("div");
+        weightCounter.className = "counter";
+
+        const weightMinus = document.createElement("button");
+        weightMinus.textContent = "-";
+        weightMinus.onclick = ()=>{
+          let w = parseFloat(ex.maxWeight ?? 0);
+          if(!isFinite(w)) w = 0;
+          w = Math.max(0, w - 2.5);
+          updateExercise(day, idx, "maxWeight", w);
+          renderWorkouts();
+        };
+
+        const weightValue = document.createElement("span");
+        const wShow = parseFloat(ex.maxWeight ?? 0);
+        weightValue.textContent = `W:${(isFinite(wShow)?wShow:0)}kg`;
+
+        const weightPlus = document.createElement("button");
+        weightPlus.textContent = "+";
+        weightPlus.onclick = ()=>{
+          let w = parseFloat(ex.maxWeight ?? 0);
+          if(!isFinite(w)) w = 0;
+          w = w + 2.5;
+          updateExercise(day, idx, "maxWeight", w);
+          renderWorkouts();
+        };
+
+        weightCounter.appendChild(weightMinus);
+        weightCounter.appendChild(weightValue);
+        weightCounter.appendChild(weightPlus);
+
+        const del = document.createElement("button");
+        del.className = "del-btn";
+        del.textContent = "X";
+        del.onclick = ()=> deleteExercise(day, idx);
+
+        row.appendChild(name);
+        row.appendChild(setsCounter);
+        row.appendChild(weightCounter);
+        row.appendChild(del);
+
+        content.appendChild(row);
+      });
+    }
+
+    card.appendChild(content);
+    workoutContainer.appendChild(card);
+  });
+}
+
+function resetWorkouts(){
+  if(confirm("Reset workouts for active profile?")){
+    premove("workouts");
+    weekDays.forEach(day=>{
+      const safe = day.replace(/\s+/g,"_");
+      premove(`day_open_${safe}`);
+    });
+    renderWorkouts();
+  }
+}
+
+/* ===================== Weight Tracker ===================== */
+const weightWeeksEl = document.getElementById("weightWeeks");
+const weightRowsEl = document.getElementById("weightRows");
+const wStartEl = document.getElementById("wStart");
+const wCurrentEl = document.getElementById("wCurrent");
+const wChangeEl = document.getElementById("wChange");
+const wAvgEl = document.getElementById("wAvg");
+
+/* weeks dropdown 4..52 */
+for(let w=4; w<=52; w++){
+  const opt=document.createElement("option");
+  opt.value=String(w);
+  opt.textContent = `${w} weeks`;
+  if(w===12) opt.selected=true;
+  weightWeeksEl.appendChild(opt);
+}
+weightWeeksEl.addEventListener("change", ()=>{
+  pset("weight_weeks", weightWeeksEl.value);
+  renderWeightRows();
+  calcWeightSummary();
+});
+
+function getWeightWeeks(){
+  const saved = pget("weight_weeks");
+  const n = parseInt(saved || weightWeeksEl.value || "12", 10);
+  if(!isFinite(n) || n<4) return 12;
+  return Math.min(52, n);
+}
+
+function loadWeightTracker(){
+  const savedWeeks = pget("weight_weeks");
+  if(savedWeeks) weightWeeksEl.value = savedWeeks;
+
+  renderWeightRows();
+  calcWeightSummary();
+}
+
+function renderWeightRows(){
+  const weeks = getWeightWeeks();
+  weightRowsEl.innerHTML = "";
+
+  for(let i=1; i<=weeks; i++){
+    const row = document.createElement("div");
+    row.className = "wrow";
+
+    const tag = document.createElement("div");
+    tag.className = "wtag";
+    tag.innerHTML = `<b>Week ${i}</b>`;
+
+    const inp = document.createElement("input");
+    inp.type = "number";
+    inp.min = "0";
+    inp.step = "0.1";
+    inp.placeholder = "Weight (kg)";
+    inp.value = pget(`w_week_${i}`) ?? "";
+
+    inp.addEventListener("input", ()=>{
+      pset(`w_week_${i}`, inp.value || "");
+      calcWeightSummary();
+    });
+
+    row.appendChild(tag);
+    row.appendChild(inp);
+    weightRowsEl.appendChild(row);
+  }
+}
+
+function calcWeightSummary(){
+  const weeks = getWeightWeeks();
+
+  let start = null;
+  let last = null;
+  let lastWeekIndex = null;
+
+  for(let i=1; i<=weeks; i++){
+    const v = parseFloat((pget(`w_week_${i}`) || "").trim());
+    if(isFinite(v) && v > 0){
+      if(start === null) start = v;
+      last = v;
+      lastWeekIndex = i;
+    }
+  }
+
+  if(start === null || last === null){
+    wStartEl.textContent = "Start: --";
+    wCurrentEl.textContent = "Current: --";
+    wChangeEl.textContent = "Change: --";
+    wAvgEl.textContent = "Avg / Week: --";
+    return;
+  }
+
+  const change = last - start; // negative is loss
+  const weeksPassed = Math.max(1, (lastWeekIndex - 1));
+  const avg = change / weeksPassed;
+
+  wStartEl.textContent = `Start: ${start.toFixed(1)} kg`;
+  wCurrentEl.textContent = `Current: ${last.toFixed(1)} kg (Week ${lastWeekIndex})`;
+  wChangeEl.textContent = `Change: ${change.toFixed(1)} kg`;
+  wAvgEl.textContent = `Avg / Week: ${avg.toFixed(2)} kg/week`;
+}
+
+function resetWeight(){
+  if(!confirm("Reset weight log for active profile?")) return;
+  const weeks = getWeightWeeks();
+  for(let i=1; i<=weeks; i++){
+    premove(`w_week_${i}`);
+  }
+  renderWeightRows();
+  calcWeightSummary();
+}
+
+/* ===================== INIT ===================== */
+buildDays();
+ensureDefaultProfile();
+refreshProfilesUI();
+loadCalcFromProfile();
+rebuildWeekInputsFromStorage();
+syncWeeklyTargetUI();
+recalcWeek();
+renderWorkouts();
+loadWeightTracker();
+</script>
+
+<script>
+/* ===================== Missing functions (from previous builds) ===================== */
+/* Weekly tracker buildDays already called above; define here to avoid reference issues */
+</script>
+
+<script>
+/* The buildDays function must exist before INIT; define it here if not already defined above */
+</script>
+
+<script>
+/* ===================== Weekly Burn Tracker functions (must be defined) ===================== */
+/* NOTE: In case your browser loads scripts in order, we ensure buildDays exists. */
+</script>
+
+<script>
+/* ===================== Define buildDays if not defined (safety) ===================== */
+if (typeof buildDays !== "function") {
+  function buildDays(){
+    const daysGrid = document.getElementById("daysGrid");
+    const todayIndexEl = document.getElementById("todayIndex");
+    daysGrid.innerHTML = "";
+    for(let d=1; d<=7; d++){
+      const wrap = document.createElement("div");
+      const lbl = document.createElement("label");
+      lbl.textContent = `Day ${d} burned (kcal)`;
+      lbl.style.marginTop = "0";
+
+      const inp = document.createElement("input");
+      inp.type = "number";
+      inp.min = "0";
+      inp.step = "10";
+      inp.id = `day_${d}`;
+      inp.placeholder = "0";
+
+      inp.addEventListener("input", () => {
+        localStorage.setItem(`ws_${(localStorage.getItem("ws_active_profile")||"Default")}_day_${d}`, inp.value || "");
+        if (typeof recalcWeek === "function") recalcWeek();
+      });
+
+      wrap.appendChild(lbl);
+      wrap.appendChild(inp);
+      daysGrid.appendChild(wrap);
+    }
+
+    todayIndexEl.addEventListener("change", () => {
+      localStorage.setItem(`ws_${(localStorage.getItem("ws_active_profile")||"Default")}_today_index`, todayIndexEl.value);
+      if (typeof recalcWeek === "function") recalcWeek();
+    });
+  }
+}
+</script>
+
+</body>
+</html>

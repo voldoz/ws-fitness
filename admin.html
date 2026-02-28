@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>WS Fitness - Admin</title>
+<style>
+  body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0b1220,#111827);color:#fff}
+  h1{margin:0 0 12px;text-align:center;color:#38bdf8}
+  .box{background:#1e293b;border-radius:12px;padding:14px;margin-bottom:12px;line-height:1.7}
+  .small{font-size:13px;opacity:.9;margin-top:6px}
+  .danger{color:#fecaca}
+  .ok{color:#bbf7d0}
+  label{display:block;margin-top:12px;font-weight:800}
+  select,input{
+    width:100%;margin-top:6px;padding:12px;border:0;border-radius:12px;background:#0f172a;color:#fff;font-size:15px;outline:none
+  }
+  button{
+    width:100%;margin-top:12px;padding:14px;border:0;border-radius:12px;
+    background:linear-gradient(90deg,#0ea5e9,#2563eb);color:#fff;font-weight:900;cursor:pointer
+  }
+  button.red{background:#ef4444 !important}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .row>*{flex:1;min-width:160px}
+  .page{display:none}
+  .page.active{display:block}
+</style>
+</head>
+<body>
+<h1>WS Admin</h1>
+
+<div class="page active" id="pLogin">
+  <div class="box">
+    <div style="font-weight:900;color:#38bdf8">Admin Login</div>
+    <div class="small">PIN الافتراضي: <b>123456</b> (غيّره بعد الدخول).</div>
+  </div>
+
+  <label>Admin PIN (6 digits)</label>
+  <input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+  <button onclick="login()">Login</button>
+  <div class="small danger" id="msg"></div>
+</div>
+
+<div class="page" id="pPanel">
+  <div class="box">
+    <div style="font-weight:900;color:#38bdf8">Admin Panel</div>
+    <div class="small">إدارة المدربين والمشتركين.</div>
+  </div>
+
+  <div class="box">
+    <div style="font-weight:900;color:#38bdf8">Change Admin PIN</div>
+    <label>New PIN</label>
+    <input id="newAdminPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+    <button onclick="changeAdminPin()">Change</button>
+    <div class="small danger" id="aMsg"></div>
+  </div>
+
+  <div class="box">
+    <div style="font-weight:900;color:#38bdf8">Create Coach</div>
+    <div class="row">
+      <div>
+        <label>Coach Name</label>
+        <input id="cName" placeholder="Coach Name" />
+      </div>
+      <div>
+        <label>Coach PIN</label>
+        <input id="cPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+      </div>
+    </div>
+    <button onclick="createCoach()">Create Coach</button>
+    <div class="small danger" id="cMsg"></div>
+  </div>
+
+  <div class="box">
+    <div style="font-weight:900;color:#38bdf8">Coaches</div>
+    <label>Select Coach</label>
+    <select id="coachSel"></select>
+
+    <label>Reset Coach PIN</label>
+    <input id="rstCoachPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+    <button onclick="resetCoachPin()">Reset Coach PIN</button>
+
+    <button class="red" onclick="deleteCoach(false)">Delete Coach (0 subs only)</button>
+    <button class="red" onclick="deleteCoach(true)">Delete Coach + Subs (Cascade)</button>
+
+    <div class="small danger" id="coachOpsMsg"></div>
+  </div>
+
+  <div class="box">
+    <div style="font-weight:900;color:#38bdf8">Subscribers (optional)</div>
+    <div class="small">إذا تبي تخلي الأدمن يدير المشتركين أيضًا.</div>
+
+    <label>Select Subscriber</label>
+    <select id="subSel"></select>
+
+    <label>Reset Subscriber PIN</label>
+    <input id="rstSubPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+    <button onclick="resetSubPin()">Reset Subscriber PIN</button>
+
+    <label>Move Subscriber to Coach</label>
+    <select id="moveCoachSel"></select>
+    <button onclick="moveSub()">Move Subscriber</button>
+
+    <button class="red" onclick="deleteSub()">Delete Subscriber</button>
+
+    <div class="small danger" id="subOpsMsg"></div>
+  </div>
+
+  <button class="red" onclick="resetAll()">Reset All Data (wipe)</button>
+</div>
+
+<script>
+const $=(id)=>document.getElementById(id);
+const PIN_RE=/^[0-9]{6}$/;
+
+async function sha256(txt){
+  const enc=new TextEncoder().encode(txt);
+  const buf=await crypto.subtle.digest("SHA-256", enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+function uid(){ return "id_"+Math.random().toString(16).slice(2)+Date.now().toString(16); }
+
+function loadAccounts(){ try{ return JSON.parse(localStorage.getItem("ws_accounts")||"[]"); }catch{ return []; } }
+function saveAccounts(a){ localStorage.setItem("ws_accounts", JSON.stringify(a)); }
+function findAcc(id){ return loadAccounts().find(x=>x.id===id) || null; }
+
+async function ensureAdmin(){
+  const acc=loadAccounts();
+  if(!acc.some(a=>a.role==="admin")){
+    acc.push({id:"admin_fixed", name:"WS Admin", role:"admin", pinHash: await sha256("123456")});
+    saveAccounts(acc);
+  }
+}
+function adminAcc(){ return loadAccounts().find(a=>a.role==="admin"); }
+
+function show(panel){
+  $("pLogin").classList.toggle("active", panel==="login");
+  $("pPanel").classList.toggle("active", panel==="panel");
+}
+
+async function login(){
+  $("msg").textContent="";
+  const pin=($("pin").value||"").trim();
+  if(!PIN_RE.test(pin)){ $("msg").textContent="PIN لازم 6 أرقام."; return; }
+
+  const admin=adminAcc();
+  if(!admin){ $("msg").textContent="Admin missing."; return; }
+  if(await sha256(pin)!==admin.pinHash){ $("msg").textContent="PIN غلط."; return; }
+
+  $("pin").value="";
+  refreshLists();
+  show("panel");
+}
+
+function refreshLists(){
+  const acc=loadAccounts();
+  const coaches=acc.filter(x=>x.role==="coach");
+  const subs=acc.filter(x=>x.role==="subscriber");
+
+  const cs=$("coachSel"); cs.innerHTML="";
+  if(!coaches.length){
+    const o=document.createElement("option"); o.value=""; o.textContent="No coaches";
+    cs.appendChild(o);
+  } else coaches.forEach(c=>{
+    const o=document.createElement("option"); o.value=c.id; o.textContent=c.name;
+    cs.appendChild(o);
+  });
+
+  const ms=$("moveCoachSel"); ms.innerHTML="";
+  if(!coaches.length){
+    const o=document.createElement("option"); o.value=""; o.textContent="No coaches";
+    ms.appendChild(o);
+  } else coaches.forEach(c=>{
+    const o=document.createElement("option"); o.value=c.id; o.textContent=c.name;
+    ms.appendChild(o);
+  });
+
+  const ss=$("subSel"); ss.innerHTML="";
+  if(!subs.length){
+    const o=document.createElement("option"); o.value=""; o.textContent="No subscribers";
+    ss.appendChild(o);
+  } else subs.forEach(s=>{
+    const o=document.createElement("option");
+    o.value=s.id;
+    o.textContent=`${s.name} (Coach: ${findAcc(s.coachId)?.name||"—"})`;
+    ss.appendChild(o);
+  });
+
+  $("coachOpsMsg").textContent="";
+  $("subOpsMsg").textContent="";
+  $("cMsg").textContent="";
+  $("aMsg").textContent="";
+}
+
+async function changeAdminPin(){
+  $("aMsg").textContent="";
+  const pin=($("newAdminPin").value||"").trim();
+  if(!PIN_RE.test(pin)){ $("aMsg").textContent="PIN لازم 6 أرقام."; return; }
+
+  const acc=loadAccounts();
+  const i=acc.findIndex(x=>x.role==="admin");
+  acc[i].pinHash=await sha256(pin);
+  saveAccounts(acc);
+
+  $("newAdminPin").value="";
+  $("aMsg").innerHTML=`<span class="ok">✅ Admin PIN updated.</span>`;
+}
+
+async function createCoach(){
+  $("cMsg").textContent="";
+  const name=($("cName").value||"").trim().slice(0,30);
+  const pin=($("cPin").value||"").trim();
+  if(!name){ $("cMsg").textContent="اكتب اسم المدرب."; return; }
+  if(!PIN_RE.test(pin)){ $("cMsg").textContent="PIN لازم 6 أرقام."; return; }
+
+  const acc=loadAccounts();
+  acc.push({id:uid(), name, role:"coach", pinHash: await sha256(pin)});
+  saveAccounts(acc);
+
+  $("cName").value=""; $("cPin").value="";
+  $("cMsg").innerHTML=`<span class="ok">✅ Coach created.</span>`;
+  refreshLists();
+}
+
+async function resetCoachPin(){
+  $("coachOpsMsg").textContent="";
+  const id=$("coachSel").value;
+  const pin=($("rstCoachPin").value||"").trim();
+  if(!id){ $("coachOpsMsg").textContent="اختر مدرب."; return; }
+  if(!PIN_RE.test(pin)){ $("coachOpsMsg").textContent="PIN لازم 6 أرقام."; return; }
+
+  const acc=loadAccounts();
+  const i=acc.findIndex(x=>x.id===id && x.role==="coach");
+  if(i<0){ $("coachOpsMsg").textContent="Coach غير موجود."; return; }
+
+  acc[i].pinHash=await sha256(pin);
+  saveAccounts(acc);
+
+  $("rstCoachPin").value="";
+  $("coachOpsMsg").innerHTML=`<span class="ok">✅ Coach PIN reset.</span>`;
+}
+
+function deleteCoach(cascade){
+  $("coachOpsMsg").textContent="";
+  const id=$("coachSel").value;
+  if(!id){ $("coachOpsMsg").textContent="اختر مدرب."; return; }
+  const acc=loadAccounts();
+  const coach=acc.find(x=>x.id===id && x.role==="coach");
+  if(!coach){ $("coachOpsMsg").textContent="Coach غير موجود."; return; }
+
+  const subs=acc.filter(x=>x.role==="subscriber" && x.coachId===id);
+  if(!cascade && subs.length>0){
+    $("coachOpsMsg").textContent=`لا يمكن حذف المدرب لأنه لديه ${subs.length} مشتركين.`;
+    return;
+  }
+  if(!confirm(`Delete coach: ${coach.name}? ${cascade?"AND all subscribers":""}`)) return;
+
+  let next=acc.filter(x=>x.id!==id);
+  if(cascade) next=next.filter(x=>!(x.role==="subscriber" && x.coachId===id));
+  saveAccounts(next);
+
+  $("coachOpsMsg").innerHTML=`<span class="ok">✅ Deleted.</span>`;
+  refreshLists();
+}
+
+async function resetSubPin(){
+  $("subOpsMsg").textContent="";
+  const id=$("subSel").value;
+  const pin=($("rstSubPin").value||"").trim();
+  if(!id){ $("subOpsMsg").textContent="اختر مشترك."; return; }
+  if(!PIN_RE.test(pin)){ $("subOpsMsg").textContent="PIN لازم 6 أرقام."; return; }
+
+  const acc=loadAccounts();
+  const i=acc.findIndex(x=>x.id===id && x.role==="subscriber");
+  if(i<0){ $("subOpsMsg").textContent="Subscriber غير موجود."; return; }
+
+  acc[i].pinHash=await sha256(pin);
+  saveAccounts(acc);
+
+  $("rstSubPin").value="";
+  $("subOpsMsg").innerHTML=`<span class="ok">✅ Subscriber PIN reset.</span>`;
+}
+
+function moveSub(){
+  $("subOpsMsg").textContent="";
+  const subId=$("subSel").value;
+  const coachId=$("moveCoachSel").value;
+  if(!subId){ $("subOpsMsg").textContent="اختر مشترك."; return; }
+  if(!coachId){ $("subOpsMsg").textContent="اختر مدرب."; return; }
+
+  const acc=loadAccounts();
+  const si=acc.findIndex(x=>x.id===subId && x.role==="subscriber");
+  const coach=acc.find(x=>x.id===coachId && x.role==="coach");
+  if(si<0 || !coach){ $("subOpsMsg").textContent="بيانات غير صحيحة."; return; }
+
+  acc[si].coachId=coachId;
+  saveAccounts(acc);
+
+  $("subOpsMsg").innerHTML=`<span class="ok">✅ Moved.</span>`;
+  refreshLists();
+}
+
+function deleteSub(){
+  $("subOpsMsg").textContent="";
+  const id=$("subSel").value;
+  if(!id){ $("subOpsMsg").textContent="اختر مشترك."; return; }
+  const sub=findAcc(id);
+  if(!sub || sub.role!=="subscriber"){ $("subOpsMsg").textContent="Subscriber غير موجود."; return; }
+  if(!confirm(`Delete subscriber: ${sub.name}?`)) return;
+
+  saveAccounts(loadAccounts().filter(x=>x.id!==id));
+  $("subOpsMsg").innerHTML=`<span class="ok">✅ Deleted.</span>`;
+  refreshLists();
+}
+
+function resetAll(){
+  if(!confirm("Reset ALL data?")) return;
+  localStorage.clear();
+  location.reload();
+}
+
+(async function init(){
+  await ensureAdmin();
+})();
+</script>
+</body>
+</html>

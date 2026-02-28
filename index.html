@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>WS Fitness</title>
+<style>
+  body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff}
+  h1{margin:0 0 12px;text-align:center;color:#38bdf8}
+  .pill{background:#0b1220;border-radius:14px;padding:10px 12px;display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .pill b{color:#38bdf8}
+  .badge{border:1px solid #334155;border-radius:999px;padding:6px 10px;font-size:12px;background:#0b1220}
+  .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 14px}
+  .tab{flex:1;min-width:120px;border:0;border-radius:12px;padding:12px;font-weight:800;cursor:pointer;background:#1e293b;color:#fff}
+  .tab.active{background:linear-gradient(90deg,#0ea5e9,#2563eb)}
+  .box{background:#1e293b;border-radius:12px;padding:14px;margin-bottom:12px;line-height:1.7}
+  .small{font-size:13px;opacity:.9;margin-top:6px}
+  .danger{color:#fecaca}
+  .ok{color:#bbf7d0}
+  .muted{opacity:.85}
+  label{display:block;margin-top:12px;font-weight:800}
+  select,input{
+    width:100%;margin-top:6px;padding:12px;border:0;border-radius:12px;background:#0f172a;color:#fff;font-size:15px;outline:none
+  }
+  select::-webkit-scrollbar{width:7px}
+  select::-webkit-scrollbar-track{background:#0b1220;border-radius:10px}
+  select::-webkit-scrollbar-thumb{background:#2563eb;border-radius:10px}
+  button.primary{
+    width:100%;margin-top:14px;padding:15px;border:0;border-radius:14px;background:linear-gradient(90deg,#0ea5e9,#2563eb);
+    color:#fff;font-size:17px;font-weight:900;cursor:pointer
+  }
+  button.mini{
+    width:100%;margin-top:10px;padding:12px;border:0;border-radius:12px;background:#0b1220;color:#fff;font-weight:900;cursor:pointer
+  }
+  button.red{background:#ef4444 !important}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .row>*{flex:1;min-width:160px}
+  .page{display:none}
+  .page.active{display:block}
+  .hidden{display:none!important}
+  .seg{display:flex;gap:10px;margin:10px 0 14px}
+  .seg button{flex:1;border:0;border-radius:12px;padding:12px;font-weight:900;cursor:pointer;background:#0b1220;color:#fff}
+  .seg button.active{background:linear-gradient(90deg,#0ea5e9,#2563eb)}
+  .card{background:#0b1220;border-radius:14px;padding:12px;margin-top:10px}
+</style>
+</head>
+<body>
+<h1>WS Fitness</h1>
+
+<div class="pill">
+  <div>
+    Session: <b id="sessName">—</b>
+    <span class="badge" id="sessRole">—</span>
+  </div>
+  <button class="mini" style="max-width:170px;margin:0" onclick="logout()">Logout</button>
+</div>
+
+<!-- LOGIN -->
+<div class="page active" id="pLogin">
+  <div class="box">
+    <div style="font-weight:900;color:#38bdf8">Login</div>
+    <div class="small muted">
+      هنا: إنشاء مدرب + تسجيل دخول (مدرب/مشترك).<br>
+      صفحة الأدمن منفصلة تمامًا داخل ملف admin.html.
+    </div>
+  </div>
+
+  <div class="seg">
+    <button id="segLogin" class="active" onclick="switchAuth('login')">Login</button>
+    <button id="segCoach" onclick="switchAuth('coach')">Create Coach</button>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="authLogin">
+    <label>Account</label>
+    <select id="loginSel"></select>
+
+    <label>PIN (6 digits)</label>
+    <input id="loginPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+
+    <button class="primary" onclick="login()">Login</button>
+    <div class="small danger" id="loginMsg"></div>
+  </div>
+
+  <!-- CREATE COACH -->
+  <div id="authCoach" class="hidden">
+    <div class="box">
+      <div style="font-weight:900;color:#38bdf8">Create Coach</div>
+      <div class="small muted">ينشئ حساب مدرب فقط.</div>
+    </div>
+
+    <label>Coach Name</label>
+    <input id="coachName" placeholder="Coach Name" />
+
+    <label>Coach PIN (6 digits)</label>
+    <input id="coachPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+
+    <button class="primary" onclick="createCoach()">Create</button>
+    <div class="small danger" id="coachMsg"></div>
+  </div>
+
+  <div class="box" style="margin-top:14px;">
+    <div style="font-weight:900;color:#38bdf8">Reset (اختياري)</div>
+    <button class="mini red" onclick="resetAll()">Reset All Data (wipe)</button>
+    <div class="small danger">يمسح كل الحسابات والبيانات من الجهاز.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="page" id="pApp">
+  <div class="tabs">
+    <button class="tab active" id="tHome" onclick="go('home')">Home</button>
+    <button class="tab hidden" id="tCoach" onclick="go('coach')">Coach</button>
+    <button class="tab" id="tProfile" onclick="go('profile')">Profile</button>
+  </div>
+
+  <!-- HOME -->
+  <div class="page active" id="pHome">
+    <div class="box">
+      <div style="font-weight:900;color:#38bdf8">Home</div>
+      <div class="small muted" id="homeHint"></div>
+    </div>
+
+    <div class="card" id="subCard" style="display:none;">
+      <div style="font-weight:900;color:#38bdf8">Subscriber</div>
+      <div class="small muted">هنا تقدر نضيف نتائج الحاسبة والتمارين لاحقًا.</div>
+    </div>
+
+    <div class="card" id="coachCard" style="display:none;">
+      <div style="font-weight:900;color:#38bdf8">Coach</div>
+      <div class="small muted">روح تبويب Coach عشان تنشئ مشتركين وتديرهم.</div>
+    </div>
+  </div>
+
+  <!-- COACH PANEL -->
+  <div class="page" id="pCoachPanel">
+    <div class="box">
+      <div style="font-weight:900;color:#38bdf8">Coach Panel</div>
+      <div class="small muted">إنشاء/Reset PIN/حذف مشتركين تحت حسابك.</div>
+    </div>
+
+    <div class="box">
+      <div style="font-weight:900;color:#38bdf8">Create Subscriber</div>
+      <div class="row">
+        <div>
+          <label>Subscriber Name</label>
+          <input id="subName" placeholder="Example: Ahmed" />
+        </div>
+        <div>
+          <label>Subscriber PIN (6 digits)</label>
+          <input id="subPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+        </div>
+      </div>
+      <button class="mini" onclick="coachAddSubscriber()">Create Subscriber</button>
+      <div class="small danger" id="subMsg"></div>
+    </div>
+
+    <div class="box">
+      <div style="font-weight:900;color:#38bdf8">My Subscribers</div>
+      <label>Select Subscriber</label>
+      <select id="mySubsSel"></select>
+
+      <label>Reset PIN</label>
+      <input id="rstPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+      <button class="mini" onclick="coachResetPin()">Reset PIN</button>
+
+      <button class="mini red" onclick="coachDeleteSub()">Delete Subscriber</button>
+      <div class="small danger" id="subOpsMsg"></div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="page" id="pProfile">
+    <div class="box">
+      <div style="font-weight:900;color:#38bdf8">Profile</div>
+      <div class="small muted">تغيير PIN الخاص فيك.</div>
+
+      <label>New PIN (6 digits)</label>
+      <input id="myNewPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+      <button class="mini" onclick="changeMyPin()">Change PIN</button>
+      <div class="small danger" id="myPinMsg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== core ===== */
+const $ = (id)=>document.getElementById(id);
+const PIN_RE = /^[0-9]{6}$/;
+
+async function sha256(txt){
+  const enc = new TextEncoder().encode(txt);
+  const buf = await crypto.subtle.digest("SHA-256", enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+function uid(){ return "id_"+Math.random().toString(16).slice(2)+Date.now().toString(16); }
+
+function loadAccounts(){ try{ return JSON.parse(localStorage.getItem("ws_accounts")||"[]"); }catch{ return []; } }
+function saveAccounts(a){ localStorage.setItem("ws_accounts", JSON.stringify(a)); }
+function findAcc(id){ return loadAccounts().find(x=>x.id===id) || null; }
+
+function setSession(obj){ localStorage.setItem("ws_session", JSON.stringify(obj)); }
+function getSession(){ try{ return JSON.parse(localStorage.getItem("ws_session")||"null"); }catch{ return null; } }
+function clearSession(){ localStorage.removeItem("ws_session"); }
+
+async function ensureAdmin(){
+  const acc=loadAccounts();
+  if(!acc.some(a=>a.role==="admin")){
+    acc.push({id:"admin_fixed", name:"WS Admin", role:"admin", pinHash: await sha256("123456")});
+    saveAccounts(acc);
+  }
+}
+
+function me(){ const s=getSession(); return s ? findAcc(s.id) : null; }
+function isCoach(){ const a=me(); return !!a && a.role==="coach"; }
+function isSub(){ const a=me(); return !!a && a.role==="subscriber"; }
+
+/* ===== UI ===== */
+function switchAuth(mode){
+  $("segLogin").classList.toggle("active", mode==="login");
+  $("segCoach").classList.toggle("active", mode==="coach");
+  $("authLogin").classList.toggle("hidden", mode!=="login");
+  $("authCoach").classList.toggle("hidden", mode!=="coach");
+  $("loginMsg").textContent="";
+  $("coachMsg").textContent="";
+}
+
+function hydrateHeader(){
+  const a=me();
+  $("sessName").textContent = a ? a.name : "—";
+  $("sessRole").textContent = a ? a.role.toUpperCase() : "—";
+}
+
+function showLogin(){
+  $("pLogin").classList.add("active");
+  $("pApp").classList.remove("active");
+  renderLoginList();
+  hydrateHeader();
+  switchAuth("login");
+}
+
+function showApp(){
+  $("pLogin").classList.remove("active");
+  $("pApp").classList.add("active");
+  // tabs
+  $("tCoach").classList.toggle("hidden", !isCoach());
+  go("home");
+
+  $("homeHint").textContent = isCoach()
+    ? "أنت مدرب — تقدر تنشئ مشتركين وتديرهم."
+    : "أنت مشترك — راح تشوف نتائجك (نقدر نربط هنا الحاسبة والتمارين).";
+
+  $("coachCard").style.display = isCoach() ? "block" : "none";
+  $("subCard").style.display = isSub() ? "block" : "none";
+
+  hydrateHeader();
+}
+
+function go(which){
+  // tabs active
+  ["tHome","tCoach","tProfile"].forEach(id=>$(id).classList.remove("active"));
+  if(which==="home") $("tHome").classList.add("active");
+  if(which==="coach") $("tCoach").classList.add("active");
+  if(which==="profile") $("tProfile").classList.add("active");
+
+  // pages inside app
+  ["pHome","pCoachPanel","pProfile"].forEach(id=>$(id).classList.remove("active"));
+  if(which==="home") $("pHome").classList.add("active");
+  if(which==="coach") { $("pCoachPanel").classList.add("active"); renderCoachSubs(); }
+  if(which==="profile") $("pProfile").classList.add("active");
+}
+
+/* ===== Login list (NO ADMIN shown here) ===== */
+function renderLoginList(){
+  const acc=loadAccounts();
+  const sel=$("loginSel");
+  sel.innerHTML="";
+
+  const coaches = acc.filter(x=>x.role==="coach");
+  const subs = acc.filter(x=>x.role==="subscriber");
+
+  function addGroup(label, list){
+    if(!list.length) return;
+    const og=document.createElement("optgroup");
+    og.label=label;
+    list.forEach(a=>{
+      const opt=document.createElement("option");
+      opt.value=a.id;
+      opt.textContent = a.name + (a.role==="subscriber" ? ` (Coach: ${findAcc(a.coachId)?.name||"—"})` : "");
+      og.appendChild(opt);
+    });
+    sel.appendChild(og);
+  }
+  addGroup("Coaches", coaches);
+  addGroup("Subscribers", subs);
+
+  if(!coaches.length && !subs.length){
+    const opt=document.createElement("option");
+    opt.value=""; opt.textContent="No accounts yet";
+    sel.appendChild(opt);
+  }
+}
+
+/* ===== Actions ===== */
+async function createCoach(){
+  $("coachMsg").textContent="";
+  const name=($("coachName").value||"").trim().slice(0,30);
+  const pin=($("coachPin").value||"").trim();
+  if(!name){ $("coachMsg").textContent="اكتب اسم المدرب."; return; }
+  if(!PIN_RE.test(pin)){ $("coachMsg").textContent="PIN لازم 6 أرقام."; return; }
+
+  const acc=loadAccounts();
+  acc.push({id:uid(), name, role:"coach", pinHash: await sha256(pin)});
+  saveAccounts(acc);
+
+  $("coachName").value=""; $("coachPin").value="";
+  $("coachMsg").innerHTML=`<span class="ok">✅ Coach created.</span>`;
+  renderLoginList();
+  switchAuth("login");
+}
+
+async function login(){
+  $("loginMsg").textContent="";
+  const id=$("loginSel").value;
+  const pin=($("loginPin").value||"").trim();
+
+  if(!id){ $("loginMsg").textContent="اختر حساب."; return; }
+  if(!PIN_RE.test(pin)){ $("loginMsg").textContent="PIN لازم 6 أرقام."; return; }
+
+  const a=findAcc(id);
+  if(!a){ $("loginMsg").textContent="الحساب غير موجود."; return; }
+
+  // prevent admin login from this app even if someone selects it somehow
+  if(a.role==="admin"){ $("loginMsg").textContent="Admin login غير متاح هنا."; return; }
+
+  if(await sha256(pin) !== a.pinHash){ $("loginMsg").textContent="PIN غلط."; return; }
+
+  setSession({id:a.id});
+  $("loginPin").value="";
+  showApp();
+}
+
+function logout(){
+  clearSession();
+  showLogin();
+}
+
+function resetAll(){
+  if(!confirm("Reset ALL data? This will delete all accounts and logs.")) return;
+  localStorage.clear();
+  location.reload();
+}
+
+/* ===== Coach: manage subscribers ===== */
+function renderCoachSubs(){
+  $("subMsg").textContent="";
+  $("subOpsMsg").textContent="";
+  const a=me();
+  if(!a || a.role!=="coach") return;
+
+  const acc=loadAccounts();
+  const mySubs = acc.filter(x=>x.role==="subscriber" && x.coachId===a.id);
+  const sel=$("mySubsSel");
+  sel.innerHTML="";
+  if(!mySubs.length){
+    const opt=document.createElement("option"); opt.value=""; opt.textContent="No subscribers";
+    sel.appendChild(opt);
+  }else{
+    mySubs.forEach(s=>{
+      const opt=document.createElement("option");
+      opt.value=s.id;
+      opt.textContent=s.name;
+      sel.appendChild(opt);
+    });
+  }
+}
+
+async function coachAddSubscriber(){
+  $("subMsg").textContent="";
+  const a=me();
+  if(!a || a.role!=="coach"){ $("subMsg").textContent="Coach فقط."; return; }
+
+  const name=($("subName").value||"").trim().slice(0,30);
+  const pin=($("subPin").value||"").trim();
+  if(!name){ $("subMsg").textContent="اكتب اسم المشترك."; return; }
+  if(!PIN_RE.test(pin)){ $("subMsg").textContent="PIN لازم 6 أرقام."; return; }
+
+  const acc=loadAccounts();
+  acc.push({id:uid(), name, role:"subscriber", coachId:a.id, pinHash: await sha256(pin)});
+  saveAccounts(acc);
+
+  $("subName").value=""; $("subPin").value="";
+  $("subMsg").innerHTML=`<span class="ok">✅ Subscriber created.</span>`;
+  renderLoginList();
+  renderCoachSubs();
+}
+
+async function coachResetPin(){
+  $("subOpsMsg").textContent="";
+  const a=me();
+  if(!a || a.role!=="coach"){ $("subOpsMsg").textContent="Coach فقط."; return; }
+
+  const subId=$("mySubsSel").value;
+  const newPin=($("rstPin").value||"").trim();
+  if(!subId){ $("subOpsMsg").textContent="اختر مشترك."; return; }
+  if(!PIN_RE.test(newPin)){ $("subOpsMsg").textContent="PIN لازم 6 أرقام."; return; }
+
+  const acc=loadAccounts();
+  const i=acc.findIndex(x=>x.id===subId && x.role==="subscriber" && x.coachId===a.id);
+  if(i<0){ $("subOpsMsg").textContent="غير مسموح."; return; }
+
+  acc[i].pinHash = await sha256(newPin);
+  saveAccounts(acc);
+
+  $("rstPin").value="";
+  $("subOpsMsg").innerHTML=`<span class="ok">✅ PIN reset.</span>`;
+  renderLoginList();
+}
+
+function coachDeleteSub(){
+  $("subOpsMsg").textContent="";
+  const a=me();
+  if(!a || a.role!=="coach"){ $("subOpsMsg").textContent="Coach فقط."; return; }
+
+  const subId=$("mySubsSel").value;
+  if(!subId){ $("subOpsMsg").textContent="اختر مشترك."; return; }
+
+  const sub=findAcc(subId);
+  if(!sub || sub.role!=="subscriber" || sub.coachId!==a.id){ $("subOpsMsg").textContent="غير مسموح."; return; }
+  if(!confirm(`Delete subscriber: ${sub.name}?`)) return;
+
+  saveAccounts(loadAccounts().filter(x=>x.id!==subId));
+  $("subOpsMsg").innerHTML=`<span class="ok">✅ Deleted.</span>`;
+  renderLoginList();
+  renderCoachSubs();
+}
+
+/* ===== Change my PIN ===== */
+async function changeMyPin(){
+  $("myPinMsg").textContent="";
+  const a=me();
+  if(!a){ $("myPinMsg").textContent="No session."; return; }
+  const pin=($("myNewPin").value||"").trim();
+  if(!PIN_RE.test(pin)){ $("myPinMsg").textContent="PIN لازم 6 أرقام."; return; }
+
+  const acc=loadAccounts();
+  const i=acc.findIndex(x=>x.id===a.id);
+  acc[i].pinHash = await sha256(pin);
+  saveAccounts(acc);
+
+  $("myNewPin").value="";
+  $("myPinMsg").innerHTML=`<span class="ok">✅ Updated.</span>`;
+  renderLoginList();
+}
+
+/* init */
+(async function(){
+  await ensureAdmin();       // create fixed admin in storage (not shown here)
+  renderLoginList();
+  hydrateHeader();
+  const a=me();
+  if(a && a.role!=="admin") showApp();
+  else showLogin();
+})();
+</script>
+</body>
+</html>

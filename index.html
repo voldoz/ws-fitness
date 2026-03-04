@@ -226,6 +226,12 @@
   .mac-no-data{
     text-align:center;padding:20px;opacity:.5;font-size:14px;
   }
+
+  .mac-log-result{
+    font-size:11px;color:#64748b;margin-top:3px;padding-left:4px;
+    transition:color .2s;
+  }
+  .mac-log-result.has-val{color:#22c55e;}
 </style>
 </head>
 
@@ -686,23 +692,40 @@
     <div id="macMealStrips"></div>
   </div>
 
-  <!-- Daily log inputs -->
+  <!-- Daily log inputs: user enters SCALE weight → net macros computed -->
   <div class="mac-log-section">
-    <div class="mac-log-title">&#x1F4DD; Log Today's Intake (grams)</div>
+    <div class="mac-log-title">&#x2696; Log by Scale Weight</div>
 
+    <!-- Protein food -->
     <div class="mac-log-entry">
       <div class="mac-log-macro p">P</div>
-      <input class="mac-log-inp" type="number" id="logP" min="0" step="1" placeholder="0" oninput="saveMacroLog()"/>
+      <div style="flex:1">
+        <input class="mac-log-inp" type="number" id="logScaleP" min="0" step="1"
+          placeholder="0 g on scale" oninput="saveMacroLog()"/>
+        <div class="mac-log-result" id="resP">= 0 g protein</div>
+      </div>
       <div class="mac-log-unit">g</div>
     </div>
+
+    <!-- Carb food -->
     <div class="mac-log-entry">
       <div class="mac-log-macro c">C</div>
-      <input class="mac-log-inp" type="number" id="logC" min="0" step="1" placeholder="0" oninput="saveMacroLog()"/>
+      <div style="flex:1">
+        <input class="mac-log-inp" type="number" id="logScaleC" min="0" step="1"
+          placeholder="0 g on scale" oninput="saveMacroLog()"/>
+        <div class="mac-log-result" id="resC">= 0 g carbs</div>
+      </div>
       <div class="mac-log-unit">g</div>
     </div>
+
+    <!-- Fat food -->
     <div class="mac-log-entry">
       <div class="mac-log-macro f">F</div>
-      <input class="mac-log-inp" type="number" id="logF" min="0" step="1" placeholder="0" oninput="saveMacroLog()"/>
+      <div style="flex:1">
+        <input class="mac-log-inp" type="number" id="logScaleF" min="0" step="1"
+          placeholder="0 g on scale" oninput="saveMacroLog()"/>
+        <div class="mac-log-result" id="resF">= 0 g fat</div>
+      </div>
       <div class="mac-log-unit">g</div>
     </div>
 
@@ -1888,16 +1911,36 @@ function resetWeight(){
 function getMacroLog(){
   try{ return JSON.parse(pget("macro_log")||"{}"); }catch{ return {}; }
 }
+
+/* User enters scale weight → we store the scale grams, derive net macros on render */
 function saveMacroLog(){
-  const p=parseFloat($("logP").value)||0;
-  const c=parseFloat($("logC").value)||0;
-  const f=parseFloat($("logF").value)||0;
+  const r=loadCalcResults();
+  const pDensity=r?Number(r.pDensity||30):30;
+  const cDensity=r?Number(r.cDensity||20):20;
+  const fDensity=r?Number(r.fDensity||100):100;
+
+  const sP=parseFloat($("logScaleP").value)||0;
+  const sC=parseFloat($("logScaleC").value)||0;
+  const sF=parseFloat($("logScaleF").value)||0;
+
+  /* net macro = scale_g * density/100 */
+  const netP=Math.round(sP*(pDensity/100)*10)/10;
+  const netC=Math.round(sC*(cDensity/100)*10)/10;
+  const netF=Math.round(sF*(fDensity/100)*10)/10;
+
+  /* update result labels live */
+  const rP=$("resP"); if(rP){ rP.textContent=`= ${netP} g protein`; rP.classList.toggle("has-val",sP>0); }
+  const rC=$("resC"); if(rC){ rC.textContent=`= ${netC} g carbs`;  rC.classList.toggle("has-val",sC>0); }
+  const rF=$("resF"); if(rF){ rF.textContent=`= ${netF} g fat`;    rF.classList.toggle("has-val",sF>0); }
+
   const today=new Date().toISOString().slice(0,10);
   const log=getMacroLog();
-  log[today]={p,c,f};
+  /* store scale weights + derived net values */
+  log[today]={sP,sC,sF, p:netP, c:netC, f:netF};
   pset("macro_log", JSON.stringify(log));
   renderMacrosPage();
 }
+
 function resetMacroLog(){
   if(!canEditEverything()) return;
   if(!confirm("Reset today macro log?")) return;
@@ -1905,13 +1948,17 @@ function resetMacroLog(){
   const log=getMacroLog();
   delete log[today];
   pset("macro_log", JSON.stringify(log));
-  $("logP").value=""; $("logC").value=""; $("logF").value="";
+  $("logScaleP").value=""; $("logScaleC").value=""; $("logScaleF").value="";
+  $("resP").textContent="= 0 g protein"; $("resP").classList.remove("has-val");
+  $("resC").textContent="= 0 g carbs";   $("resC").classList.remove("has-val");
+  $("resF").textContent="= 0 g fat";     $("resF").classList.remove("has-val");
   renderMacrosPage();
 }
+
 function getTodayLog(){
   const today=new Date().toISOString().slice(0,10);
   const log=getMacroLog();
-  return log[today]||{p:0,c:0,f:0};
+  return log[today]||{sP:0,sC:0,sF:0,p:0,c:0,f:0};
 }
 
 function renderMacrosPage(){
@@ -1930,14 +1977,26 @@ function renderMacrosPage(){
   const kcal=Number(r.calories||0);
   const meals=Number(r.meals||1);
 
-  // today log
+  // today log (scale weights stored; net macros derived)
   const today=getTodayLog();
   const lP=today.p||0, lC=today.c||0, lF=today.f||0;
+  const lSP=today.sP||0, lSC=today.sC||0, lSF=today.sF||0;
 
-  // load inputs
-  $("logP").value = lP||"";
-  $("logC").value = lC||"";
-  $("logF").value = lF||"";
+  // load scale inputs & result labels
+  const pDensity2=Number(r.pDensity||30);
+  const cDensity2=Number(r.cDensity||20);
+  const fDensity2=Number(r.fDensity||100);
+
+  if($("logScaleP")) $("logScaleP").value = lSP||"";
+  if($("logScaleC")) $("logScaleC").value = lSC||"";
+  if($("logScaleF")) $("logScaleF").value = lSF||"";
+
+  const rP=$("resP");
+  if(rP){ rP.textContent=`= ${lP} g protein`; rP.classList.toggle("has-val",lSP>0); }
+  const rC=$("resC");
+  if(rC){ rC.textContent=`= ${lC} g carbs`;   rC.classList.toggle("has-val",lSC>0); }
+  const rF=$("resF");
+  if(rF){ rF.textContent=`= ${lF} g fat`;      rF.classList.toggle("has-val",lSF>0); }
 
   $("macCaloriesLabel").textContent = `${kcal.toLocaleString()} kcal / day`;
 
@@ -1997,9 +2056,9 @@ function renderMacrosPage(){
     row.innerHTML=
       `<div class="mac-meal-num">${m}</div>`+
       `<div class="mac-meal-macros">`+
-        `<span class="mac-chip p">P <b>${pMeal}g</b><span class="scale"> = ${pScale}g</span></span>`+
-        `<span class="mac-chip c">C <b>${cMeal}g</b><span class="scale"> = ${cScale}g</span></span>`+
-        `<span class="mac-chip f">F <b>${fMeal}g</b><span class="scale"> = ${fScale}g</span></span>`+
+        `<span class="mac-chip p">⚖ <b>${pScale}g</b><span class="scale"> → ${pMeal}g P</span></span>`+
+        `<span class="mac-chip c">⚖ <b>${cScale}g</b><span class="scale"> → ${cMeal}g C</span></span>`+
+        `<span class="mac-chip f">⚖ <b>${fScale}g</b><span class="scale"> → ${fMeal}g F</span></span>`+
       `</div>`;
     scaleBox.appendChild(row);
   }

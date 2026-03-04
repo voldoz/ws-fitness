@@ -42,6 +42,66 @@
   .seg button{flex:1;border:0;border-radius:12px;padding:12px;font-weight:900;cursor:pointer;background:#0b1220;color:#fff}
   .seg button.active{background:linear-gradient(90deg,#0ea5e9,#2563eb)}
 
+  /* ===== Daily Burn redesign ===== */
+  .burn-header-box{
+    background:#0b1220;border-radius:16px;padding:14px 16px;margin-bottom:14px;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .burn-weekly-bar-wrap{
+    background:#0f172a;border-radius:10px;height:12px;overflow:hidden;margin-top:4px;
+  }
+  .burn-weekly-bar-fill{
+    height:100%;border-radius:10px;
+    background:linear-gradient(90deg,#0ea5e9,#2563eb);
+    transition:width .4s;
+  }
+  .burn-days-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+  .burn-day-row{
+    background:#0b1220;border-radius:14px;padding:12px 14px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .burn-day-row.today-row{border:2px solid #0ea5e9;}
+  .burn-day-num{
+    min-width:36px;height:36px;border-radius:10px;
+    background:#1e293b;display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:14px;color:#38bdf8;
+  }
+  .burn-day-num.today-num{
+    background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;
+  }
+  .burn-day-label{flex:1;font-weight:700;font-size:14px;}
+  .burn-day-sub{font-size:11px;opacity:.6;margin-top:2px;}
+  .burn-day-inp{
+    width:90px;text-align:center;padding:8px 6px;border-radius:10px;
+    background:#0f172a;color:#fff;border:1px solid #334155;
+    font-size:15px;font-weight:900;outline:none;
+  }
+  .burn-day-inp:focus{border-color:#0ea5e9;}
+  .burn-day-done{
+    width:32px;height:32px;border-radius:9px;border:0;
+    background:#22c55e;color:#fff;font-size:16px;cursor:default;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .burn-day-done.empty{background:#1e293b;color:#64748b;}
+  .burn-summary-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;
+  }
+  .burn-stat{
+    background:#0b1220;border-radius:14px;padding:12px;
+    display:flex;flex-direction:column;gap:4px;
+  }
+  .burn-stat-val{font-size:22px;font-weight:900;color:#38bdf8;}
+  .burn-stat-lbl{font-size:11px;opacity:.7;}
+  .burn-stat.green .burn-stat-val{color:#22c55e;}
+  .burn-stat.red-s .burn-stat-val{color:#ef4444;}
+  .burn-tomorrow-box{
+    background:#0b1220;border-radius:14px;padding:14px;
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:14px;
+  }
+  .burn-tomorrow-lbl{font-size:13px;opacity:.8;}
+  .burn-tomorrow-val{font-size:20px;font-weight:900;color:#f97316;}
+
   /* workouts compact */
   .day-card{background:#0b1220;border-radius:14px;padding:12px;margin-bottom:12px}
   .day-head{display:flex;justify-content:space-between;align-items:center;background:#0f172a;border-radius:12px;padding:10px;cursor:pointer}
@@ -400,29 +460,50 @@
 
 <!-- DAILY BURN -->
 <div class="page" id="pWeek">
-  <div class="box">
-    <div style="font-weight:900;color:#38bdf8">Daily Burn</div>
-    <div class="small" id="weeklyTargetLabel">Weekly burn target: -- kcal</div>
-    <div class="small">Log burned calories each day. Tomorrow target updates automatically.</div>
+
+  <div class="burn-header-box">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-weight:900;font-size:16px;color:#38bdf8">&#x1F525; Daily Burn</div>
+      <div style="font-size:12px;opacity:.7" id="weeklyTargetLabel">Target: -- kcal</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:2px">
+      <span id="wkBurnedLabel" style="color:#22c55e">Burned: --</span>
+      <span id="wkProgressPct" style="opacity:.7">0%</span>
+    </div>
+    <div class="burn-weekly-bar-wrap">
+      <div class="burn-weekly-bar-fill" id="wkBar" style="width:0%"></div>
+    </div>
+    <div class="small danger" id="wkWarn" style="margin-top:4px"></div>
   </div>
 
-  <label>Current Day</label>
-  <select id="todayIndex">
-    <option value="1">Day 1</option><option value="2">Day 2</option><option value="3">Day 3</option>
-    <option value="4">Day 4</option><option value="5">Day 5</option><option value="6">Day 6</option><option value="7">Day 7</option>
+  <div class="burn-summary-grid">
+    <div class="burn-stat green">
+      <div class="burn-stat-val" id="wkBurned">--</div>
+      <div class="burn-stat-lbl">Total Burned (kcal)</div>
+    </div>
+    <div class="burn-stat red-s">
+      <div class="burn-stat-val" id="wkRemaining">--</div>
+      <div class="burn-stat-lbl">Remaining (kcal)</div>
+    </div>
+  </div>
+
+  <div class="burn-tomorrow-box">
+    <div>
+      <div class="burn-tomorrow-lbl">Required per remaining day</div>
+      <div class="burn-tomorrow-lbl" id="wkPerDay" style="font-size:11px;opacity:.6"></div>
+    </div>
+    <div class="burn-tomorrow-val" id="wkTomorrow">-- kcal</div>
+  </div>
+
+  <div class="burn-days-list" id="daysGrid"></div>
+
+  <select id="todayIndex" style="display:none">
+    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+    <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+    <option value="7">7</option>
   </select>
 
-  <div class="grid" id="daysGrid"></div>
-  <button class="mini" onclick="recalcWeek()">Update</button>
-  <button class="mini red hidden" id="weekResetBtn" onclick="resetWeek()">Reset logs</button>
-
-  <div class="results">
-    <div id="wkBurned">Burned (logged): --</div>
-    <div id="wkRemaining">Remaining to hit weekly target: --</div>
-    <div id="wkPerDay">Required daily burn: --</div>
-    <div id="wkTomorrow">Tomorrow burn target: --</div>
-    <div class="small danger" id="wkWarn"></div>
-  </div>
+  <button class="mini red hidden" id="weekResetBtn" onclick="resetWeek()">&#x1F5D1; Reset Week</button>
 </div>
 
 <!-- WEIGHT -->
@@ -1226,81 +1307,152 @@ function calcAndSave(){
 }
 $("calcBtn").addEventListener("click", calcAndSave);
 
-/* ========= Daily Burn ========= */
+/* ========= Daily Burn (redesigned) ========= */
+function getAutoTodayIndex(){
+  const saved=pget("today_index");
+  if(saved) return parseInt(saved,10);
+  const wd=new Date().getDay();
+  return wd===0 ? 7 : wd;
+}
+
 function buildWeekInputs(){
   const grid=$("daysGrid");
   if(grid.dataset.built==="1") return;
   grid.innerHTML="";
+  const todayIdx=getAutoTodayIndex();
+  $("todayIndex").value=todayIdx;
   for(let d=1; d<=7; d++){
-    const wrap=document.createElement("div");
-    const lbl=document.createElement("label");
-    lbl.textContent=`Burned (Day ${d}) - kcal`;
-    lbl.style.marginTop="0";
+    const isToday=d===todayIdx;
+    const isPast=d<todayIdx;
+    const row=document.createElement("div");
+    row.className="burn-day-row"+(isToday?" today-row":"");
+    row.id=`dayRow_${d}`;
+    const num=document.createElement("div");
+    num.className="burn-day-num"+(isToday?" today-num":"");
+    num.textContent=d;
+    const labelWrap=document.createElement("div");
+    labelWrap.style.flex="1";
+    const dayName=document.createElement("div");
+    dayName.className="burn-day-label";
+    dayName.textContent=`Day ${d}`;
+    const daySub=document.createElement("div");
+    daySub.className="burn-day-sub";
+    daySub.id=`daySub_${d}`;
+    daySub.textContent=isToday?"Today":(isPast?"Past":"Upcoming");
+    labelWrap.appendChild(dayName);
+    labelWrap.appendChild(daySub);
     const inp=document.createElement("input");
-    inp.type="number"; inp.min="0"; inp.step="10"; inp.id=`day_${d}`; inp.placeholder="0";
-    inp.addEventListener("input", ()=>{
-      pset(`day_${d}`, inp.value||"");
+    inp.type="number"; inp.min="0"; inp.step="10";
+    inp.id=`day_${d}`; inp.placeholder="0";
+    inp.className="burn-day-inp";
+    inp.addEventListener("input",()=>{
+      pset(`day_${d}`,inp.value||"");
       recalcWeek();
+      updateDoneIcon(d);
     });
-    wrap.appendChild(lbl); wrap.appendChild(inp);
-    grid.appendChild(wrap);
+    const done=document.createElement("div");
+    done.id=`dayDone_${d}`;
+    done.className="burn-day-done empty";
+    done.textContent="✓";
+    row.appendChild(num);
+    row.appendChild(labelWrap);
+    row.appendChild(inp);
+    row.appendChild(done);
+    grid.appendChild(row);
   }
-  $("todayIndex").addEventListener("change", ()=>{
-    pset("today_index", $("todayIndex").value);
-    recalcWeek();
-  });
   grid.dataset.built="1";
 }
+
+function updateDoneIcon(d){
+  const inp=$(`day_${d}`);
+  const done=$(`dayDone_${d}`);
+  if(!inp||!done) return;
+  const val=parseFloat(inp.value||"0");
+  done.classList.toggle("empty",!(val>0));
+}
+
 function loadWeekInputs(){
+  const todayIdx=getAutoTodayIndex();
   for(let d=1; d<=7; d++){
     const v=pget(`day_${d}`)||"";
     const el=$(`day_${d}`); if(el) el.value=v;
+    updateDoneIcon(d);
+    const sub=$(`daySub_${d}`);
+    if(sub) sub.textContent=(d===todayIdx)?"Today":(d<todayIdx?"Past":"Upcoming");
+    const row=$(`dayRow_${d}`);
+    if(row){
+      row.classList.toggle("today-row",d===todayIdx);
+      const numEl=row.querySelector(".burn-day-num");
+      if(numEl) numEl.classList.toggle("today-num",d===todayIdx);
+    }
   }
-  const ti=pget("today_index"); if(ti) $("todayIndex").value=ti;
 }
+
 function getWeeklyTarget(){
   const v=pget("weekly_target");
   const n=parseFloat(v||"0");
   return isFinite(n)?n:0;
 }
+
 function syncWeeklyTarget(){
   const t=getWeeklyTarget();
-  $("weeklyTargetLabel").textContent = `Weekly burn target: ${t>0?Math.round(t):"--"} kcal`;
+  $("weeklyTargetLabel").textContent=t>0?`Target: ${Math.round(t)} kcal`:`Target: -- kcal`;
 }
+
 function recalcWeek(){
   const target=getWeeklyTarget();
+  const todayIdx=getAutoTodayIndex();
   if(target<=0){
-    $("wkWarn").textContent="--";
-    $("wkBurned").textContent="Burned (logged): --";
-    $("wkRemaining").textContent="Remaining: --";
-    $("wkPerDay").textContent="Required daily burn: --";
-    $("wkTomorrow").textContent="Tomorrow burn target: --";
+    $("wkWarn").textContent="⚠ Use Calculator first to set your burn target.";
+    $("wkBurned").textContent="--";
+    $("wkRemaining").textContent="--";
+    $("wkPerDay").textContent="";
+    $("wkTomorrow").textContent="-- kcal";
+    $("wkBar").style.width="0%";
+    $("wkProgressPct").textContent="0%";
+    $("wkBurnedLabel").textContent="Burned: --";
     return;
-  } else $("wkWarn").textContent="";
-
+  } else {
+    $("wkWarn").textContent="";
+  }
   let burned=0;
   for(let d=1; d<=7; d++){
     const val=parseFloat(($(`day_${d}`).value||"").trim());
-    if(isFinite(val) && val>0) burned += val;
+    if(isFinite(val)&&val>0) burned+=val;
   }
-  const remaining=Math.max(0, target-burned);
-  const today=parseInt($("todayIndex").value,10);
-  const remDays=Math.max(0, 7-today);
-  const perDay = remDays>0 ? (remaining/remDays) : remaining;
-
-  $("wkBurned").textContent=`Burned (logged): ${Math.round(burned)} kcal`;
-  $("wkRemaining").textContent=`Remaining: ${Math.round(remaining)} kcal`;
-  $("wkPerDay").textContent = remDays>0
-    ? `Required daily burn for remaining ${remDays} day(s): ${Math.round(perDay)} kcal/day`
-    : `Week completed. Remaining: ${Math.round(remaining)} kcal`;
-  $("wkTomorrow").textContent = `Tomorrow burn target: ${remDays>0?Math.round(perDay):0} kcal`;
+  const remaining=Math.max(0,target-burned);
+  const remDays=Math.max(0,7-todayIdx);
+  const perDay=remDays>0?Math.round(remaining/remDays):0;
+  const pct=Math.min(100,Math.round((burned/target)*100));
+  $("wkBurned").textContent=Math.round(burned).toLocaleString();
+  $("wkRemaining").textContent=Math.round(remaining).toLocaleString();
+  $("wkBurnedLabel").textContent=`Burned: ${Math.round(burned).toLocaleString()} kcal`;
+  $("wkProgressPct").textContent=`${pct}%`;
+  $("wkBar").style.width=`${pct}%`;
+  if(remDays>0){
+    $("wkTomorrow").textContent=`${perDay.toLocaleString()} kcal`;
+    $("wkPerDay").textContent=`for remaining ${remDays} day(s)`;
+  } else if(burned>=target){
+    $("wkTomorrow").textContent="Goal met!";
+    $("wkPerDay").textContent="Week complete";
+  } else {
+    $("wkTomorrow").textContent=`${Math.round(remaining).toLocaleString()} kcal`;
+    $("wkPerDay").textContent="Last day - finish strong!";
+  }
 }
-function applyWeekButtons(){ $("weekResetBtn").classList.toggle("hidden", !canEditEverything()); }
+
+function applyWeekButtons(){ $("weekResetBtn").classList.toggle("hidden",!canEditEverything()); }
 function resetWeek(){
   if(!canEditEverything()) return;
-  if(!confirm("Reset logs?")) return;
-  for(let d=1; d<=7; d++){ premove(`day_${d}`); $(`day_${d}`).value=""; }
-  premove("today_index"); $("todayIndex").value="1";
+  if(!confirm("Reset all burn logs for this week?")) return;
+  for(let d=1; d<=7; d++){
+    premove(`day_${d}`);
+    const el=$(`day_${d}`); if(el) el.value="";
+    updateDoneIcon(d);
+  }
+  premove("today_index");
+  $("daysGrid").dataset.built="";
+  buildWeekInputs();
   recalcWeek();
 }
 

@@ -1906,7 +1906,7 @@ function recalcWeek(){
   $("wkWarn").textContent="";
 
   const remaining  = Math.max(0, target - burned);
-  const remDays    = Math.max(0, 7 - todayIdx);   /* days after today */
+  const remDays    = Math.max(0, 7 - todayIdx + 1); /* today + days after */
   const perDay     = remDays>0 ? Math.ceil(remaining/remDays) : 0;
   const pct        = Math.min(100, Math.round((burned/target)*100));
 

@@ -499,6 +499,102 @@
   .wo-apply-btn:active{ transform:scale(.98); opacity:.9; }
   .wo-apply-btn:disabled{ opacity:.35; cursor:default; }
 
+  /* ===== Schedule Step (Preset rest-day customizer) ===== */
+  .wo-sched-step{ animation:wo-fadeIn .3s ease both; }
+  .wo-sched-hint{
+    font-size:11px; color:#64748b; font-weight:600;
+    margin-bottom:12px; line-height:1.5;
+  }
+  .wo-sched-grid{
+    display:flex; flex-direction:column; gap:8px; margin-bottom:4px;
+  }
+  /* one row per week-day */
+  .wo-sched-row{
+    display:flex; align-items:center; gap:8px;
+    background:linear-gradient(145deg,#0d1829,#111e30);
+    border-radius:14px; padding:10px 12px;
+    border:1.5px solid rgba(255,255,255,.07);
+    transition:border-color .2s;
+  }
+  .wo-sched-row.has-session{ border-color:rgba(56,189,248,.2); }
+  .wo-sched-row.is-rest{ opacity:.55; }
+  .wo-sched-day-lbl{
+    min-width:36px; font-size:11px; font-weight:900; color:#64748b;
+    text-transform:uppercase; letter-spacing:.06em; flex-shrink:0;
+  }
+  .wo-sched-row.has-session .wo-sched-day-lbl{ color:#38bdf8; }
+  /* session select */
+  .wo-sched-sel{
+    flex:1; background:rgba(10,18,32,.9);
+    border:1.5px solid rgba(255,255,255,.08);
+    border-radius:10px; padding:7px 10px;
+    color:#e2e8f0; font-size:12px; font-weight:700;
+    outline:none; cursor:pointer; transition:border-color .2s;
+    -webkit-appearance:none;
+  }
+  .wo-sched-sel:focus{ border-color:rgba(56,189,248,.4); }
+  /* session chip label inside row */
+  .wo-sched-chip{
+    display:inline-flex; align-items:center; gap:5px;
+    padding:4px 10px; border-radius:10px;
+    font-size:11px; font-weight:800;
+    background:rgba(56,189,248,.1); color:#38bdf8;
+    border:1px solid rgba(56,189,248,.2);
+    flex-shrink:0;
+  }
+  .wo-sched-chip.rest{
+    background:rgba(100,116,139,.08); color:#475569;
+    border-color:rgba(100,116,139,.12); font-weight:700;
+  }
+
+  /* ===== Exercise Image Thumbnail ===== */
+  .wo-ex-img-btn{
+    width:32px; height:32px; border-radius:9px; flex-shrink:0;
+    overflow:hidden; cursor:pointer; border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.04); transition:all .18s;
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .wo-ex-img-btn img{
+    width:100%; height:100%; object-fit:cover; border-radius:8px;
+    display:block;
+  }
+  .wo-ex-img-btn.no-img{
+    font-size:14px; /* show emoji fallback */
+    background:rgba(56,189,248,.06); border-color:rgba(56,189,248,.1);
+  }
+  .wo-ex-img-btn:active{ transform:scale(.9); }
+
+  /* exercise image lightbox */
+  .wo-ex-lightbox{
+    position:fixed; inset:0; z-index:9999;
+    background:rgba(0,0,0,.82); backdrop-filter:blur(8px);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:20px; animation:wt-fadeIn .2s ease;
+  }
+  .wo-ex-lightbox-img{
+    max-width:min(380px,90vw); max-height:60vh;
+    border-radius:20px; object-fit:contain;
+    box-shadow:0 20px 60px rgba(0,0,0,.6);
+    border:1px solid rgba(255,255,255,.12);
+  }
+  .wo-ex-lightbox-name{
+    margin-top:14px; font-size:16px; font-weight:900; color:#e2e8f0;
+    text-align:center;
+  }
+  .wo-ex-lightbox-meta{
+    margin-top:4px; font-size:12px; color:#64748b; font-weight:600; text-align:center;
+  }
+  .wo-ex-lightbox-close{
+    margin-top:18px; padding:10px 32px; border-radius:14px; border:none; cursor:pointer;
+    background:rgba(255,255,255,.1); color:#e2e8f0; font-size:14px; font-weight:800;
+    transition:background .18s;
+  }
+  .wo-ex-lightbox-close:active{ background:rgba(255,255,255,.2); }
+  .wo-ex-lightbox-noimg{
+    font-size:80px; margin-bottom:10px;
+  }
+
   /* ===== Custom Builder ===== */
   .wo-custom-panel{
     margin-bottom:14px;
@@ -2005,8 +2101,22 @@
     <div class="wo-presets-panel" id="woPresetsPanel" style="display:none">
       <div class="wo-section-label">📋 Choose a Plan</div>
       <div class="wo-preset-grid" id="woPresetGrid"></div>
-      <div class="wo-apply-wrap">
-        <button class="wo-apply-btn" id="woApplyBtn" onclick="applySelectedPreset()" disabled>
+
+      <!-- Step 2: schedule customizer (shown after selecting a plan) -->
+      <div class="wo-sched-step" id="woSchedStep" style="display:none">
+        <div class="wo-section-label" style="margin-top:14px">📅 Assign Training Days</div>
+        <div class="wo-sched-hint">Drag or tap each session to pick which day it falls on. Other days become rest.</div>
+        <div class="wo-sched-grid" id="woSchedGrid"></div>
+        <div class="wo-apply-wrap">
+          <button class="wo-apply-btn" id="woApplyBtn" onclick="applySelectedPreset()">
+            ⚡ Apply Schedule
+          </button>
+        </div>
+      </div>
+
+      <!-- fallback apply (shown when no customization needed) -->
+      <div class="wo-apply-wrap" id="woDirectApplyWrap" style="display:none">
+        <button class="wo-apply-btn" id="woDirectApplyBtn" onclick="applySelectedPreset()">
           ⚡ Apply Plan
         </button>
       </div>
@@ -3656,13 +3766,11 @@ function renderPresetGrid(){
     const nm=document.createElement("div"); nm.className="wo-preset-name"; nm.textContent=plan.name;
     const desc=document.createElement("div"); desc.className="wo-preset-desc"; desc.textContent=plan.desc;
     const tags=document.createElement("div"); tags.className="wo-preset-tags";
-    /* add "Active" tag if this plan is currently applied */
     if(plan.id===activePlanId){
       const at=document.createElement("span"); at.className="wo-preset-tag green"; at.textContent="✓ Active"; tags.appendChild(at);
     }
     plan.tags.forEach(t=>{ const tg=document.createElement("span"); tg.className="wo-preset-tag"+(t.c?" "+t.c:""); tg.textContent=t.t; tags.appendChild(tg); });
     info.appendChild(nm); info.appendChild(desc); info.appendChild(tags);
-    /* right: days badge + check */
     const right=document.createElement("div"); right.className="wo-preset-right";
     const activeDays=Object.values(plan.days).filter(d=>d.length>0).length;
     const dayBadge=document.createElement("div"); dayBadge.className="wo-preset-days-badge"; dayBadge.textContent=`${activeDays}d/wk`;
@@ -3671,7 +3779,7 @@ function renderPresetGrid(){
     head.appendChild(emoji); head.appendChild(info); head.appendChild(right);
     card.appendChild(head);
 
-    /* preview (shown when selected) */
+    /* preview */
     const preview=document.createElement("div"); preview.className="wo-preset-preview";
     const pi=document.createElement("div"); pi.className="wo-preset-preview-inner";
     weekDays.forEach(day=>{
@@ -3695,8 +3803,112 @@ function renderPresetGrid(){
 
 function selectPreset(id){
   _selectedPresetId = (_selectedPresetId===id) ? "" : id;
-  $("woApplyBtn").disabled = !_selectedPresetId;
   renderPresetGrid();
+  if(_selectedPresetId){
+    renderSchedStep(_selectedPresetId);
+    $("woSchedStep").style.display="";
+    $("woDirectApplyWrap").style.display="none";
+  } else {
+    $("woSchedStep").style.display="none";
+    $("woDirectApplyWrap").style.display="none";
+  }
+}
+
+/* ── Schedule step: assign sessions to days ── */
+/* _schedMap[day] = sessionKey ("" = Rest, or a session label like "Push", "Pull", "Legs A"...) */
+let _schedMap = {};
+
+function renderSchedStep(planId){
+  const plan=PRESET_PLANS.find(p=>p.id===planId); if(!plan) return;
+  const grid=$("woSchedGrid"); grid.innerHTML="";
+
+  /* build session list: list of training days that have exercises */
+  const sessions=weekDays
+    .filter(d=>(plan.days[d]||[]).length>0)
+    .map((d,i)=>({
+      key:"s"+i,
+      label: plan.sessionLabels ? plan.sessionLabels[d] : buildSessionLabel(plan,d),
+      defaultDay:d,
+      exercises:plan.days[d]
+    }));
+
+  /* init _schedMap from defaults */
+  _schedMap={};
+  weekDays.forEach(d=>{ _schedMap[d]=""; });
+  sessions.forEach(s=>{ _schedMap[s.defaultDay]=s.key; });
+
+  /* options for each select: "" = Rest, then each session */
+  function buildSelect(currentDay){
+    const sel=document.createElement("select"); sel.className="wo-sched-sel";
+    sel.dataset.day=currentDay;
+    /* Rest option */
+    const restOpt=document.createElement("option"); restOpt.value=""; restOpt.textContent="😴 Rest Day"; sel.appendChild(restOpt);
+    sessions.forEach(s=>{
+      const o=document.createElement("option");
+      o.value=s.key; o.textContent=s.label;
+      if(_schedMap[currentDay]===s.key) o.selected=true;
+      sel.appendChild(o);
+    });
+    sel.onchange=e=>{
+      const newVal=e.target.value;
+      const day=sel.dataset.day;
+      /* if another day already has this session, swap */
+      if(newVal){
+        const prevDay=Object.keys(_schedMap).find(d=>d!==day && _schedMap[d]===newVal);
+        if(prevDay){ _schedMap[prevDay]=_schedMap[day]; }
+      }
+      _schedMap[day]=newVal;
+      rebuildSchedGrid(sessions);
+    };
+    return sel;
+  }
+
+  function rebuildSchedGrid(sessions){
+    grid.innerHTML="";
+    weekDays.forEach(day=>{
+      const sessionKey=_schedMap[day];
+      const session=sessions.find(s=>s.key===sessionKey);
+      const isRest=!sessionKey;
+      const row=document.createElement("div");
+      row.className="wo-sched-row"+(session?" has-session":"")+(isRest?" is-rest":"");
+
+      const lbl=document.createElement("div"); lbl.className="wo-sched-day-lbl"; lbl.textContent=weekDayShort[day];
+      const sel=buildSelect(day);
+      const chip=document.createElement("div");
+      chip.className="wo-sched-chip"+(isRest?" rest":"");
+      chip.textContent=isRest?"🛌 Rest":`${session?session.label:"?"}`;
+
+      row.appendChild(lbl); row.appendChild(sel);
+      grid.appendChild(row);
+    });
+  }
+
+  rebuildSchedGrid(sessions);
+  /* store sessions list for applySelectedPreset */
+  _schedSessions=sessions;
+}
+
+let _schedSessions=[];
+
+function buildSessionLabel(plan,day){
+  /* try to infer session name from exercises */
+  const exs=plan.days[day]||[];
+  if(!exs.length) return "Rest";
+  const names=exs.map(e=>e.name.toLowerCase());
+  if(names.some(n=>n.includes("bench")||n.includes("flye")||n.includes("dip"))) {
+    if(names.some(n=>n.includes("press")&&(n.includes("over")||n.includes("shoulder")||n.includes("lateral")))) return "Push Day 💪";
+    return "Chest Day 🏋️";
+  }
+  if(names.some(n=>n.includes("deadlift")||n.includes("row")||n.includes("pull")||n.includes("curl"))){
+    if(!names.some(n=>n.includes("squat")||n.includes("leg"))) return "Pull Day 🔙";
+    return "Back & Biceps 💪";
+  }
+  if(names.some(n=>n.includes("squat")||n.includes("leg press")||n.includes("lunge")||n.includes("calf"))) return "Leg Day 🦵";
+  if(names.some(n=>n.includes("overhead")||n.includes("lateral raises")||n.includes("shoulder"))) return "Shoulder Day 🏆";
+  if(names.some(n=>n.includes("curl")||n.includes("skull")||n.includes("tricep"))) return "Arms Day 💪";
+  /* generic: use index */
+  const idx=weekDays.filter(d=>(plan.days[d]||[]).length>0).indexOf(day)+1;
+  return `Session ${idx}`;
 }
 
 function applySelectedPreset(){
@@ -3704,25 +3916,44 @@ function applySelectedPreset(){
   const plan=PRESET_PLANS.find(p=>p.id===_selectedPresetId);
   if(!plan) return;
   if(!confirm(`Apply "${plan.name}"? This will replace your current workout schedule.`)) return;
-  /* preserve existing maxWeight values for matching exercise names */
+
   const existing=loadWorkouts();
   const d=defaultWorkouts();
-  weekDays.forEach(day=>{
-    d[day]=(plan.days[day]||[]).map(e=>{
-      const prev=(existing[day]||[]).find(x=>x.name===e.name);
-      return {name:e.name, sets:e.sets, maxWeight: prev?prev.maxWeight:0};
+
+  /* map sessions to chosen days via _schedMap */
+  if(_schedSessions.length){
+    weekDays.forEach(day=>{
+      const sessionKey=_schedMap[day];
+      const session=_schedSessions.find(s=>s.key===sessionKey);
+      if(session){
+        d[day]=session.exercises.map(e=>{
+          /* search existing workouts for matching exercise to preserve maxWeight */
+          let prev=null;
+          weekDays.forEach(wd=>{ if(!prev) prev=(existing[wd]||[]).find(x=>x.name===e.name); });
+          return {name:e.name, sets:e.sets, maxWeight:prev?prev.maxWeight:0};
+        });
+      } else {
+        d[day]=[];
+      }
     });
-  });
+  } else {
+    weekDays.forEach(day=>{
+      d[day]=(plan.days[day]||[]).map(e=>{
+        const prev=(existing[day]||[]).find(x=>x.name===e.name);
+        return {name:e.name, sets:e.sets, maxWeight:prev?prev.maxWeight:0};
+      });
+    });
+  }
+
   saveWorkouts(d);
-  /* save active plan info */
   pset("activePlanId", plan.id);
   pset("activePlanName", plan.name);
   pset("activePlanEmoji", plan.emoji);
-  /* close panel */
-  _workMode=""; _selectedPresetId="";
+
+  _workMode=""; _selectedPresetId=""; _schedSessions=[];
   $("woPlanBtnPreset").classList.remove("active");
   $("woPresetsPanel").style.display="none";
-  $("woApplyBtn").disabled=true;
+  $("woSchedStep").style.display="none";
   renderWorkouts();
   renderActivePlanStrip();
 }
@@ -3972,6 +4203,104 @@ function updateEx(day, idx, key, val){
     saveWorkouts(d);
   }
 }
+
+/* ══════════════════════════════════════════════════
+   EXERCISE IMAGE MAP
+   Uses ExerciseDB / free GIF sources.
+   getExerciseImage(name) → {url, emoji, muscle}
+   ══════════════════════════════════════════════════ */
+const EX_IMG = {
+  /* Chest */
+  "bench press":          {url:"https://static.jefit.com/assets/img/app/exercises/562-1.png", emoji:"🏋️", muscle:"Chest"},
+  "barbell bench press":  {url:"https://static.jefit.com/assets/img/app/exercises/562-1.png", emoji:"🏋️", muscle:"Chest"},
+  "incline dumbbell press":{url:"https://static.jefit.com/assets/img/app/exercises/590-1.png", emoji:"🏋️", muscle:"Chest"},
+  "incline bench press":  {url:"https://static.jefit.com/assets/img/app/exercises/590-1.png", emoji:"🏋️", muscle:"Chest"},
+  "dumbbell bench press": {url:"https://static.jefit.com/assets/img/app/exercises/590-1.png", emoji:"🏋️", muscle:"Chest"},
+  "cable flyes":          {url:"https://static.jefit.com/assets/img/app/exercises/606-1.png", emoji:"🤸", muscle:"Chest"},
+  "pec deck":             {url:"https://static.jefit.com/assets/img/app/exercises/606-1.png", emoji:"🤸", muscle:"Chest"},
+  "pec deck machine":     {url:"https://static.jefit.com/assets/img/app/exercises/606-1.png", emoji:"🤸", muscle:"Chest"},
+  "dips":                 {url:"https://static.jefit.com/assets/img/app/exercises/619-1.png", emoji:"💪", muscle:"Chest/Triceps"},
+  "tricep dips":          {url:"https://static.jefit.com/assets/img/app/exercises/619-1.png", emoji:"💪", muscle:"Triceps"},
+  /* Shoulders */
+  "overhead press":       {url:"https://static.jefit.com/assets/img/app/exercises/579-1.png", emoji:"🏋️", muscle:"Shoulders"},
+  "dumbbell shoulder press":{url:"https://static.jefit.com/assets/img/app/exercises/584-1.png", emoji:"🏋️", muscle:"Shoulders"},
+  "arnold press":         {url:"https://static.jefit.com/assets/img/app/exercises/584-1.png", emoji:"🏋️", muscle:"Shoulders"},
+  "lateral raises":       {url:"https://static.jefit.com/assets/img/app/exercises/596-1.png", emoji:"🦅", muscle:"Side Delts"},
+  "front raises":         {url:"https://static.jefit.com/assets/img/app/exercises/596-1.png", emoji:"🦅", muscle:"Front Delts"},
+  "rear delt flyes":      {url:"https://static.jefit.com/assets/img/app/exercises/611-1.png", emoji:"🔙", muscle:"Rear Delts"},
+  "face pulls":           {url:"https://static.jefit.com/assets/img/app/exercises/611-1.png", emoji:"🔙", muscle:"Rear Delts"},
+  /* Back */
+  "barbell row":          {url:"https://static.jefit.com/assets/img/app/exercises/573-1.png", emoji:"🔙", muscle:"Back"},
+  "deadlift":             {url:"https://static.jefit.com/assets/img/app/exercises/560-1.png", emoji:"⚡", muscle:"Back/Legs"},
+  "pull-ups":             {url:"https://static.jefit.com/assets/img/app/exercises/617-1.png", emoji:"🧗", muscle:"Back"},
+  "lat pulldown":         {url:"https://static.jefit.com/assets/img/app/exercises/616-1.png", emoji:"🔽", muscle:"Back"},
+  "seated cable row":     {url:"https://static.jefit.com/assets/img/app/exercises/614-1.png", emoji:"🔙", muscle:"Back"},
+  "seated row":           {url:"https://static.jefit.com/assets/img/app/exercises/614-1.png", emoji:"🔙", muscle:"Back"},
+  "cable row":            {url:"https://static.jefit.com/assets/img/app/exercises/614-1.png", emoji:"🔙", muscle:"Back"},
+  "t-bar row":            {url:"https://static.jefit.com/assets/img/app/exercises/573-1.png", emoji:"🔙", muscle:"Back"},
+  "shrugs":               {url:"https://static.jefit.com/assets/img/app/exercises/618-1.png", emoji:"🤷", muscle:"Traps"},
+  /* Biceps */
+  "barbell curl":         {url:"https://static.jefit.com/assets/img/app/exercises/571-1.png", emoji:"💪", muscle:"Biceps"},
+  "hammer curl":          {url:"https://static.jefit.com/assets/img/app/exercises/572-1.png", emoji:"🔨", muscle:"Biceps"},
+  "incline dumbbell curl":{url:"https://static.jefit.com/assets/img/app/exercises/571-1.png", emoji:"💪", muscle:"Biceps"},
+  /* Triceps */
+  "skull crushers":       {url:"https://static.jefit.com/assets/img/app/exercises/600-1.png", emoji:"💀", muscle:"Triceps"},
+  "tricep pushdowns":     {url:"https://static.jefit.com/assets/img/app/exercises/601-1.png", emoji:"⬇️", muscle:"Triceps"},
+  "overhead tricep extension":{url:"https://static.jefit.com/assets/img/app/exercises/600-1.png", emoji:"💪", muscle:"Triceps"},
+  "close-grip bench":     {url:"https://static.jefit.com/assets/img/app/exercises/562-1.png", emoji:"🏋️", muscle:"Triceps"},
+  /* Legs */
+  "squat":                {url:"https://static.jefit.com/assets/img/app/exercises/553-1.png", emoji:"🦵", muscle:"Quads"},
+  "barbell squat":        {url:"https://static.jefit.com/assets/img/app/exercises/553-1.png", emoji:"🦵", muscle:"Quads"},
+  "front squat":          {url:"https://static.jefit.com/assets/img/app/exercises/553-1.png", emoji:"🦵", muscle:"Quads"},
+  "hack squat":           {url:"https://static.jefit.com/assets/img/app/exercises/556-1.png", emoji:"🦵", muscle:"Quads"},
+  "leg press":            {url:"https://static.jefit.com/assets/img/app/exercises/554-1.png", emoji:"🦵", muscle:"Quads"},
+  "romanian deadlift":    {url:"https://static.jefit.com/assets/img/app/exercises/558-1.png", emoji:"🦵", muscle:"Hamstrings"},
+  "leg curl":             {url:"https://static.jefit.com/assets/img/app/exercises/557-1.png", emoji:"🦵", muscle:"Hamstrings"},
+  "seated leg curl":      {url:"https://static.jefit.com/assets/img/app/exercises/557-1.png", emoji:"🦵", muscle:"Hamstrings"},
+  "leg extension":        {url:"https://static.jefit.com/assets/img/app/exercises/555-1.png", emoji:"🦵", muscle:"Quads"},
+  "walking lunges":       {url:"https://static.jefit.com/assets/img/app/exercises/565-1.png", emoji:"🚶", muscle:"Legs"},
+  "calf raises":          {url:"https://static.jefit.com/assets/img/app/exercises/564-1.png", emoji:"🦶", muscle:"Calves"},
+  "standing calf raises": {url:"https://static.jefit.com/assets/img/app/exercises/564-1.png", emoji:"🦶", muscle:"Calves"},
+  /* Core */
+  "plank":                {url:"", emoji:"🧘", muscle:"Core"},
+  "hanging leg raises":   {url:"", emoji:"🏋️", muscle:"Core"},
+  "cable crunches":       {url:"", emoji:"🧘", muscle:"Core"},
+  "russian twists":       {url:"", emoji:"🌀", muscle:"Core"},
+  /* Cardio */
+  "treadmill run":        {url:"", emoji:"🏃", muscle:"Cardio"},
+  "jump rope":            {url:"", emoji:"⏭️", muscle:"Cardio"},
+  "cycling":              {url:"", emoji:"🚴", muscle:"Cardio"},
+};
+
+function getExerciseImage(name){
+  const key=name.toLowerCase().trim();
+  /* exact match */
+  if(EX_IMG[key]) return EX_IMG[key];
+  /* partial match */
+  for(const [k,v] of Object.entries(EX_IMG)){
+    if(key.includes(k)||k.includes(key)) return v;
+  }
+  return {url:"", emoji:"🏋️", muscle:""};
+}
+
+function openExLightbox(name, imgData){
+  let lb=document.getElementById("woExLightbox");
+  if(!lb){ lb=document.createElement("div"); lb.id="woExLightbox"; lb.className="wo-ex-lightbox"; document.body.appendChild(lb); }
+  lb.onclick=e=>{ if(e.target===lb) lb.style.display="none"; };
+  const muscle=imgData.muscle||"";
+  lb.innerHTML=`
+    ${imgData.url
+      ? `<img class="wo-ex-lightbox-img" src="${imgData.url}" alt="${name}"
+           onerror="this.style.display='none';this.nextSibling.style.display='block'"
+         /><div class="wo-ex-lightbox-noimg" style="display:none">${imgData.emoji||"🏋️"}</div>`
+      : `<div class="wo-ex-lightbox-noimg">${imgData.emoji||"🏋️"}</div>`}
+    <div class="wo-ex-lightbox-name">${name}</div>
+    ${muscle?`<div class="wo-ex-lightbox-meta">Muscle: ${muscle}</div>`:""}
+    <button class="wo-ex-lightbox-close" onclick="document.getElementById('woExLightbox').style.display='none'">✕ Close</button>
+  `;
+  lb.style.display="flex";
+}
+
 function renderWorkouts(){
   const wrap=$("workContainer");
   wrap.innerHTML="";
@@ -4073,6 +4402,20 @@ function renderWorkouts(){
       const top=document.createElement("div"); top.className="wo-ex-top";
 
       const num=document.createElement("div"); num.className="wo-ex-num"; num.textContent=idx+1;
+
+      /* exercise image button */
+      const imgBtn=document.createElement("div"); imgBtn.className="wo-ex-img-btn";
+      const exImg=getExerciseImage(ex.name||"");
+      if(exImg.url){
+        const im=document.createElement("img"); im.src=exImg.url; im.alt=ex.name; im.loading="lazy";
+        im.onerror=()=>{ imgBtn.innerHTML=exImg.emoji||"🏋️"; imgBtn.classList.add("no-img"); };
+        imgBtn.appendChild(im);
+      } else {
+        imgBtn.innerHTML=exImg.emoji||"🏋️"; imgBtn.classList.add("no-img");
+      }
+      imgBtn.title="View exercise";
+      imgBtn.onclick=()=>openExLightbox(ex.name||"", exImg);
+      top.appendChild(imgBtn);
 
       const nameInp=document.createElement("input"); nameInp.className="wo-ex-input";
       nameInp.placeholder="Exercise name…"; nameInp.value=ex.name||"";

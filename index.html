@@ -210,49 +210,128 @@
   }
 
   /* meal check-off */
-  /* food-type selector per meal */
-  .mac-food-section{ margin-top:10px; }
-  .mac-food-section-header{
-    display:flex; align-items:center; gap:6px;
-    font-size:11px; font-weight:700; opacity:.55;
-    text-transform:uppercase; letter-spacing:.06em;
-    margin-bottom:6px; padding:0 2px;
+  /* ══ Accordion ══════════════════════════════════════════════════ */
+  .mac-acc-wrap{
+    margin-top:8px;
+    border-radius:14px;
+    overflow:hidden;
+    border:1.5px solid transparent;
+    transition:border-color .25s;
   }
-  .mac-food-section-header span{ font-size:14px; }
-  .mac-food-group-label{
-    font-size:10px; font-weight:600; opacity:.4;
-    margin:8px 0 4px 2px; text-transform:uppercase; letter-spacing:.05em;
+  .mac-acc-wrap.slot-p{ border-color:rgba(56,189,248,.2); }
+  .mac-acc-wrap.slot-c{ border-color:rgba(249,115,22,.2); }
+  .mac-acc-wrap.slot-f{ border-color:rgba(167,139,250,.2); }
+  .mac-acc-trigger{
+    display:flex; align-items:center; justify-content:space-between;
+    width:100%; padding:11px 14px;
+    border:none; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none; transition:background .2s;
+    position:relative;
   }
-  .mac-food-select-row{
-    display:flex; gap:5px; flex-wrap:wrap; margin-bottom:4px;
+  .mac-acc-trigger.slot-p{ background:rgba(56,189,248,.1); }
+  .mac-acc-trigger.slot-c{ background:rgba(249,115,22,.1); }
+  .mac-acc-trigger.slot-f{ background:rgba(167,139,250,.1); }
+  .mac-acc-trigger.open.slot-p{ background:rgba(56,189,248,.17); }
+  .mac-acc-trigger.open.slot-c{ background:rgba(249,115,22,.17); }
+  .mac-acc-trigger.open.slot-f{ background:rgba(167,139,250,.17); }
+  .acc-left{ display:flex; align-items:center; gap:9px; min-width:0; flex:1; }
+  .acc-icon-wrap{
+    width:32px; height:32px; border-radius:10px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px;
   }
-  .mac-food-btn{
-    flex:0 0 auto; min-width:72px; padding:6px 8px; border-radius:9px;
-    border:1.5px solid #1e293b; background:#0a1628; color:#94a3b8;
-    font-size:11px; text-align:center; cursor:pointer;
-    transition:all .18s; line-height:1.35;
+  .slot-p .acc-icon-wrap{ background:rgba(56,189,248,.15); }
+  .slot-c .acc-icon-wrap{ background:rgba(249,115,22,.15); }
+  .slot-f .acc-icon-wrap{ background:rgba(167,139,250,.15); }
+  .acc-title{ font-size:13px; font-weight:800; }
+  .slot-p .acc-title{ color:#7dd3fc; }
+  .slot-c .acc-title{ color:#fdba74; }
+  .slot-f .acc-title{ color:#c4b5fd; }
+  .acc-badge{
+    font-size:10.5px; padding:3px 9px; border-radius:20px;
+    font-weight:700; white-space:nowrap; overflow:hidden;
+    text-overflow:ellipsis; max-width:140px;
   }
-  .mac-food-btn:active{ transform:scale(.95); }
-  .mac-food-btn.active.slot-p{ border-color:#38bdf8; background:#0c2a3e; color:#e0f2fe; }
-  .mac-food-btn.active.slot-c{ border-color:#f97316; background:#2c1000; color:#fed7aa; }
-  .mac-food-btn.active.slot-f{ border-color:#a78bfa; background:#1e1040; color:#ede9fe; }
-  .mac-food-btn .food-scale{ font-size:11px; display:block; margin-top:3px; font-weight:800; }
-  .mac-food-btn.active.slot-p .food-scale{ color:#38bdf8; }
-  .mac-food-btn.active.slot-c .food-scale{ color:#f97316; }
-  .mac-food-btn.active.slot-f .food-scale{ color:#a78bfa; }
+  .slot-p .acc-badge{ background:rgba(56,189,248,.18); color:#38bdf8; }
+  .slot-c .acc-badge{ background:rgba(249,115,22,.18); color:#f97316; }
+  .slot-f .acc-badge{ background:rgba(167,139,250,.18); color:#a78bfa; }
+  .acc-right{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .acc-arrow{
+    width:22px; height:22px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; opacity:.6;
+    transition:transform .28s cubic-bezier(.4,0,.2,1), opacity .2s;
+  }
+  .slot-p .acc-arrow{ background:rgba(56,189,248,.15); color:#38bdf8; }
+  .slot-c .acc-arrow{ background:rgba(249,115,22,.15); color:#f97316; }
+  .slot-f .acc-arrow{ background:rgba(167,139,250,.15); color:#a78bfa; }
+  .mac-acc-trigger.open .acc-arrow{ transform:rotate(180deg); opacity:1; }
 
+  .mac-acc-body{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .35s cubic-bezier(.4,0,.2,1), padding .3s;
+    padding:0 12px;
+  }
+  .mac-acc-body.open{
+    max-height:600px;
+    padding:10px 12px 14px;
+  }
+  .mac-acc-body.slot-p{ background:rgba(56,189,248,.05); }
+  .mac-acc-body.slot-c{ background:rgba(249,115,22,.05); }
+  .mac-acc-body.slot-f{ background:rgba(167,139,250,.05); }
+
+  .mac-food-group-label{
+    font-size:9px; font-weight:800; letter-spacing:.1em;
+    text-transform:uppercase; opacity:.4; margin:10px 0 6px;
+    display:flex; align-items:center; gap:5px;
+  }
+  .mac-food-group-label::after{
+    content:''; flex:1; height:1px; background:currentColor; opacity:.3;
+  }
+  .mac-food-select-row{ display:flex; gap:7px; flex-wrap:wrap; margin-bottom:3px; }
+  .mac-food-btn{
+    padding:7px 13px; border-radius:22px;
+    border:1.5px solid rgba(255,255,255,.07); background:rgba(255,255,255,.04);
+    color:#64748b; font-size:12px; font-weight:600;
+    cursor:pointer; transition:all .18s ease; white-space:nowrap;
+    -webkit-tap-highlight-color:transparent;
+    display:flex; align-items:center; gap:5px;
+  }
+  .mac-food-btn:active{ transform:scale(.9); }
+  .mac-food-btn.active.slot-p{
+    background:linear-gradient(135deg,#0c2d45,#0a3d5e);
+    border-color:#38bdf8; color:#e0f2fe;
+    box-shadow:0 0 12px rgba(56,189,248,.2);
+  }
+  .mac-food-btn.active.slot-c{
+    background:linear-gradient(135deg,#2c1200,#3d1a00);
+    border-color:#f97316; color:#fed7aa;
+    box-shadow:0 0 12px rgba(249,115,22,.2);
+  }
+  .mac-food-btn.active.slot-f{
+    background:linear-gradient(135deg,#1a0f3a,#250f4a);
+    border-color:#a78bfa; color:#ede9fe;
+    box-shadow:0 0 12px rgba(167,139,250,.2);
+  }
+  .mac-food-btn .food-scale{
+    font-size:10px; font-weight:800;
+    padding:2px 7px; border-radius:12px; margin-left:2px;
+  }
+  .mac-food-btn.active.slot-p .food-scale{ background:rgba(56,189,248,.2); color:#7dd3fc; }
+  .mac-food-btn.active.slot-c .food-scale{ background:rgba(249,115,22,.2); color:#fdba74; }
+  .mac-food-btn.active.slot-f .food-scale{ background:rgba(167,139,250,.2); color:#c4b5fd; }
+  /* ══ Meal card ════════════════════════════════════════════════════ */
   .mac-meal-card{
-    background:#0f172a;border-radius:14px;padding:12px 14px;
-    margin-bottom:10px;cursor:pointer;
-    border:2px solid transparent;
+    background:#0f172a; border-radius:16px; padding:14px 14px 10px;
+    margin-bottom:12px;
+    border:1.5px solid #1e293b;
     transition:border-color .2s, background .2s;
     -webkit-tap-highlight-color:transparent;
     user-select:none;
   }
-  .mac-meal-card.checked{
-    background:#0a2e1a;
-    border-color:#22c55e;
-  }
+  .mac-meal-card.checked{ background:#071f12; border-color:#22c55e; }
   .mac-meal-card-top{
     display:flex;align-items:center;gap:12px;
   }
@@ -2092,12 +2171,18 @@ function renderMacrosPage(){
     const trig = e.target.closest(".mac-acc-trigger");
     if(trig){
       e.stopPropagation();
-      const card2  = trig.closest(".mac-meal-card");
-      const body2  = trig.nextElementSibling;
-      const isOpen = body2.classList.contains("open");
+      const card2   = trig.closest(".mac-meal-card");
+      const accId   = trig.dataset.accId;
+      const body2   = card2.querySelector(`.mac-acc-body[data-acc-id="${accId}"]`);
+      const isOpen  = body2.classList.contains("open");
+      /* close all in this card */
       card2.querySelectorAll(".mac-acc-trigger").forEach(t=>t.classList.remove("open"));
       card2.querySelectorAll(".mac-acc-body").forEach(b=>b.classList.remove("open"));
-      if(!isOpen){ trig.classList.add("open"); body2.classList.add("open"); }
+      /* open clicked if it was closed */
+      if(!isOpen){
+        trig.classList.add("open");
+        body2.classList.add("open");
+      }
       return;
     }
     /* 3 – meal check-off: top row only */
@@ -2170,27 +2255,38 @@ function renderMacrosPage(){
       `<span class="mac-chip c">⚖ <b>${cScaleM}g</b><span class="scale"> → ${cMeal}g C</span></span>`+
       `<span class="mac-chip f">⚖ <b>${fScaleM}g</b><span class="scale"> → ${fMeal}g F</span></span>`;
 
-    /* accordion builder */
+    /* accordion builder — wraps trigger+body in one element */
     function buildAcc(slot, icon, title, targetG, kcalBudget){
+      const accId   = `acc-${m}-${slot}`;
       const selKey  = mSlots[slot];
       const selFood = FOOD_TYPES[slot].find(x=>x.key===selKey);
-      const badge   = selFood
-        ? selFood.label + " · ⚖ " + scaleW(targetG, selFood, kcalBudget) + "g"
-        : "اختر";
+      const wSel    = selFood ? scaleW(targetG, selFood, kcalBudget) : null;
+      const badge   = selFood ? selFood.label+" · ⚖"+wSel+"g" : "اختر";
 
+      const wrap = document.createElement("div");
+      wrap.className = `mac-acc-wrap slot-${slot}`;
+      wrap.dataset.accId = accId;
+
+      /* trigger */
       const trig = document.createElement("button");
       trig.className = `mac-acc-trigger slot-${slot}`;
-      trig.dataset.slot = slot;
+      trig.dataset.accId = accId;
       trig.innerHTML =
-        `<span class="acc-left"><span>${icon}</span><span>${title}</span></span>`+
-        `<span style="display:flex;align-items:center;gap:6px">`+
-          `<span class="acc-chosen">${badge}</span>`+
-          `<span class="acc-arrow">▼</span>`+
+        `<span class="acc-left">`+
+          `<span class="acc-icon-wrap">${icon}</span>`+
+          `<span class="acc-title">${title}</span>`+
+          `<span class="acc-badge">${badge}</span>`+
+        `</span>`+
+        `<span class="acc-right">`+
+          `<span class="acc-arrow">▾</span>`+
         `</span>`;
 
+      /* body */
       const body = document.createElement("div");
-      body.className = "mac-acc-body";
+      body.className = `mac-acc-body slot-${slot}`;
+      body.dataset.accId = accId;
 
+      /* group by cat */
       const groups = {};
       FOOD_TYPES[slot].forEach(food=>{
         if(!groups[food.cat]) groups[food.cat]=[];
@@ -2211,20 +2307,25 @@ function renderMacrosPage(){
           btn.dataset.meal = m;
           btn.dataset.slot = slot;
           btn.dataset.food = food.key;
-          btn.innerHTML =
-            `${food.label}`+
-            `<span class="food-scale">${isActive ? "⚖ "+wg+"g" : ""}</span>`;
+          btn.textContent = food.label;
+          if(isActive){
+            const sc = document.createElement("span");
+            sc.className = "food-scale";
+            sc.textContent = "⚖"+wg+"g";
+            btn.appendChild(sc);
+          }
           row.appendChild(btn);
         });
         body.appendChild(row);
       });
-      return [trig, body];
+      wrap.append(trig, body);
+      return wrap;
     }
 
-    const [pTrig,pBody] = buildAcc("p","🥩","بروتين",    pMeal, pKcalBudget);
-    const [cTrig,cBody] = buildAcc("c","🍚","كارب",      cMeal, cKcalBudget);
-    const [fTrig,fBody] = buildAcc("f","🫒","دهون صحية", fMeal, fKcalBudget);
-    card.append(top, chips, pTrig, pBody, cTrig, cBody, fTrig, fBody);
+    const pAcc = buildAcc("p","🥩","بروتين",    pMeal, pKcalBudget);
+    const cAcc = buildAcc("c","🍚","كارب",      cMeal, cKcalBudget);
+    const fAcc = buildAcc("f","🫒","دهون صحية", fMeal, fKcalBudget);
+    card.append(top, chips, pAcc, cAcc, fAcc);
     box.appendChild(card);
   }
 }

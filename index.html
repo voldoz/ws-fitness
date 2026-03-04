@@ -5072,8 +5072,12 @@ function renderWeightRows(){
 
     photoBtn.onclick=()=>{
       const panel=card.querySelector(".wt-gallery-panel");
-      if(panel) panel.classList.toggle("open");
-      else triggerPhotoUpload(i);
+      if(panel){
+        panel.classList.toggle("open");
+      } else if(canEditEverything()){
+        /* no gallery yet — only owners/editors can upload */
+        triggerPhotoUpload(i);
+      }
     };
 
     /* hidden multi-file input */
@@ -5126,21 +5130,29 @@ function renderWeightRows(){
 
     /* thumbnail grid */
     const grid=document.createElement("div"); grid.className="wt-thumb-grid";
+    const canDelete=canEditEverything();
     photos.forEach((src,idx)=>{
       const thumb=document.createElement("div"); thumb.className="wt-thumb";
+      /* clicking anywhere on thumb opens lightbox */
+      thumb.onclick=(e)=>{ if(!e.target.classList.contains("wt-thumb-del")) openLightbox(i,idx); };
       const img=document.createElement("img"); img.src=src; img.alt=`Week ${i} #${idx+1}`;
-      img.onclick=()=>openLightbox(i,idx);
-      const del=document.createElement("button"); del.className="wt-thumb-del"; del.innerHTML="✕";
-      del.onclick=e=>{ e.stopPropagation(); wDeletePhoto(i,idx); renderWeightRows(); calcWeightSummary(); };
-      thumb.appendChild(img); thumb.appendChild(del);
+      thumb.appendChild(img);
+      /* only show delete button if user has edit rights */
+      if(canDelete){
+        const del=document.createElement("button"); del.className="wt-thumb-del"; del.innerHTML="✕";
+        del.onclick=e=>{ e.stopPropagation(); wDeletePhoto(i,idx); renderWeightRows(); calcWeightSummary(); };
+        thumb.appendChild(del);
+      }
       grid.appendChild(thumb);
     });
 
-    /* add tile */
-    const addTile=document.createElement("div"); addTile.className="wt-thumb-add";
-    addTile.innerHTML="＋<span>Add photo</span>";
-    addTile.onclick=()=>triggerPhotoUpload(i);
-    grid.appendChild(addTile);
+    /* add tile — only for users with edit rights */
+    if(canEditEverything()){
+      const addTile=document.createElement("div"); addTile.className="wt-thumb-add";
+      addTile.innerHTML="＋<span>Add photo</span>";
+      addTile.onclick=()=>triggerPhotoUpload(i);
+      grid.appendChild(addTile);
+    }
 
     inner.appendChild(grid);
     panel.appendChild(inner);

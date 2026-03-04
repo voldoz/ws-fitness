@@ -493,9 +493,7 @@
   }
 
   /* ── Week cards ── */
-  .wt-weeks-section{
-    animation:wt-fadeIn .4s ease .12s both;
-  }
+  .wt-weeks-section{ animation:wt-fadeIn .4s ease .12s both; }
   .wt-weeks-title{
     font-size:10px; font-weight:800; text-transform:uppercase;
     letter-spacing:.1em; opacity:.4; margin-bottom:12px;
@@ -503,133 +501,171 @@
   }
   .wt-weeks-title::after{ content:''; flex:1; height:1px; background:rgba(255,255,255,.08); }
 
+  /* card shell */
   .wt-week-card{
-    background:linear-gradient(145deg,#0d1829,#111e30);
-    border-radius:18px; margin-bottom:10px;
-    border:1.5px solid rgba(255,255,255,.07);
-    box-shadow:0 3px 14px rgba(0,0,0,.25);
+    background:linear-gradient(160deg,#0c1828,#0e1c30);
+    border-radius:20px; margin-bottom:10px;
+    border:1.5px solid rgba(255,255,255,.06);
     overflow:hidden;
-    transition:border-color .25s;
+    transition:border-color .3s, box-shadow .3s;
   }
-  .wt-week-card.has-value{ border-color:rgba(56,189,248,.2); }
-  .wt-week-card.has-photo{ border-color:rgba(129,140,248,.3); }
+  .wt-week-card.has-value{
+    border-color:rgba(56,189,248,.22);
+    box-shadow:0 4px 18px rgba(56,189,248,.05);
+  }
+  .wt-week-card.has-photo{
+    border-color:rgba(129,140,248,.28);
+    box-shadow:0 4px 18px rgba(129,140,248,.06);
+  }
+  .wt-week-card.has-value.has-photo{
+    border-color:rgba(129,140,248,.35);
+    box-shadow:0 6px 24px rgba(129,140,248,.08);
+  }
 
-  /* card top row */
-  .wt-week-top{
-    display:flex; align-items:center; gap:12px;
-    padding:13px 14px;
-  }
+  /* ── Top row: badge | info+input | right controls ── */
+  .wt-week-top{ display:flex; align-items:center; gap:12px; padding:14px 16px; }
+
+  /* week number badge */
   .wt-week-num{
-    width:40px; height:40px; border-radius:14px; flex-shrink:0;
-    background:rgba(56,189,248,.1); border:1.5px solid rgba(56,189,248,.2);
-    display:flex; align-items:center; justify-content:center;
-    font-size:13px; font-weight:900; color:#38bdf8;
+    width:44px; height:44px; border-radius:14px; flex-shrink:0;
+    background:rgba(255,255,255,.04); border:1.5px solid rgba(255,255,255,.08);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-size:10px; font-weight:800; color:#475569;
+    letter-spacing:.02em; line-height:1.2; transition:all .25s;
   }
+  .wt-week-num-n{ font-size:16px; font-weight:900; line-height:1; }
   .wt-week-card.has-value .wt-week-num{
-    background:rgba(56,189,248,.15); border-color:rgba(56,189,248,.35);
+    background:linear-gradient(135deg,rgba(56,189,248,.14),rgba(129,140,248,.14));
+    border-color:rgba(56,189,248,.3); color:#38bdf8;
   }
-  .wt-week-mid{ flex:1; min-width:0; }
-  .wt-week-label{ font-size:13px; font-weight:800; color:#e2e8f0; margin-bottom:4px; }
+
+  /* middle: label + weight input */
+  .wt-week-mid{ flex:1; min-width:0; display:flex; flex-direction:column; gap:5px; }
+  .wt-week-label{
+    font-size:13px; font-weight:800; color:#e2e8f0;
+    display:flex; align-items:center; gap:6px;
+  }
+  /* tiny photo previews in label row */
+  .wt-week-photo-strip{ display:flex; gap:3px; align-items:center; }
+  .wt-week-mini-thumb{
+    width:20px; height:20px; border-radius:5px; object-fit:cover;
+    border:1px solid rgba(129,140,248,.3);
+  }
+  .wt-week-more-badge{
+    font-size:8px; font-weight:800; color:#818cf8;
+    background:rgba(129,140,248,.15); border-radius:5px; padding:2px 4px;
+  }
   .wt-week-input{
-    width:100%; background:rgba(15,23,42,.8);
+    width:100%; background:rgba(10,18,32,.8);
     border:1.5px solid rgba(255,255,255,.08);
-    border-radius:10px; padding:7px 10px;
-    color:#e2e8f0; font-size:14px; font-weight:800;
+    border-radius:12px; padding:8px 12px;
+    color:#e2e8f0; font-size:16px; font-weight:900;
     outline:none; margin:0;
     transition:border-color .2s, box-shadow .2s;
+    letter-spacing:.02em;
   }
   .wt-week-input:focus{
-    border-color:rgba(56,189,248,.5);
-    box-shadow:0 0 0 3px rgba(56,189,248,.08);
+    border-color:rgba(56,189,248,.45);
+    box-shadow:0 0 0 3px rgba(56,189,248,.07);
   }
-  .wt-week-right{
-    display:flex; flex-direction:column; align-items:center; gap:6px; flex-shrink:0;
-  }
-  .wt-trend{
-    font-size:11px; font-weight:800; padding:3px 8px;
-    border-radius:10px; white-space:nowrap;
-  }
-  .wt-trend.up{ background:rgba(248,113,113,.12); color:#f87171; }
-  .wt-trend.down{ background:rgba(74,222,128,.12); color:#4ade80; }
-  .wt-trend.same{ background:rgba(100,116,139,.12); color:#94a3b8; }
-  .wt-trend.none{ opacity:0; }
+  .wt-week-input::placeholder{ color:#334155; font-weight:600; font-size:13px; }
 
-  /* ── Photo toggle button (top-right of card) ── */
+  /* right controls */
+  .wt-week-right{ display:flex; flex-direction:column; align-items:center; gap:6px; flex-shrink:0; }
+  .wt-trend{
+    font-size:10px; font-weight:800; padding:3px 7px;
+    border-radius:8px; white-space:nowrap; min-width:44px; text-align:center;
+  }
+  .wt-trend.up  { background:rgba(248,113,113,.12); color:#f87171; }
+  .wt-trend.down{ background:rgba(74,222,128,.12);  color:#4ade80; }
+  .wt-trend.same{ background:rgba(100,116,139,.12); color:#94a3b8; }
+  .wt-trend.none{ opacity:0; pointer-events:none; }
+
+  /* photo button */
   .wt-photo-btn{
-    width:36px; height:36px; border-radius:12px;
-    background:rgba(129,140,248,.1); border:1.5px solid rgba(129,140,248,.2);
+    width:40px; height:40px; border-radius:13px;
+    background:rgba(129,140,248,.08); border:1.5px solid rgba(129,140,248,.18);
     display:flex; align-items:center; justify-content:center;
-    cursor:pointer; font-size:16px;
-    transition:all .2s; flex-shrink:0;
+    cursor:pointer; font-size:18px;
+    transition:all .2s; flex-shrink:0; position:relative;
     -webkit-tap-highlight-color:transparent;
-    position:relative;
   }
-  .wt-photo-btn:active{ transform:scale(.92); }
+  .wt-photo-btn:active{ transform:scale(.9); }
   .wt-photo-btn.has-photo{
-    background:rgba(129,140,248,.2); border-color:rgba(129,140,248,.5);
-    box-shadow:0 0 10px rgba(129,140,248,.2);
+    background:rgba(129,140,248,.18); border-color:rgba(129,140,248,.45);
+    box-shadow:0 0 14px rgba(129,140,248,.2);
   }
-  /* count badge on photo btn */
   .wt-photo-count{
-    position:absolute; top:-5px; right:-5px;
+    position:absolute; top:-6px; right:-6px;
     background:linear-gradient(135deg,#818cf8,#6366f1);
     color:#fff; font-size:9px; font-weight:900;
-    width:16px; height:16px; border-radius:50%;
+    min-width:17px; height:17px; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
-    border:1.5px solid #0a1220;
+    border:2px solid #0a1220; padding:0 2px;
   }
 
-  /* ── Gallery panel (collapsible) ── */
+  /* ── Gallery panel ── */
   .wt-gallery-panel{
     max-height:0; overflow:hidden;
-    transition:max-height .38s cubic-bezier(.4,0,.2,1);
-    background:#070e1a;
-    border-top:1px solid rgba(129,140,248,.12);
+    transition:max-height .4s cubic-bezier(.4,0,.2,1);
+    background:rgba(5,10,20,.5);
+    border-top:1px solid rgba(129,140,248,.1);
   }
-  .wt-gallery-panel.open{ max-height:600px; }
-  .wt-gallery-inner{
-    padding:12px 14px 14px;
+  .wt-gallery-panel.open{ max-height:700px; }
+  .wt-gallery-inner{ padding:14px 16px 16px; }
+
+  /* gallery header */
+  .wt-gallery-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:12px;
   }
-  /* thumbnail grid */
-  .wt-thumb-grid{
-    display:grid; grid-template-columns:repeat(3,1fr); gap:8px;
-    margin-bottom:10px;
+  .wt-gallery-title{
+    font-size:10px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.08em; color:#818cf8; opacity:.8;
   }
+  .wt-gallery-count{ font-size:10px; font-weight:700; color:#475569; }
+
+  /* thumbnail grid — 3 columns */
+  .wt-thumb-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
   .wt-thumb{
-    position:relative; border-radius:12px; overflow:hidden;
+    position:relative; border-radius:14px; overflow:hidden;
     aspect-ratio:1/1; cursor:pointer;
-    border:1.5px solid rgba(129,140,248,.2);
-    background:#0a1220;
-    transition:transform .15s;
+    border:1.5px solid rgba(129,140,248,.15);
+    background:#060d1a; transition:transform .18s, border-color .18s;
   }
-  .wt-thumb:active{ transform:scale(.94); }
-  .wt-thumb img{
-    width:100%; height:100%; object-fit:cover; display:block;
+  .wt-thumb:hover{ border-color:rgba(129,140,248,.4); }
+  .wt-thumb:active{ transform:scale(.93); }
+  .wt-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .wt-thumb::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(to top,rgba(0,0,0,.4),transparent);
+    opacity:0; transition:opacity .18s;
   }
+  .wt-thumb:hover::after{ opacity:1; }
   .wt-thumb-del{
-    position:absolute; top:4px; right:4px;
-    width:22px; height:22px; border-radius:7px;
-    background:rgba(0,0,0,.65); border:none;
+    position:absolute; top:5px; right:5px;
+    width:24px; height:24px; border-radius:8px;
+    background:rgba(0,0,0,.6); border:none;
     color:#fff; font-size:11px; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
-    backdrop-filter:blur(4px);
-    transition:background .15s;
+    backdrop-filter:blur(6px); z-index:2;
+    opacity:0; transition:opacity .18s, background .15s;
   }
-  .wt-thumb-del:hover{ background:rgba(239,68,68,.8); }
-  /* add-more button (inside grid) */
+  .wt-thumb:hover .wt-thumb-del{ opacity:1; }
+  .wt-thumb-del:hover{ background:rgba(239,68,68,.85); }
+
+  /* add tile */
   .wt-thumb-add{
-    aspect-ratio:1/1; border-radius:12px;
-    border:1.5px dashed rgba(129,140,248,.3);
+    aspect-ratio:1/1; border-radius:14px;
+    border:1.5px dashed rgba(129,140,248,.28);
     background:rgba(129,140,248,.04);
     display:flex; flex-direction:column;
     align-items:center; justify-content:center;
-    gap:4px; cursor:pointer;
-    color:#818cf8; font-size:20px;
-    transition:all .2s;
-    -webkit-tap-highlight-color:transparent;
+    gap:5px; cursor:pointer; color:#818cf8; font-size:22px;
+    transition:all .2s; -webkit-tap-highlight-color:transparent;
   }
   .wt-thumb-add:hover{ background:rgba(129,140,248,.1); border-color:rgba(129,140,248,.5); }
-  .wt-thumb-add span{ font-size:10px; font-weight:700; opacity:.7; }
+  .wt-thumb-add span{ font-size:10px; font-weight:700; opacity:.65; }
 
   /* ── Lightbox ── */
   .wt-lightbox{
@@ -678,6 +714,11 @@
 
   /* ── Reset button ── */
   .wt-reset-wrap{ margin-top:14px; text-align:center; }
+
+  /* mobile: delete btn always visible on touch devices */
+  @media (hover:none){
+    .wt-thumb-del{ opacity:1; }
+  }
 
   /* old weight row styles (kept for safety, overridden) */
   .wrow{display:none}
@@ -3393,34 +3434,54 @@ function renderWeightRows(){
   const weeks=getWeightWeeks();
   const wrap=$("weightRows");
   wrap.innerHTML="";
+
   for(let i=1;i<=weeks;i++){
     const val=pget("w_"+i)||"";
     const photos=wGetPhotos(i);
     const hasVal=val!=="";
     const hasPhotos=photos.length>0;
 
-    /* card */
+    /* ── card ── */
     const card=document.createElement("div");
     card.className="wt-week-card"+(hasVal?" has-value":"")+(hasPhotos?" has-photo":"");
     card.dataset.week=i;
 
-    /* top row */
+    /* ── top row ── */
     const top=document.createElement("div"); top.className="wt-week-top";
 
-    /* week number badge */
-    const num=document.createElement("div"); num.className="wt-week-num"; num.textContent=i;
-    if(hasVal) num.style.background="linear-gradient(135deg,#38bdf8,#818cf8)";
+    /* badge: number + "W" label */
+    const num=document.createElement("div"); num.className="wt-week-num";
+    num.innerHTML=`<span class="wt-week-num-n">${i}</span>W`;
 
-    /* mid: label + input */
+    /* mid: label row (text + mini photo strip) + weight input */
     const mid=document.createElement("div"); mid.className="wt-week-mid";
-    const lbl=document.createElement("div"); lbl.className="wt-week-label"; lbl.textContent=`Week ${i}`;
+
+    const lbl=document.createElement("div"); lbl.className="wt-week-label";
+    lbl.textContent=`Week ${i}`;
+
+    /* tiny photo thumbnails in label row */
+    if(hasPhotos){
+      const strip=document.createElement("div"); strip.className="wt-week-photo-strip";
+      const show=Math.min(3, photos.length);
+      for(let p=0;p<show;p++){
+        const mt=document.createElement("img"); mt.className="wt-week-mini-thumb";
+        mt.src=photos[p]; mt.alt="";
+        strip.appendChild(mt);
+      }
+      if(photos.length>3){
+        const more=document.createElement("span"); more.className="wt-week-more-badge";
+        more.textContent=`+${photos.length-3}`;
+        strip.appendChild(more);
+      }
+      lbl.appendChild(strip);
+    }
+
     const inp=document.createElement("input");
     inp.className="wt-week-input"; inp.type="number"; inp.min="0"; inp.step="0.1";
-    inp.placeholder="kg"; inp.value=val;
+    inp.placeholder="Enter weight (kg)"; inp.value=val;
     inp.addEventListener("input",()=>{
       pset("w_"+i, inp.value||"");
       card.classList.toggle("has-value", inp.value!=="");
-      num.style.background = inp.value ? "linear-gradient(135deg,#38bdf8,#818cf8)" : "";
       calcWeightSummary();
     });
     mid.appendChild(lbl); mid.appendChild(inp);
@@ -3428,22 +3489,20 @@ function renderWeightRows(){
     /* right: trend + photo btn */
     const right=document.createElement("div"); right.className="wt-week-right";
 
-    /* trend arrow */
     const trend=document.createElement("div"); trend.className="wt-trend none"; trend.dataset.trendIdx=i;
 
-    /* photo toggle button */
     const photoBtn=document.createElement("div");
     photoBtn.className="wt-photo-btn"+(hasPhotos?" has-photo":"");
-    photoBtn.title=hasPhotos?`${photos.length} photo(s) – tap to view`:"Upload progress photo";
-    photoBtn.innerHTML=hasPhotos?"🖼":"📷";
+    photoBtn.title=hasPhotos?`${photos.length} photo(s) – tap to view`:"Add progress photo";
+    photoBtn.innerHTML=hasPhotos?"🖼️":"📷";
     if(hasPhotos){
       const badge=document.createElement("span"); badge.className="wt-photo-count";
       badge.textContent=photos.length; photoBtn.appendChild(badge);
     }
     photoBtn.onclick=()=>{
       const panel=card.querySelector(".wt-gallery-panel");
-      if(panel){ panel.classList.toggle("open"); }
-      else { triggerPhotoUpload(i); }
+      if(panel) panel.classList.toggle("open");
+      else triggerPhotoUpload(i);
     };
 
     /* hidden multi-file input */
@@ -3452,19 +3511,15 @@ function renderWeightRows(){
     fileInp.className="wt-file-input"; fileInp.id=`wtFile_${i}`;
     fileInp.addEventListener("change",function(){
       const files=Array.from(this.files);
-      this.value=""; /* reset immediately so same file can be re-selected */
+      this.value="";
       if(!files.length) return;
-
-      /* Read → compress → store sequentially to avoid race conditions */
       const compressed=[];
       function processNext(idx){
         if(idx>=files.length){
-          /* All done — read existing array fresh and append in one write */
           const existing=wGetPhotos(i);
           wSavePhotos(i, existing.concat(compressed));
           renderWeightRows();
           calcWeightSummary();
-          /* auto-open gallery panel */
           setTimeout(()=>{
             const c=document.querySelector(`[data-week="${i}"]`);
             if(c){ const p=c.querySelector(".wt-gallery-panel"); if(p) p.classList.add("open"); }
@@ -3472,27 +3527,28 @@ function renderWeightRows(){
           return;
         }
         const reader=new FileReader();
-        reader.onload=e=>{
-          compressImage(e.target.result, dataUrl=>{
-            compressed.push(dataUrl);
-            processNext(idx+1);
-          });
-        };
+        reader.onload=e=>{ compressImage(e.target.result, d=>{ compressed.push(d); processNext(idx+1); }); };
         reader.readAsDataURL(files[idx]);
       }
       processNext(0);
     });
 
-    right.appendChild(trend);
-    right.appendChild(photoBtn);
-    right.appendChild(fileInp);
-
+    right.appendChild(trend); right.appendChild(photoBtn); right.appendChild(fileInp);
     top.appendChild(num); top.appendChild(mid); top.appendChild(right);
     card.appendChild(top);
 
-    /* gallery panel */
+    /* ── gallery panel (always built, toggled by CSS) ── */
     const panel=document.createElement("div"); panel.className="wt-gallery-panel";
     const inner=document.createElement("div"); inner.className="wt-gallery-inner";
+
+    /* gallery header */
+    const gHead=document.createElement("div"); gHead.className="wt-gallery-head";
+    const gTitle=document.createElement("div"); gTitle.className="wt-gallery-title";
+    gTitle.textContent="📸 Progress Photos";
+    const gCount=document.createElement("div"); gCount.className="wt-gallery-count";
+    gCount.textContent=hasPhotos?`${photos.length} photo${photos.length>1?"s":""}  ·  tap to view full size`:"No photos yet";
+    gHead.appendChild(gTitle); gHead.appendChild(gCount);
+    inner.appendChild(gHead);
 
     /* thumbnail grid */
     const grid=document.createElement("div"); grid.className="wt-thumb-grid";
@@ -3501,23 +3557,23 @@ function renderWeightRows(){
       const img=document.createElement("img"); img.src=src; img.alt=`Week ${i} #${idx+1}`;
       img.onclick=()=>openLightbox(i,idx);
       const del=document.createElement("button"); del.className="wt-thumb-del"; del.innerHTML="✕";
-      del.onclick=(e)=>{ e.stopPropagation(); wDeletePhoto(i,idx); renderWeightRows(); calcWeightSummary(); };
+      del.onclick=e=>{ e.stopPropagation(); wDeletePhoto(i,idx); renderWeightRows(); calcWeightSummary(); };
       thumb.appendChild(img); thumb.appendChild(del);
       grid.appendChild(thumb);
     });
-    /* add-more tile */
+
+    /* add tile */
     const addTile=document.createElement("div"); addTile.className="wt-thumb-add";
-    addTile.innerHTML="➕<span>Add photo</span>";
+    addTile.innerHTML="＋<span>Add photo</span>";
     addTile.onclick=()=>triggerPhotoUpload(i);
     grid.appendChild(addTile);
 
     inner.appendChild(grid);
     panel.appendChild(inner);
     card.appendChild(panel);
-
     wrap.appendChild(card);
   }
-  /* update trend arrows after all cards rendered */
+
   updateTrendArrows(weeks);
   renderWeightChart(weeks);
 }

@@ -3013,19 +3013,41 @@ function loadWeightTracker(){
 }
 /* ══════════════════════════════════════════════
    Multi-photo helpers  (array stored as JSON)
+   Photos are compressed via canvas before storage
+   to stay well under localStorage 5 MB limit.
    ══════════════════════════════════════════════ */
 function wPhotosKey(i){ return "w_photos_"+i; }
 function wGetPhotos(i){
   try{ return JSON.parse(pget(wPhotosKey(i))||"[]"); }catch{ return []; }
 }
-function wSavePhotos(i, arr){ pset(wPhotosKey(i), JSON.stringify(arr)); }
-function wAddPhoto(i, dataUrl){
-  const arr=wGetPhotos(i); arr.push(dataUrl); wSavePhotos(i,arr);
+function wSavePhotos(i, arr){
+  try{
+    pset(wPhotosKey(i), JSON.stringify(arr));
+  }catch(e){
+    alert("Storage full – try removing some photos first.");
+  }
 }
 function wDeletePhoto(i, idx){
   const arr=wGetPhotos(i); arr.splice(idx,1); wSavePhotos(i,arr);
 }
 function wRemoveAllPhotos(i){ premove(wPhotosKey(i)); }
+
+/* Compress image via canvas → JPEG ≤ 800px wide, quality 0.7 (~50-150 KB) */
+function compressImage(dataUrl, callback){
+  const img=new Image();
+  img.onload=function(){
+    const MAX=800;
+    let w=img.width, h=img.height;
+    if(w>MAX){ h=Math.round(h*(MAX/w)); w=MAX; }
+    const canvas=document.createElement("canvas");
+    canvas.width=w; canvas.height=h;
+    const ctx=canvas.getContext("2d");
+    ctx.drawImage(img,0,0,w,h);
+    callback(canvas.toDataURL("image/jpeg",0.7));
+  };
+  img.onerror=()=>callback(dataUrl); // fallback: use original
+  img.src=dataUrl;
+}
 
 /* ── lightbox state ── */
 let _lbWeek=0, _lbIdx=0;
@@ -3138,15 +3160,16 @@ function renderWeightRows(){
       this.value=""; /* reset immediately so same file can be re-selected */
       if(!files.length) return;
 
-      /* Read files sequentially to avoid race-condition on localStorage array */
-      const results=[];
-      function readNext(idx){
+      /* Read → compress → store sequentially to avoid race conditions */
+      const compressed=[];
+      function processNext(idx){
         if(idx>=files.length){
-          /* All files read — append to existing array in one write */
+          /* All done — read existing array fresh and append in one write */
           const existing=wGetPhotos(i);
-          wSavePhotos(i, existing.concat(results));
+          wSavePhotos(i, existing.concat(compressed));
           renderWeightRows();
           calcWeightSummary();
+          /* auto-open gallery panel */
           setTimeout(()=>{
             const c=document.querySelector(`[data-week="${i}"]`);
             if(c){ const p=c.querySelector(".wt-gallery-panel"); if(p) p.classList.add("open"); }
@@ -3154,10 +3177,15 @@ function renderWeightRows(){
           return;
         }
         const reader=new FileReader();
-        reader.onload=e=>{ results.push(e.target.result); readNext(idx+1); };
+        reader.onload=e=>{
+          compressImage(e.target.result, dataUrl=>{
+            compressed.push(dataUrl);
+            processNext(idx+1);
+          });
+        };
         reader.readAsDataURL(files[idx]);
       }
-      readNext(0);
+      processNext(0);
     });
 
     right.appendChild(trend);

@@ -570,8 +570,8 @@
   }
   .wt-week-input::placeholder{ color:#334155; font-weight:600; font-size:13px; }
 
-  /* right controls */
-  .wt-week-right{ display:flex; flex-direction:column; align-items:center; gap:6px; flex-shrink:0; }
+  /* right: trend only */
+  .wt-week-right{ display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink:0; }
   .wt-trend{
     font-size:10px; font-weight:800; padding:3px 7px;
     border-radius:8px; white-space:nowrap; min-width:44px; text-align:center;
@@ -581,20 +581,23 @@
   .wt-trend.same{ background:rgba(100,116,139,.12); color:#94a3b8; }
   .wt-trend.none{ opacity:0; pointer-events:none; }
 
-  /* photo button */
+  /* photo button — lives INSIDE wt-week-mid, below the input */
   .wt-photo-btn{
-    width:40px; height:40px; border-radius:13px;
-    background:rgba(129,140,248,.08); border:1.5px solid rgba(129,140,248,.18);
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer; font-size:18px;
-    transition:all .2s; flex-shrink:0; position:relative;
+    display:flex; align-items:center; gap:8px;
+    padding:8px 12px; border-radius:12px; width:100%;
+    background:rgba(129,140,248,.06); border:1.5px solid rgba(129,140,248,.15);
+    cursor:pointer; font-size:14px; font-weight:700; color:#818cf8;
+    transition:all .2s; position:relative;
     -webkit-tap-highlight-color:transparent;
   }
-  .wt-photo-btn:active{ transform:scale(.9); }
+  .wt-photo-btn:active{ transform:scale(.98); }
   .wt-photo-btn.has-photo{
-    background:rgba(129,140,248,.18); border-color:rgba(129,140,248,.45);
-    box-shadow:0 0 14px rgba(129,140,248,.2);
+    background:rgba(129,140,248,.12); border-color:rgba(129,140,248,.35);
+    box-shadow:0 0 12px rgba(129,140,248,.12);
   }
+  .wt-photo-btn-icon{ font-size:18px; flex-shrink:0; }
+  .wt-photo-btn-text{ flex:1; font-size:12px; font-weight:700; }
+  .wt-photo-btn-text small{ display:block; font-size:10px; opacity:.5; font-weight:600; margin-top:1px; }
   .wt-photo-count{
     position:absolute; top:-6px; right:-6px;
     background:linear-gradient(135deg,#818cf8,#6366f1);
@@ -3486,19 +3489,32 @@ function renderWeightRows(){
     });
     mid.appendChild(lbl); mid.appendChild(inp);
 
-    /* right: trend + photo btn */
+    /* right: trend only */
     const right=document.createElement("div"); right.className="wt-week-right";
-
     const trend=document.createElement("div"); trend.className="wt-trend none"; trend.dataset.trendIdx=i;
+    right.appendChild(trend);
 
+    /* photo button — sits below the input inside mid */
     const photoBtn=document.createElement("div");
     photoBtn.className="wt-photo-btn"+(hasPhotos?" has-photo":"");
-    photoBtn.title=hasPhotos?`${photos.length} photo(s) – tap to view`:"Add progress photo";
-    photoBtn.innerHTML=hasPhotos?"🖼️":"📷";
+
+    const photoBtnIcon=document.createElement("span"); photoBtnIcon.className="wt-photo-btn-icon";
+    photoBtnIcon.textContent=hasPhotos?"🖼️":"📷";
+
+    const photoBtnText=document.createElement("div"); photoBtnText.className="wt-photo-btn-text";
+    if(hasPhotos){
+      photoBtnText.innerHTML=`${photos.length} photo${photos.length>1?"s":""} <small>tap to view gallery</small>`;
+    } else {
+      photoBtnText.innerHTML=`Add progress photo <small>tap to upload</small>`;
+    }
+
     if(hasPhotos){
       const badge=document.createElement("span"); badge.className="wt-photo-count";
       badge.textContent=photos.length; photoBtn.appendChild(badge);
     }
+    photoBtn.appendChild(photoBtnIcon);
+    photoBtn.appendChild(photoBtnText);
+
     photoBtn.onclick=()=>{
       const panel=card.querySelector(".wt-gallery-panel");
       if(panel) panel.classList.toggle("open");
@@ -3533,7 +3549,10 @@ function renderWeightRows(){
       processNext(0);
     });
 
-    right.appendChild(trend); right.appendChild(photoBtn); right.appendChild(fileInp);
+    /* mid: label → input → photo button (no overlap with weight input) */
+    mid.appendChild(photoBtn);
+    mid.appendChild(fileInp);
+
     top.appendChild(num); top.appendChild(mid); top.appendChild(right);
     card.appendChild(top);
 

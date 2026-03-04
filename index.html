@@ -322,36 +322,57 @@
   .mac-food-btn.active.slot-p .food-scale{ background:rgba(56,189,248,.2); color:#7dd3fc; }
   .mac-food-btn.active.slot-c .food-scale{ background:rgba(249,115,22,.2); color:#fdba74; }
   .mac-food-btn.active.slot-f .food-scale{ background:rgba(167,139,250,.2); color:#c4b5fd; }
-  /* ══ Meal card ════════════════════════════════════════════════════ */
+  /* ══ Meal card (outer accordion) ══════════════════════════════════ */
   .mac-meal-card{
-    background:#0f172a; border-radius:16px; padding:14px 14px 10px;
-    margin-bottom:12px;
+    background:#0f172a; border-radius:16px;
+    margin-bottom:10px;
     border:1.5px solid #1e293b;
-    transition:border-color .2s, background .2s;
+    transition:border-color .25s, background .25s;
     -webkit-tap-highlight-color:transparent;
     user-select:none;
+    overflow:hidden;
   }
   .mac-meal-card.checked{ background:#071f12; border-color:#22c55e; }
+  /* header = clickable top row */
   .mac-meal-card-top{
-    display:flex;align-items:center;gap:12px;
+    display:flex; align-items:center; gap:12px;
+    padding:13px 14px;
+    cursor:pointer;
   }
   .mac-meal-check{
-    width:36px;height:36px;border-radius:50%;border:2px solid #334155;
-    display:flex;align-items:center;justify-content:center;
-    font-size:18px;font-weight:900;color:transparent;
-    transition:all .2s;flex-shrink:0;
+    width:34px; height:34px; border-radius:50%; border:2px solid #334155;
+    display:flex; align-items:center; justify-content:center;
+    font-size:17px; font-weight:900; color:transparent;
+    transition:all .2s; flex-shrink:0;
   }
   .mac-meal-card.checked .mac-meal-check{
-    background:#22c55e;border-color:#22c55e;color:#fff;
+    background:#22c55e; border-color:#22c55e; color:#fff;
   }
-  .mac-meal-num-label{
-    font-weight:900;font-size:14px;color:#38bdf8;flex:1;
+  .mac-meal-num-label{ font-weight:900; font-size:14px; color:#38bdf8; flex:1; }
+  .mac-meal-kcal{ font-size:12px; opacity:.55; white-space:nowrap; }
+  .mac-meal-arrow{
+    width:22px; height:22px; border-radius:50%;
+    background:rgba(255,255,255,.06);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; color:#64748b;
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+    flex-shrink:0;
   }
-  .mac-meal-kcal{
-    font-size:12px;opacity:.6;
+  .mac-meal-card.meal-open .mac-meal-arrow{ transform:rotate(180deg); }
+  /* body = collapsible content */
+  .mac-meal-body{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .38s cubic-bezier(.4,0,.2,1);
+    padding:0 14px;
+  }
+  .mac-meal-card.meal-open .mac-meal-body{
+    max-height:2000px;
+    padding:0 14px 14px;
   }
   .mac-meal-chips{
-    display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;padding-left:48px;
+    display:flex; gap:6px; flex-wrap:wrap;
+    margin-bottom:10px; padding-left:46px;
   }
 </style>
 </head>
@@ -2065,9 +2086,10 @@ function setMealFoods(obj){ pset("meal_foods", JSON.stringify(obj)); }
 
 /* pick a food for a slot (mealNum, slot "p"|"c"|"f") */
 function selectFood(mealNum, slot, foodKey){
-  /* remember which accordion is open so we can restore it after re-render */
-  const openBody = document.querySelector(".mac-acc-body.open");
-  const openAccId = openBody ? openBody.dataset.accId : null;
+  /* remember which accordions/meals are open before re-render */
+  const openAccId   = (document.querySelector(".mac-acc-body.open") || {}).dataset?.accId || null;
+  const openMealIds = [...document.querySelectorAll(".mac-meal-card.meal-open")]
+                        .map(c => Number(c.dataset.meal));
 
   const mf = getMealFoods();
   if(!mf[mealNum]) mf[mealNum]={};
@@ -2075,12 +2097,17 @@ function selectFood(mealNum, slot, foodKey){
   setMealFoods(mf);
   renderMacrosPage();
 
-  /* re-open the same accordion after DOM rebuild */
+  /* restore open meals */
+  openMealIds.forEach(id=>{
+    const c = document.querySelector(`.mac-meal-card[data-meal="${id}"]`);
+    if(c) c.classList.add("meal-open");
+  });
+  /* restore open food accordion */
   if(openAccId){
-    const body2 = document.querySelector(`.mac-acc-body[data-acc-id="${openAccId}"]`);
-    const trig2 = document.querySelector(`.mac-acc-trigger[data-acc-id="${openAccId}"]`);
-    if(body2) body2.classList.add("open");
-    if(trig2) trig2.classList.add("open");
+    const b = document.querySelector(`.mac-acc-body[data-acc-id="${openAccId}"]`);
+    const t = document.querySelector(`.mac-acc-trigger[data-acc-id="${openAccId}"]`);
+    if(b) b.classList.add("open");
+    if(t) t.classList.add("open");
   }
 }
 
@@ -2179,29 +2206,33 @@ function renderMacrosPage(){
       selectFood(Number(fb.dataset.meal), fb.dataset.slot, fb.dataset.food);
       return;
     }
-    /* 2 – accordion trigger */
+    /* 2 – inner food accordion trigger */
     const trig = e.target.closest(".mac-acc-trigger");
     if(trig){
       e.stopPropagation();
-      const card2   = trig.closest(".mac-meal-card");
-      const accId   = trig.dataset.accId;
-      const body2   = card2.querySelector(`.mac-acc-body[data-acc-id="${accId}"]`);
-      const isOpen  = body2.classList.contains("open");
-      /* close all in this card */
+      const card2  = trig.closest(".mac-meal-card");
+      const accId  = trig.dataset.accId;
+      const body2  = card2.querySelector(`.mac-acc-body[data-acc-id="${accId}"]`);
+      const isOpen = body2.classList.contains("open");
       card2.querySelectorAll(".mac-acc-trigger").forEach(t=>t.classList.remove("open"));
       card2.querySelectorAll(".mac-acc-body").forEach(b=>b.classList.remove("open"));
-      /* open clicked if it was closed */
-      if(!isOpen){
-        trig.classList.add("open");
-        body2.classList.add("open");
-      }
+      if(!isOpen){ trig.classList.add("open"); body2.classList.add("open"); }
       return;
     }
-    /* 3 – meal check-off: top row only */
+    /* 3 – meal check button (✓ circle) */
+    const chkBtn = e.target.closest(".mac-meal-check");
+    if(chkBtn){
+      e.stopPropagation();
+      const card2 = chkBtn.closest(".mac-meal-card");
+      if(card2) toggleMeal(Number(card2.dataset.meal));
+      return;
+    }
+    /* 4 – meal card top row → toggle meal open/close */
     const topRow = e.target.closest(".mac-meal-card-top");
     if(topRow){
+      e.stopPropagation();
       const card2 = topRow.closest(".mac-meal-card");
-      if(card2) toggleMeal(Number(card2.dataset.meal));
+      if(card2) card2.classList.toggle("meal-open");
     }
   };
   box.addEventListener("click", box._handler);
@@ -2254,11 +2285,14 @@ function renderMacrosPage(){
     chk.textContent = isDone ? "\u2713" : "";
     const lbl = document.createElement("div");
     lbl.className = "mac-meal-num-label";
-    lbl.textContent = `Meal ${m}`;
+    lbl.textContent = `وجبة ${m}`;
     const kcalLbl = document.createElement("div");
     kcalLbl.className = "mac-meal-kcal";
     kcalLbl.textContent = `${kcalMeal} kcal`;
-    top.append(chk, lbl, kcalLbl);
+    const arr = document.createElement("div");
+    arr.className = "mac-meal-arrow";
+    arr.textContent = "▾";
+    top.append(chk, lbl, kcalLbl, arr);
 
     /* chips */
     const chips = document.createElement("div");
@@ -2338,7 +2372,11 @@ function renderMacrosPage(){
     const pAcc = buildAcc("p","🥩","بروتين",    pMeal);
     const cAcc = buildAcc("c","🍚","كارب",      cMeal);
     const fAcc = buildAcc("f","🫒","دهون صحية", fMeal);
-    card.append(top, chips, pAcc, cAcc, fAcc);
+    /* meal body — collapsible */
+    const mealBody = document.createElement("div");
+    mealBody.className = "mac-meal-body";
+    mealBody.append(chips, pAcc, cAcc, fAcc);
+    card.append(top, mealBody);
     box.appendChild(card);
   }
 }

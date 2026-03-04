@@ -548,52 +548,59 @@
   }
 
   /* ===== Exercise Image Thumbnail ===== */
+  /* ── exercise image upload button ── */
   .wo-ex-img-btn{
-    width:32px; height:32px; border-radius:9px; flex-shrink:0;
-    overflow:hidden; cursor:pointer; border:1px solid rgba(255,255,255,.08);
-    background:rgba(255,255,255,.04); transition:all .18s;
+    width:36px; height:36px; border-radius:10px; flex-shrink:0;
+    overflow:hidden; cursor:pointer;
+    border:1.5px dashed rgba(100,116,139,.45);
+    background:rgba(255,255,255,.03); transition:all .18s;
     display:flex; align-items:center; justify-content:center;
     position:relative;
   }
+  .wo-ex-img-btn:hover{ border-color:rgba(56,189,248,.55); background:rgba(56,189,248,.06); }
+  .wo-ex-img-btn:active{ transform:scale(.92); }
+  .wo-ex-img-btn .cam-icon{
+    font-size:15px; line-height:1; opacity:.5; pointer-events:none;
+  }
+  .wo-ex-img-btn.has-photo{ border-style:solid; border-color:rgba(56,189,248,.4); }
+  .wo-ex-img-btn.has-photo .cam-icon{ display:none; }
   .wo-ex-img-btn img{
     width:100%; height:100%; object-fit:cover; border-radius:8px;
-    display:block;
+    display:none;
   }
-  .wo-ex-img-btn.no-img{
-    font-size:14px; /* show emoji fallback */
-    background:rgba(56,189,248,.06); border-color:rgba(56,189,248,.1);
-  }
-  .wo-ex-img-btn:active{ transform:scale(.9); }
+  .wo-ex-img-btn.has-photo img{ display:block; }
 
-  /* exercise image lightbox */
+  /* exercise image modal */
   .wo-ex-lightbox{
     position:fixed; inset:0; z-index:9999;
-    background:rgba(0,0,0,.82); backdrop-filter:blur(8px);
+    background:rgba(0,0,0,.88); backdrop-filter:blur(12px);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    padding:20px; animation:wt-fadeIn .2s ease;
+    padding:24px; animation:wo-fadeIn .2s ease;
   }
   .wo-ex-lightbox-img{
-    max-width:min(380px,90vw); max-height:60vh;
-    border-radius:20px; object-fit:contain;
-    box-shadow:0 20px 60px rgba(0,0,0,.6);
-    border:1px solid rgba(255,255,255,.12);
+    max-width:min(360px,88vw); max-height:55vh;
+    border-radius:18px; object-fit:contain;
+    box-shadow:0 20px 60px rgba(0,0,0,.7);
+    border:1px solid rgba(255,255,255,.1);
   }
   .wo-ex-lightbox-name{
-    margin-top:14px; font-size:16px; font-weight:900; color:#e2e8f0;
-    text-align:center;
+    margin-top:14px; font-size:16px; font-weight:900; color:#e2e8f0; text-align:center;
   }
-  .wo-ex-lightbox-meta{
-    margin-top:4px; font-size:12px; color:#64748b; font-weight:600; text-align:center;
+  .wo-ex-lightbox-empty{ font-size:64px; margin-bottom:6px; }
+  .wo-ex-lightbox-hint{
+    font-size:12px; color:#64748b; margin-top:4px; text-align:center; max-width:220px;
   }
-  .wo-ex-lightbox-close{
-    margin-top:18px; padding:10px 32px; border-radius:14px; border:none; cursor:pointer;
-    background:rgba(255,255,255,.1); color:#e2e8f0; font-size:14px; font-weight:800;
-    transition:background .18s;
+  .wo-ex-lightbox-actions{
+    display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; justify-content:center;
   }
-  .wo-ex-lightbox-close:active{ background:rgba(255,255,255,.2); }
-  .wo-ex-lightbox-noimg{
-    font-size:80px; margin-bottom:10px;
+  .wo-ex-lb-btn{
+    padding:9px 22px; border-radius:12px; border:none; cursor:pointer;
+    font-size:13px; font-weight:800; transition:all .18s;
   }
+  .wo-ex-lb-btn.primary{ background:linear-gradient(135deg,#38bdf8,#818cf8); color:#fff; }
+  .wo-ex-lb-btn.danger{ background:rgba(239,68,68,.15); color:#f87171; border:1px solid rgba(239,68,68,.2); }
+  .wo-ex-lb-btn.ghost{ background:rgba(255,255,255,.08); color:#94a3b8; }
+  .wo-ex-lb-btn:active{ transform:scale(.95); }
 
   /* ===== Custom Builder ===== */
   .wo-custom-panel{
@@ -4205,118 +4212,87 @@ function updateEx(day, idx, key, val){
 }
 
 /* ══════════════════════════════════════════════════
-   EXERCISE IMAGE MAP
-   Real photos from free-exercise-db (public domain) via jsDelivr CDN
-   getExerciseImage(name) -> {url, emoji, muscle}
+   EXERCISE IMAGE STORAGE
+   User uploads their own photos per exercise.
+   Stored in localStorage as base64 data URLs.
+   Key format:  eximg:<day>:<exerciseIndex>
    ================================================== */
-const _EX_BASE = "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db/exercises/";
-const EX_IMG = {
-  /* Chest */
-  "bench press":            {p:"Barbell_Bench_Press_-_Medium_Grip/0.jpg",          emoji:"\U0001F3CB\uFE0F", muscle:"Chest"},
-  "barbell bench press":    {p:"Barbell_Bench_Press_-_Medium_Grip/0.jpg",          emoji:"\U0001F3CB\uFE0F", muscle:"Chest"},
-  "incline dumbbell press": {p:"Incline_Dumbbell_Press/0.jpg",                     emoji:"\U0001F3CB\uFE0F", muscle:"Chest"},
-  "incline bench press":    {p:"Barbell_Incline_Bench_Press_-_Medium_Grip/0.jpg",  emoji:"\U0001F3CB\uFE0F", muscle:"Chest"},
-  "dumbbell bench press":   {p:"Dumbbell_Bench_Press/0.jpg",                       emoji:"\U0001F3CB\uFE0F", muscle:"Chest"},
-  "cable flyes":            {p:"Flat_Bench_Cable_Flyes/0.jpg",                     emoji:"\U0001F938", muscle:"Chest"},
-  "pec deck":               {p:"Flat_Bench_Cable_Flyes/0.jpg",                     emoji:"\U0001F938", muscle:"Chest"},
-  "pec deck machine":       {p:"Flat_Bench_Cable_Flyes/0.jpg",                     emoji:"\U0001F938", muscle:"Chest"},
-  "dips":                   {p:"Dips_-_Triceps_Version/0.jpg",                     emoji:"\U0001F4AA", muscle:"Chest/Triceps"},
-  "tricep dips":            {p:"Dips_-_Triceps_Version/0.jpg",                     emoji:"\U0001F4AA", muscle:"Triceps"},
-  /* Shoulders */
-  "overhead press":         {p:"Barbell_Shoulder_Press/0.jpg",                     emoji:"\U0001F3CB\uFE0F", muscle:"Shoulders"},
-  "dumbbell shoulder press":{p:"Dumbbell_Shoulder_Press/0.jpg",                    emoji:"\U0001F3CB\uFE0F", muscle:"Shoulders"},
-  "arnold press":           {p:"Arnold_Dumbbell_Press/0.jpg",                      emoji:"\U0001F3CB\uFE0F", muscle:"Shoulders"},
-  "lateral raises":         {p:"Side_Lateral_Raise/0.jpg",                         emoji:"\U0001F985", muscle:"Side Delts"},
-  "front raises":           {p:"Dumbbell_Front_Raise/0.jpg",                       emoji:"\U0001F985", muscle:"Front Delts"},
-  "rear delt flyes":        {p:"Dumbbell_Lying_Rear_Lateral_Raise/0.jpg",          emoji:"\U0001F519", muscle:"Rear Delts"},
-  "face pulls":             {p:"Face_Pull/0.jpg",                                  emoji:"\U0001F519", muscle:"Rear Delts"},
-  /* Back */
-  "barbell row":            {p:"Bent_Over_Barbell_Row/0.jpg",                      emoji:"\U0001F519", muscle:"Back"},
-  "deadlift":               {p:"Barbell_Deadlift/0.jpg",                           emoji:"\u26A1", muscle:"Back/Legs"},
-  "pull-ups":               {p:"Pull-ups/0.jpg",                                   emoji:"\U0001F9D7", muscle:"Back"},
-  "lat pulldown":           {p:"Close-Grip_Front_Lat_Pulldown/0.jpg",              emoji:"\u23EC", muscle:"Back"},
-  "seated cable row":       {p:"Seated_Cable_Rows/0.jpg",                          emoji:"\U0001F519", muscle:"Back"},
-  "seated row":             {p:"Seated_Cable_Rows/0.jpg",                          emoji:"\U0001F519", muscle:"Back"},
-  "cable row":              {p:"Seated_Cable_Rows/0.jpg",                          emoji:"\U0001F519", muscle:"Back"},
-  "t-bar row":              {p:"Lying_T-Bar_Row/0.jpg",                            emoji:"\U0001F519", muscle:"Back"},
-  "shrugs":                 {p:"Barbell_Shrug/0.jpg",                              emoji:"\U0001F937", muscle:"Traps"},
-  /* Biceps */
-  "barbell curl":           {p:"Barbell_Curl/0.jpg",                               emoji:"\U0001F4AA", muscle:"Biceps"},
-  "hammer curl":            {p:"Alternate_Hammer_Curl/0.jpg",                      emoji:"\U0001F528", muscle:"Biceps"},
-  "incline dumbbell curl":  {p:"Incline_Dumbbell_Curl/0.jpg",                      emoji:"\U0001F4AA", muscle:"Biceps"},
-  /* Triceps */
-  "skull crushers":         {p:"EZ-Bar_Skullcrusher/0.jpg",                        emoji:"\U0001F480", muscle:"Triceps"},
-  "tricep pushdowns":       {p:"Cable_Incline_Pushdown/0.jpg",                     emoji:"\u2B07\uFE0F", muscle:"Triceps"},
-  "overhead tricep extension":{p:"Cable_Rope_Overhead_Triceps_Extension/0.jpg",    emoji:"\U0001F4AA", muscle:"Triceps"},
-  "close-grip bench":       {p:"Close-Grip_Barbell_Bench_Press/0.jpg",             emoji:"\U0001F3CB\uFE0F", muscle:"Triceps"},
-  /* Legs */
-  "squat":                  {p:"Barbell_Full_Squat/0.jpg",                         emoji:"\U0001F9B5", muscle:"Quads"},
-  "barbell squat":          {p:"Barbell_Squat/0.jpg",                              emoji:"\U0001F9B5", muscle:"Quads"},
-  "front squat":            {p:"Front_Barbell_Squat/0.jpg",                        emoji:"\U0001F9B5", muscle:"Quads"},
-  "hack squat":             {p:"Hack_Squat/0.jpg",                                 emoji:"\U0001F9B5", muscle:"Quads"},
-  "leg press":              {p:"Leg_Press/0.jpg",                                  emoji:"\U0001F9B5", muscle:"Quads"},
-  "romanian deadlift":      {p:"Romanian_Deadlift/0.jpg",                          emoji:"\U0001F9B5", muscle:"Hamstrings"},
-  "leg curl":               {p:"Leg_Curl/0.jpg",                                   emoji:"\U0001F9B5", muscle:"Hamstrings"},
-  "seated leg curl":        {p:"Seated_Leg_Curl/0.jpg",                            emoji:"\U0001F9B5", muscle:"Hamstrings"},
-  "leg extension":          {p:"Leg_Extensions/0.jpg",                             emoji:"\U0001F9B5", muscle:"Quads"},
-  "walking lunges":         {p:"Bodyweight_Walking_Lunge/0.jpg",                   emoji:"\U0001F6B6", muscle:"Legs"},
-  "calf raises":            {p:"Standing_Calf_Raises/0.jpg",                       emoji:"\U0001F9B6", muscle:"Calves"},
-  "standing calf raises":   {p:"Standing_Calf_Raises/0.jpg",                       emoji:"\U0001F9B6", muscle:"Calves"},
-  /* Core */
-  "plank":                  {p:"Plank/0.jpg",                                      emoji:"\U0001F9D8", muscle:"Core"},
-  "hanging leg raises":     {p:"Hanging_Leg_Raise/0.jpg",                          emoji:"\U0001F3CB\uFE0F", muscle:"Core"},
-  "cable crunches":         {p:"Cable_Crunch/0.jpg",                               emoji:"\U0001F9D8", muscle:"Core"},
-  "russian twists":         {p:"Russian_Twist/0.jpg",                              emoji:"\U0001F300", muscle:"Core"},
-  /* Cardio */
-  "treadmill run":          {p:"",                                                  emoji:"\U0001F3C3", muscle:"Cardio"},
-  "jump rope":              {p:"",                                                  emoji:"\u23ED\uFE0F", muscle:"Cardio"},
-  "cycling":                {p:"",                                                  emoji:"\U0001F6B4", muscle:"Cardio"},
-};
-
-function getExerciseImage(name){
-  const key=name.toLowerCase().trim();
-  function _build(e){ return e ? Object.assign({},e,{url:e.p?_EX_BASE+e.p:""}) : null; }
-  if(EX_IMG[key]) return _build(EX_IMG[key]);
-  for(const [k,v] of Object.entries(EX_IMG)){
-    if(key.includes(k)||k.includes(key)) return _build(v);
-  }
-  return {url:"", emoji:"\U0001F3CB\uFE0F", muscle:""};
+function exImgKey(day,idx){ return 'eximg:'+day+':'+idx; }
+function getExImg(day,idx){ return localStorage.getItem(exImgKey(day,idx))||''; }
+function setExImg(day,idx,dataUrl){
+  if(dataUrl) localStorage.setItem(exImgKey(day,idx),dataUrl);
+  else localStorage.removeItem(exImgKey(day,idx));
 }
 
-/* ── Exercise image lightbox ── */
-function openExLightbox(name, exImg){
-  /* remove any existing lightbox */
+
+/* ── Exercise image modal ── */
+function openExImgModal(day,idx,exName){
   var oldLb=document.getElementById('woExLightbox');
   if(oldLb) oldLb.remove();
 
   var lb=document.createElement('div');
-  lb.id='woExLightbox';
-  lb.className='wo-ex-lightbox';
-  lb.setAttribute('role','dialog');
-  lb.setAttribute('aria-modal','true');
+  lb.id='woExLightbox'; lb.className='wo-ex-lightbox';
 
+  var saved=getExImg(day,idx);
   var inner='';
-  if(exImg && exImg.url){
-    inner+='<img class="wo-ex-lightbox-img" src="'+exImg.url+'" alt="'+(name||'')+'" onerror="this.style.display=\'none\';document.getElementById(\'woExLb_emoji\').style.display=\'block\'">';
-    inner+='<div class="wo-ex-lightbox-noimg" id="woExLb_emoji" style="display:none">'+(exImg.emoji||'\uD83C\uDFCB\uFE0F')+'</div>';
+  if(saved){
+    inner+='<img class="wo-ex-lightbox-img" src="'+saved+'" alt="'+(exName||'')+'">';
   } else {
-    inner+='<div class="wo-ex-lightbox-noimg">'+((exImg&&exImg.emoji)||'\uD83C\uDFCB\uFE0F')+'</div>';
+    inner+='<div class="wo-ex-lightbox-empty">������</div>';
+    inner+='<div class="wo-ex-lightbox-hint">لا توجد صورة بعد.<br>'
+          +'No photo yet. Tap to add one.</div>';
   }
-  inner+='<div class="wo-ex-lightbox-name">'+(name||'Exercise')+'</div>';
-  if(exImg && exImg.muscle){
-    inner+='<div class="wo-ex-lightbox-meta">\uD83C\uDFAF '+exImg.muscle+'</div>';
+  inner+='<div class="wo-ex-lightbox-name">'+(exName||'Exercise')+'</div>';
+
+  inner+='<div class="wo-ex-lightbox-actions">';
+  var changeLabel=saved ? '������ تغيير الصورة' : '������ إضافة صورة';
+  inner+='<button class="wo-ex-lb-btn primary" onclick="triggerExImgUpload(\''+day+'\','+idx+')">'+ changeLabel +'</button>';
+  if(saved){
+    inner+='<button class="wo-ex-lb-btn danger" onclick="deleteExImg(\''+day+'\','+idx+')">'
+          +'������ حذف</button>';
   }
-  inner+='<button class="wo-ex-lightbox-close" onclick="document.getElementById(\'woExLightbox\').remove()">\u2715 Close</button>';
+  inner+='<button class="wo-ex-lb-btn ghost" onclick="document.getElementById(\'woExLightbox\').remove()">✕ إغلاق</button>';
+  inner+='</div>';
+  inner+='<input type="file" id="woExImgInput" accept="image/*" style="display:none" '
+        +'onchange="handleExImgFile(\''+day+'\','+idx+',this)">';
 
   lb.innerHTML=inner;
-  /* close on backdrop click */
-  lb.addEventListener('click', function(e){ if(e.target===lb) lb.remove(); });
-  /* close on Escape key */
-  function escHandler(e){ if(e.key==='Escape'){ lb.remove(); document.removeEventListener('keydown',escHandler); } }
-  document.addEventListener('keydown', escHandler);
-
+  lb.addEventListener('click',function(e){ if(e.target===lb) lb.remove(); });
+  function escH(e){
+    if(e.key==='Escape'){ lb.remove(); document.removeEventListener('keydown',escH); }
+  }
+  document.addEventListener('keydown',escH);
   document.body.appendChild(lb);
 }
+
+function triggerExImgUpload(day,idx){
+  var inp=document.getElementById('woExImgInput');
+  if(inp) inp.click();
+}
+
+function handleExImgFile(day,idx,input){
+  var file=input.files&&input.files[0];
+  if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    setExImg(day,idx,e.target.result);
+    var lb=document.getElementById('woExLightbox');
+    if(lb) lb.remove();
+    renderWorkouts();
+  };
+  reader.readAsDataURL(file);
+}
+
+function deleteExImg(day,idx){
+  setExImg(day,idx,'');
+  var lb=document.getElementById('woExLightbox');
+  if(lb) lb.remove();
+  renderWorkouts();
+}
+
+/* legacy alias */
+function openExLightbox(){}
+
 
 function renderWorkouts(){
   const wrap=$("workContainer");
@@ -4420,18 +4396,16 @@ function renderWorkouts(){
 
       const num=document.createElement("div"); num.className="wo-ex-num"; num.textContent=idx+1;
 
-      /* exercise image button */
+      /* exercise image button — user photo */
       const imgBtn=document.createElement("div"); imgBtn.className="wo-ex-img-btn";
-      const exImg=getExerciseImage(ex.name||"");
-      if(exImg.url){
-        const im=document.createElement("img"); im.src=exImg.url; im.alt=ex.name; im.loading="lazy";
-        im.onerror=()=>{ imgBtn.innerHTML=exImg.emoji||"🏋️"; imgBtn.classList.add("no-img"); };
-        imgBtn.appendChild(im);
-      } else {
-        imgBtn.innerHTML=exImg.emoji||"🏋️"; imgBtn.classList.add("no-img");
-      }
-      imgBtn.title="View exercise";
-      imgBtn.onclick=()=>openExLightbox(ex.name||"", exImg);
+      const savedPhoto=getExImg(day,idx);
+      const camSpan=document.createElement("span"); camSpan.className="cam-icon"; camSpan.textContent="������";
+      imgBtn.appendChild(camSpan);
+      const thumbImg=document.createElement("img"); thumbImg.alt=ex.name||"exercise";
+      if(savedPhoto){ thumbImg.src=savedPhoto; imgBtn.classList.add("has-photo"); }
+      imgBtn.appendChild(thumbImg);
+      imgBtn.title=savedPhoto?"View / change photo":"Add a photo";
+      imgBtn.onclick=()=>openExImgModal(day,idx,ex.name||"");
       top.appendChild(imgBtn);
 
       const nameInp=document.createElement("input"); nameInp.className="wo-ex-input";

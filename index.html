@@ -130,6 +130,102 @@
   .countBox{margin-top:10px;border-radius:12px;padding:10px;background:#0f172a;border:1px solid #334155}
   .countBig{font-size:20px;font-weight:900}
   .countSmall{font-size:12px;opacity:.9;margin-top:4px}
+
+  /* ===== Macros Page ===== */
+  .mac-hero{
+    background:#0b1220;border-radius:16px;padding:14px 16px;margin-bottom:14px;
+  }
+  .mac-hero-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .mac-title{font-weight:900;font-size:16px;color:#38bdf8;}
+  .mac-calories{font-size:13px;opacity:.75;}
+  .mac-rings{display:flex;gap:10px;margin-bottom:10px;}
+  .mac-ring-box{
+    flex:1;background:#0f172a;border-radius:14px;padding:10px 8px;
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+  }
+  .mac-ring-svg{width:64px;height:64px;}
+  .mac-ring-label{font-size:10px;opacity:.65;text-align:center;}
+  .mac-ring-val{font-size:13px;font-weight:900;}
+  .mac-ring-val.p{color:#38bdf8;}
+  .mac-ring-val.c{color:#f97316;}
+  .mac-ring-val.f{color:#a78bfa;}
+
+  .mac-meals-label{
+    font-size:11px;opacity:.6;margin-bottom:6px;text-align:center;
+  }
+  .mac-meal-strip{
+    display:flex;align-items:center;gap:10px;
+    background:#0f172a;border-radius:12px;padding:10px 12px;
+    margin-bottom:8px;
+  }
+  .mac-meal-num{
+    min-width:28px;height:28px;border-radius:8px;
+    background:#1e293b;display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:12px;color:#38bdf8;
+  }
+  .mac-meal-macros{flex:1;display:flex;gap:6px;flex-wrap:wrap;}
+  .mac-chip{
+    border-radius:8px;padding:4px 8px;font-size:11px;font-weight:900;
+    display:inline-flex;align-items:center;gap:3px;
+  }
+  .mac-chip.p{background:#0e3a58;color:#38bdf8;}
+  .mac-chip.c{background:#431d07;color:#f97316;}
+  .mac-chip.f{background:#2d1b6b;color:#a78bfa;}
+  .mac-chip .scale{font-size:10px;opacity:.75;}
+
+  .mac-scale-section{
+    background:#0b1220;border-radius:16px;padding:14px 16px;margin-bottom:14px;
+  }
+  .mac-scale-title{font-weight:900;color:#38bdf8;margin-bottom:10px;font-size:14px;}
+  .mac-scale-row{
+    display:flex;align-items:center;gap:10px;
+    background:#0f172a;border-radius:12px;padding:10px 12px;margin-bottom:8px;
+  }
+  .mac-scale-icon{font-size:18px;min-width:26px;text-align:center;}
+  .mac-scale-info{flex:1;}
+  .mac-scale-name{font-weight:800;font-size:13px;}
+  .mac-scale-sub{font-size:11px;opacity:.6;margin-top:2px;}
+  .mac-scale-gram{
+    font-size:20px;font-weight:900;color:#22c55e;
+    min-width:60px;text-align:right;
+  }
+
+  .mac-log-section{
+    background:#0b1220;border-radius:16px;padding:14px 16px;margin-bottom:14px;
+  }
+  .mac-log-title{font-weight:900;color:#38bdf8;margin-bottom:10px;font-size:14px;}
+  .mac-log-entry{
+    display:flex;align-items:center;gap:10px;
+    background:#0f172a;border-radius:12px;padding:10px 12px;margin-bottom:8px;
+  }
+  .mac-log-macro{min-width:24px;font-weight:900;font-size:12px;}
+  .mac-log-macro.p{color:#38bdf8;}
+  .mac-log-macro.c{color:#f97316;}
+  .mac-log-macro.f{color:#a78bfa;}
+  .mac-log-inp{
+    flex:1;padding:8px;border-radius:10px;background:#1e293b;
+    color:#fff;border:1px solid #334155;font-size:14px;font-weight:900;
+    outline:none;text-align:center;width:100%;margin:0;
+  }
+  .mac-log-inp:focus{border-color:#0ea5e9;}
+  .mac-log-unit{font-size:12px;opacity:.6;min-width:24px;}
+
+  .mac-progress-wrap{margin-bottom:14px;}
+  .mac-prog-row{
+    display:flex;align-items:center;gap:8px;margin-bottom:6px;
+  }
+  .mac-prog-label{font-size:12px;font-weight:700;min-width:52px;}
+  .mac-prog-bar-bg{flex:1;background:#0f172a;border-radius:999px;height:10px;overflow:hidden;}
+  .mac-prog-bar-fill{height:100%;border-radius:999px;transition:width .3s;}
+  .mac-prog-bar-fill.p{background:#38bdf8;}
+  .mac-prog-bar-fill.c{background:#f97316;}
+  .mac-prog-bar-fill.f{background:#a78bfa;}
+  .mac-prog-pct{font-size:11px;opacity:.7;min-width:34px;text-align:right;}
+  .mac-prog-remain{font-size:11px;min-width:54px;text-align:right;opacity:.8;}
+
+  .mac-no-data{
+    text-align:center;padding:20px;opacity:.5;font-size:14px;
+  }
 </style>
 </head>
 
@@ -153,6 +249,7 @@
   <button class="tab" id="tWork" onclick="go('work')">Workouts</button>
   <button class="tab" id="tWeek" onclick="go('week')">Daily Burn</button>
   <button class="tab" id="tWeight" onclick="go('weight')">Weight</button>
+  <button class="tab" id="tMacros" onclick="go('macros')">Macros</button>
 </div>
 
 <!-- LOGIN -->
@@ -506,6 +603,114 @@
   <button class="mini red hidden" id="weekResetBtn" onclick="resetWeek()">&#x1F5D1; Reset Week</button>
 </div>
 
+<!-- MACROS -->
+<div class="page" id="pMacros">
+
+  <!-- No data banner -->
+  <div id="macNoData" class="mac-no-data" style="display:none;">
+    &#x26A0; Use Calculator first to generate your macros.
+  </div>
+
+  <!-- Summary rings + calories -->
+  <div class="mac-hero" id="macHero">
+    <div class="mac-hero-row">
+      <div class="mac-title">&#x1F4CA; Daily Macros</div>
+      <div class="mac-calories" id="macCaloriesLabel">-- kcal / day</div>
+    </div>
+
+    <div class="mac-rings">
+      <!-- Protein -->
+      <div class="mac-ring-box">
+        <svg class="mac-ring-svg" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="#0e3a58" stroke-width="8"/>
+          <circle id="ringP" cx="32" cy="32" r="26" fill="none" stroke="#38bdf8"
+            stroke-width="8" stroke-dasharray="163.4" stroke-dashoffset="163.4"
+            stroke-linecap="round" transform="rotate(-90 32 32)"/>
+          <text x="32" y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" id="ringPtxt">0%</text>
+        </svg>
+        <div class="mac-ring-val p" id="macPTotal">-- g</div>
+        <div class="mac-ring-label">Protein<br><span id="macPRemain" style="color:#38bdf8;font-weight:700"></span></div>
+      </div>
+      <!-- Carbs -->
+      <div class="mac-ring-box">
+        <svg class="mac-ring-svg" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="#431d07" stroke-width="8"/>
+          <circle id="ringC" cx="32" cy="32" r="26" fill="none" stroke="#f97316"
+            stroke-width="8" stroke-dasharray="163.4" stroke-dashoffset="163.4"
+            stroke-linecap="round" transform="rotate(-90 32 32)"/>
+          <text x="32" y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" id="ringCtxt">0%</text>
+        </svg>
+        <div class="mac-ring-val c" id="macCTotal">-- g</div>
+        <div class="mac-ring-label">Carbs<br><span id="macCRemain" style="color:#f97316;font-weight:700"></span></div>
+      </div>
+      <!-- Fat -->
+      <div class="mac-ring-box">
+        <svg class="mac-ring-svg" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="#2d1b6b" stroke-width="8"/>
+          <circle id="ringF" cx="32" cy="32" r="26" fill="none" stroke="#a78bfa"
+            stroke-width="8" stroke-dasharray="163.4" stroke-dashoffset="163.4"
+            stroke-linecap="round" transform="rotate(-90 32 32)"/>
+          <text x="32" y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" id="ringFtxt">0%</text>
+        </svg>
+        <div class="mac-ring-val f" id="macFTotal">-- g</div>
+        <div class="mac-ring-label">Fat<br><span id="macFRemain" style="color:#a78bfa;font-weight:700"></span></div>
+      </div>
+    </div>
+
+    <!-- Progress bars -->
+    <div class="mac-progress-wrap" id="macProgressWrap">
+      <div class="mac-prog-row">
+        <div class="mac-prog-label" style="color:#38bdf8">Protein</div>
+        <div class="mac-prog-bar-bg"><div class="mac-prog-bar-fill p" id="barP" style="width:0%"></div></div>
+        <div class="mac-prog-pct" id="barPpct">0%</div>
+        <div class="mac-prog-remain" id="barPrem"></div>
+      </div>
+      <div class="mac-prog-row">
+        <div class="mac-prog-label" style="color:#f97316">Carbs</div>
+        <div class="mac-prog-bar-bg"><div class="mac-prog-bar-fill c" id="barC" style="width:0%"></div></div>
+        <div class="mac-prog-pct" id="barCpct">0%</div>
+        <div class="mac-prog-remain" id="barCrem"></div>
+      </div>
+      <div class="mac-prog-row">
+        <div class="mac-prog-label" style="color:#a78bfa">Fat</div>
+        <div class="mac-prog-bar-bg"><div class="mac-prog-bar-fill f" id="barF" style="width:0%"></div></div>
+        <div class="mac-prog-pct" id="barFpct">0%</div>
+        <div class="mac-prog-remain" id="barFrem"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scale weights per meal -->
+  <div class="mac-scale-section" id="macScaleSection">
+    <div class="mac-scale-title">&#x2696; Scale Weight per Meal</div>
+    <div id="macMealStrips"></div>
+  </div>
+
+  <!-- Daily log inputs -->
+  <div class="mac-log-section">
+    <div class="mac-log-title">&#x1F4DD; Log Today's Intake (grams)</div>
+
+    <div class="mac-log-entry">
+      <div class="mac-log-macro p">P</div>
+      <input class="mac-log-inp" type="number" id="logP" min="0" step="1" placeholder="0" oninput="saveMacroLog()"/>
+      <div class="mac-log-unit">g</div>
+    </div>
+    <div class="mac-log-entry">
+      <div class="mac-log-macro c">C</div>
+      <input class="mac-log-inp" type="number" id="logC" min="0" step="1" placeholder="0" oninput="saveMacroLog()"/>
+      <div class="mac-log-unit">g</div>
+    </div>
+    <div class="mac-log-entry">
+      <div class="mac-log-macro f">F</div>
+      <input class="mac-log-inp" type="number" id="logF" min="0" step="1" placeholder="0" oninput="saveMacroLog()"/>
+      <div class="mac-log-unit">g</div>
+    </div>
+
+    <button class="mini red hidden" id="macResetBtn" onclick="resetMacroLog()">&#x1F5D1; Reset Log</button>
+  </div>
+
+</div>
+
 <!-- WEIGHT -->
 <div class="page" id="pWeight">
   <div class="box">
@@ -655,7 +860,7 @@ function hydrateHeader(){
 }
 function showLogin(){
   $("tabs").style.display="none";
-  ["pProfile","pAdmin","pCoachPanel","pCalc","pWork","pWeek","pWeight"].forEach(id=>$(id).classList.remove("active"));
+  ["pProfile","pAdmin","pCoachPanel","pCalc","pWork","pWeek","pWeight","pMacros"].forEach(id=>$(id).classList.remove("active"));
   $("pLogin").classList.add("active");
   hydrateHeader();
   switchAuth("login");
@@ -669,9 +874,9 @@ function showApp(){
   go("profile");
 }
 function go(which){
-  ["Profile","Admin","CoachPanel","Calc","Work","Week","Weight"].forEach(p=> $("p"+p).classList.remove("active"));
-  ["Profile","Admin","CoachPanel","Calc","Work","Week","Weight"].forEach(t=> $("t"+t)?.classList.remove("active"));
-  const map={profile:"Profile",admin:"Admin",coachpanel:"CoachPanel",calc:"Calc",work:"Work",week:"Week",weight:"Weight"};
+  ["Profile","Admin","CoachPanel","Calc","Work","Week","Weight","Macros"].forEach(p=> $("p"+p).classList.remove("active"));
+  ["Profile","Admin","CoachPanel","Calc","Work","Week","Weight","Macros"].forEach(t=> $("t"+t)?.classList.remove("active"));
+  const map={profile:"Profile",admin:"Admin",coachpanel:"CoachPanel",calc:"Calc",work:"Work",week:"Week",weight:"Weight",macros:"Macros"};
   const P="p"+map[which], T="t"+map[which];
   $(P).classList.add("active");
   $(T).classList.add("active");
@@ -683,6 +888,7 @@ function go(which){
   if(which==="work") { renderWorkouts(); applyWorkButtons(); }
   if(which==="week") { buildWeekInputs(); loadWeekInputs(); syncWeeklyTarget(); recalcWeek(); applyWeekButtons(); }
   if(which==="weight"){ loadWeightTracker(); applyWeightButtons(); }
+  if(which==="macros"){ renderMacrosPage(); }
   hydrateHeader();
 }
 
@@ -1677,6 +1883,134 @@ function resetWeight(){
     showApp();
   } else showLogin();
 })();
+
+/* ========= Macros Page ========= */
+function getMacroLog(){
+  try{ return JSON.parse(pget("macro_log")||"{}"); }catch{ return {}; }
+}
+function saveMacroLog(){
+  const p=parseFloat($("logP").value)||0;
+  const c=parseFloat($("logC").value)||0;
+  const f=parseFloat($("logF").value)||0;
+  const today=new Date().toISOString().slice(0,10);
+  const log=getMacroLog();
+  log[today]={p,c,f};
+  pset("macro_log", JSON.stringify(log));
+  renderMacrosPage();
+}
+function resetMacroLog(){
+  if(!canEditEverything()) return;
+  if(!confirm("Reset today macro log?")) return;
+  const today=new Date().toISOString().slice(0,10);
+  const log=getMacroLog();
+  delete log[today];
+  pset("macro_log", JSON.stringify(log));
+  $("logP").value=""; $("logC").value=""; $("logF").value="";
+  renderMacrosPage();
+}
+function getTodayLog(){
+  const today=new Date().toISOString().slice(0,10);
+  const log=getMacroLog();
+  return log[today]||{p:0,c:0,f:0};
+}
+
+function renderMacrosPage(){
+  const r=loadCalcResults();
+  $("macNoData").style.display = r ? "none" : "block";
+  $("macHero").style.display   = r ? "block" : "none";
+  $("macScaleSection").style.display = r ? "block" : "none";
+  $("macResetBtn").classList.toggle("hidden", !canEditEverything());
+
+  if(!r) return;
+
+  const CIRC=163.4; // 2*pi*26
+
+  // targets
+  const tP=Number(r.protein||0), tC=Number(r.carbs||0), tF=Number(r.fat||0);
+  const kcal=Number(r.calories||0);
+  const meals=Number(r.meals||1);
+
+  // today log
+  const today=getTodayLog();
+  const lP=today.p||0, lC=today.c||0, lF=today.f||0;
+
+  // load inputs
+  $("logP").value = lP||"";
+  $("logC").value = lC||"";
+  $("logF").value = lF||"";
+
+  $("macCaloriesLabel").textContent = `${kcal.toLocaleString()} kcal / day`;
+
+  // rings
+  function pct(a,b){ return b>0 ? Math.min(100,Math.round((a/b)*100)) : 0; }
+  function setRing(id,txtId,val,pct100){
+    const offset = CIRC - (CIRC * pct100/100);
+    const el=$(id); if(el) el.style.strokeDashoffset=offset;
+    const tx=$(txtId); if(tx) tx.textContent=pct100+"%";
+  }
+  const pP=pct(lP,tP), pC=pct(lC,tC), pF=pct(lF,tF);
+  setRing("ringP","ringPtxt",lP,pP);
+  setRing("ringC","ringCtxt",lC,pC);
+  setRing("ringF","ringFtxt",lF,pF);
+
+  $("macPTotal").textContent=`${tP} g`;
+  $("macCTotal").textContent=`${tC} g`;
+  $("macFTotal").textContent=`${tF} g`;
+
+  const remP=Math.max(0,tP-lP), remC=Math.max(0,tC-lC), remF=Math.max(0,tF-lF);
+  $("macPRemain").textContent = lP>0 ? `${remP}g left` : "";
+  $("macCRemain").textContent = lC>0 ? `${remC}g left` : "";
+  $("macFRemain").textContent = lF>0 ? `${remF}g left` : "";
+
+  // progress bars
+  function setBar(barId,pctId,remId,pctVal,remVal,color){
+    $(barId).style.width=pctVal+"%";
+    $(pctId).textContent=pctVal+"%";
+    $(remId).textContent=remVal>0?`${remVal}g left`:"Done!";
+    $(remId).style.color=remVal>0?"":"#22c55e";
+  }
+  setBar("barP","barPpct","barPrem",pP,remP,"#38bdf8");
+  setBar("barC","barCpct","barCrem",pC,remC,"#f97316");
+  setBar("barF","barFpct","barFrem",pF,remF,"#a78bfa");
+
+  // per-meal scale strips
+  const pDensity=Number(r.pDensity||30);
+  const cDensity=Number(r.cDensity||20);
+  const fDensity=Number(r.fDensity||100);
+
+  const pMeal=Number(r.proteinMeal||Math.round(tP/meals));
+  const cMeal=Number(r.carbsMeal||Math.round(tC/meals));
+  const fMeal=Number(r.fatMeal||Math.round(tF/meals));
+
+  const pScale=Number(r.proteinFoodMealG||Math.round(pMeal/(pDensity/100)));
+  const cScale=Number(r.carbFoodMealG||Math.round(cMeal/(cDensity/100)));
+  const fScale=Number(r.fatFoodMealG||Math.round(fMeal/(fDensity/100)));
+
+  // Scale section
+  const scaleBox=$("macMealStrips");
+  scaleBox.innerHTML="";
+
+  // per-meal rows
+  for(let m=1;m<=meals;m++){
+    const row=document.createElement("div");
+    row.className="mac-meal-strip";
+    row.innerHTML=
+      `<div class="mac-meal-num">${m}</div>`+
+      `<div class="mac-meal-macros">`+
+        `<span class="mac-chip p">P <b>${pMeal}g</b><span class="scale"> = ${pScale}g</span></span>`+
+        `<span class="mac-chip c">C <b>${cMeal}g</b><span class="scale"> = ${cScale}g</span></span>`+
+        `<span class="mac-chip f">F <b>${fMeal}g</b><span class="scale"> = ${fScale}g</span></span>`+
+      `</div>`;
+    scaleBox.appendChild(row);
+  }
+
+  // density legend
+  const legend=document.createElement("div");
+  legend.style="font-size:11px;opacity:.5;margin-top:6px;text-align:center";
+  legend.textContent=`Scale density: Protein ${pDensity}g/100g • Carbs ${cDensity}g/100g • Fat ${fDensity}g/100g`;
+  scaleBox.appendChild(legend);
+}
+
 </script>
 </body>
 </html>

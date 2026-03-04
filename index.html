@@ -195,10 +195,232 @@
   .counter span{min-width:118px;text-align:center;font-weight:900}
   .delbtn{background:#ef4444;border:0;color:#fff;width:34px;height:34px;border-radius:10px;font-weight:900;cursor:pointer}
 
-  /* weight rows */
-  .wrow{background:#1e293b;border-radius:12px;padding:10px;margin-top:10px;display:flex;gap:10px;align-items:center}
-  .wtag{background:#0f172a;border-radius:10px;padding:8px 10px;font-weight:900;min-width:92px;text-align:center}
-  .wrow input{margin:0}
+  /* ===== Weight Page ===== */
+  @keyframes wt-fadeIn{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+  .wt-page{ animation:wt-fadeIn .4s ease; }
+
+  /* ── Header ── */
+  .wt-header{
+    background:linear-gradient(145deg,#0b1628,#0f1f35);
+    border-radius:22px; padding:16px 18px;
+    margin-bottom:14px;
+    border:1px solid rgba(56,189,248,.12);
+    box-shadow:0 8px 32px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .wt-header-left{}
+  .wt-header-title{
+    font-weight:900; font-size:18px;
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .wt-header-sub{ font-size:11px; color:#64748b; margin-top:3px; font-weight:600; }
+  .wt-header-icon{ font-size:28px; }
+
+  /* ── Summary hero card ── */
+  .wt-summary{
+    background:linear-gradient(145deg,#0d1829,#111e30);
+    border-radius:20px; padding:16px;
+    margin-bottom:14px;
+    border:1.5px solid rgba(255,255,255,.07);
+    box-shadow:0 4px 20px rgba(0,0,0,.3);
+    animation:wt-fadeIn .4s ease .05s both;
+  }
+  .wt-summary-title{
+    font-size:10px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.1em; opacity:.4; margin-bottom:14px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .wt-summary-title::after{ content:''; flex:1; height:1px; background:rgba(255,255,255,.08); }
+  .wt-stats-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    margin-bottom:14px;
+  }
+  .wt-stat-box{
+    background:rgba(255,255,255,.03);
+    border-radius:16px; padding:12px 14px;
+    border:1.5px solid rgba(255,255,255,.07);
+  }
+  .wt-stat-icon{ font-size:18px; margin-bottom:4px; }
+  .wt-stat-val{
+    font-size:22px; font-weight:900; line-height:1.1; color:#e2e8f0;
+  }
+  .wt-stat-val.green{ color:#4ade80; }
+  .wt-stat-val.red{ color:#f87171; }
+  .wt-stat-val.blue{ color:#38bdf8; }
+  .wt-stat-val.amber{ color:#fbbf24; }
+  .wt-stat-lbl{
+    font-size:10px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.06em; opacity:.4; margin-top:3px;
+  }
+
+  /* ── Mini bar chart ── */
+  .wt-chart{
+    margin-top:4px;
+    background:rgba(15,23,42,.6);
+    border-radius:14px; padding:12px 12px 8px;
+    border:1px solid rgba(255,255,255,.05);
+  }
+  .wt-chart-title{
+    font-size:10px; font-weight:700; opacity:.35;
+    text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px;
+  }
+  .wt-bars{
+    display:flex; align-items:flex-end; gap:3px; height:48px;
+  }
+  .wt-bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; }
+  .wt-bar{
+    width:100%; border-radius:4px 4px 0 0;
+    min-height:3px; transition:height .4s ease;
+    background:linear-gradient(180deg,#38bdf8,#0ea5e9);
+  }
+  .wt-bar.is-last{ background:linear-gradient(180deg,#4ade80,#16a34a); }
+  .wt-bar-lbl{ font-size:8px; opacity:.35; white-space:nowrap; }
+
+  /* ── Duration pills ── */
+  .wt-dur-section{
+    background:linear-gradient(145deg,#0d1829,#111e30);
+    border-radius:20px; padding:14px 16px;
+    margin-bottom:14px;
+    border:1.5px solid rgba(255,255,255,.07);
+    animation:wt-fadeIn .4s ease .08s both;
+  }
+  .wt-dur-title{
+    font-size:10px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.1em; opacity:.4; margin-bottom:12px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .wt-dur-title::after{ content:''; flex:1; height:1px; background:rgba(255,255,255,.08); }
+  .wt-dur-pills{
+    display:flex; gap:8px; flex-wrap:wrap;
+  }
+  .wt-dur-pill{
+    padding:8px 14px; border-radius:20px;
+    background:rgba(255,255,255,.04);
+    border:1.5px solid rgba(255,255,255,.08);
+    color:#64748b; font-size:12px; font-weight:800;
+    cursor:pointer; transition:all .2s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wt-dur-pill.active{
+    background:rgba(56,189,248,.12);
+    border-color:rgba(56,189,248,.4); color:#38bdf8;
+    box-shadow:0 0 12px rgba(56,189,248,.15);
+  }
+
+  /* ── Week cards ── */
+  .wt-weeks-section{
+    animation:wt-fadeIn .4s ease .12s both;
+  }
+  .wt-weeks-title{
+    font-size:10px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.1em; opacity:.4; margin-bottom:12px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .wt-weeks-title::after{ content:''; flex:1; height:1px; background:rgba(255,255,255,.08); }
+
+  .wt-week-card{
+    background:linear-gradient(145deg,#0d1829,#111e30);
+    border-radius:18px; margin-bottom:10px;
+    border:1.5px solid rgba(255,255,255,.07);
+    box-shadow:0 3px 14px rgba(0,0,0,.25);
+    overflow:hidden;
+    transition:border-color .25s;
+  }
+  .wt-week-card.has-value{ border-color:rgba(56,189,248,.2); }
+  .wt-week-card.has-photo{ border-color:rgba(129,140,248,.3); }
+
+  /* card top row */
+  .wt-week-top{
+    display:flex; align-items:center; gap:12px;
+    padding:13px 14px;
+  }
+  .wt-week-num{
+    width:40px; height:40px; border-radius:14px; flex-shrink:0;
+    background:rgba(56,189,248,.1); border:1.5px solid rgba(56,189,248,.2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:900; color:#38bdf8;
+  }
+  .wt-week-card.has-value .wt-week-num{
+    background:rgba(56,189,248,.15); border-color:rgba(56,189,248,.35);
+  }
+  .wt-week-mid{ flex:1; min-width:0; }
+  .wt-week-label{ font-size:13px; font-weight:800; color:#e2e8f0; margin-bottom:4px; }
+  .wt-week-input{
+    width:100%; background:rgba(15,23,42,.8);
+    border:1.5px solid rgba(255,255,255,.08);
+    border-radius:10px; padding:7px 10px;
+    color:#e2e8f0; font-size:14px; font-weight:800;
+    outline:none; margin:0;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .wt-week-input:focus{
+    border-color:rgba(56,189,248,.5);
+    box-shadow:0 0 0 3px rgba(56,189,248,.08);
+  }
+  .wt-week-right{
+    display:flex; flex-direction:column; align-items:center; gap:6px; flex-shrink:0;
+  }
+  .wt-trend{
+    font-size:11px; font-weight:800; padding:3px 8px;
+    border-radius:10px; white-space:nowrap;
+  }
+  .wt-trend.up{ background:rgba(248,113,113,.12); color:#f87171; }
+  .wt-trend.down{ background:rgba(74,222,128,.12); color:#4ade80; }
+  .wt-trend.same{ background:rgba(100,116,139,.12); color:#94a3b8; }
+  .wt-trend.none{ opacity:0; }
+
+  /* photo upload button */
+  .wt-photo-btn{
+    width:36px; height:36px; border-radius:12px;
+    background:rgba(129,140,248,.1); border:1.5px solid rgba(129,140,248,.2);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:16px;
+    transition:all .2s; flex-shrink:0;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wt-photo-btn:active{ transform:scale(.92); }
+  .wt-photo-btn.has-photo{
+    background:rgba(129,140,248,.2); border-color:rgba(129,140,248,.5);
+    box-shadow:0 0 10px rgba(129,140,248,.2);
+  }
+
+  /* photo preview */
+  .wt-photo-preview{
+    margin:0 14px 14px;
+    border-radius:14px; overflow:hidden;
+    border:1.5px solid rgba(129,140,248,.25);
+    position:relative; max-height:0;
+    transition:max-height .38s cubic-bezier(.4,0,.2,1);
+    background:#0a1220;
+  }
+  .wt-photo-preview.open{ max-height:400px; }
+  .wt-photo-preview img{
+    width:100%; display:block;
+    border-radius:12px;
+  }
+  .wt-photo-remove{
+    position:absolute; top:8px; right:8px;
+    background:rgba(0,0,0,.6); border:none;
+    color:#fff; font-size:14px; width:28px; height:28px;
+    border-radius:8px; cursor:pointer; display:flex;
+    align-items:center; justify-content:center;
+    backdrop-filter:blur(4px);
+    transition:background .2s;
+  }
+  .wt-photo-remove:hover{ background:rgba(239,68,68,.7); }
+
+  /* hidden file input */
+  .wt-file-input{ display:none; }
+
+  /* ── Reset button ── */
+  .wt-reset-wrap{ margin-top:14px; text-align:center; }
+
+  /* old weight row styles (kept for safety, overridden) */
+  .wrow{display:none}
+  .wtag{display:none}
 
   /* subscription UI */
   .subRow{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -1380,22 +1602,75 @@
 
 <!-- WEIGHT -->
 <div class="page" id="pWeight">
-  <div class="box">
-    <div style="font-weight:900;color:#38bdf8">Weight Tracker</div>
+  <div class="wt-page">
+
+    <!-- Header -->
+    <div class="wt-header">
+      <div class="wt-header-left">
+        <div class="wt-header-title">⚖️ Weight Tracker</div>
+        <div class="wt-header-sub">Track your weekly progress & photos</div>
+      </div>
+      <div class="wt-header-icon">📈</div>
+    </div>
+
+    <!-- Summary hero -->
+    <div class="wt-summary">
+      <div class="wt-summary-title">📊 Progress Summary</div>
+      <div class="wt-stats-grid">
+        <div class="wt-stat-box">
+          <div class="wt-stat-icon">🏁</div>
+          <div class="wt-stat-val blue" id="wStart">--</div>
+          <div class="wt-stat-lbl">Start Weight</div>
+        </div>
+        <div class="wt-stat-box">
+          <div class="wt-stat-icon">📍</div>
+          <div class="wt-stat-val blue" id="wCurrent">--</div>
+          <div class="wt-stat-lbl">Current Weight</div>
+        </div>
+        <div class="wt-stat-box">
+          <div class="wt-stat-icon">📉</div>
+          <div class="wt-stat-val" id="wChange">--</div>
+          <div class="wt-stat-lbl">Total Change</div>
+        </div>
+        <div class="wt-stat-box">
+          <div class="wt-stat-icon">📆</div>
+          <div class="wt-stat-val" id="wAvg">--</div>
+          <div class="wt-stat-lbl">Avg / Week</div>
+        </div>
+      </div>
+      <!-- Mini chart -->
+      <div id="wtChartWrap" class="wt-bars" style="display:none"></div>
+    </div>
+
+    <!-- Duration pills -->
+    <div class="wt-dur-section">
+      <div class="wt-dur-title">⏱ Duration</div>
+      <div class="wt-dur-pills" id="wtDurPills">
+        <button class="wt-dur-pill" onclick="setWeightDur(4)">4w</button>
+        <button class="wt-dur-pill" onclick="setWeightDur(8)">8w</button>
+        <button class="wt-dur-pill active" onclick="setWeightDur(12)">12w</button>
+        <button class="wt-dur-pill" onclick="setWeightDur(16)">16w</button>
+        <button class="wt-dur-pill" onclick="setWeightDur(20)">20w</button>
+        <button class="wt-dur-pill" onclick="setWeightDur(26)">26w</button>
+        <button class="wt-dur-pill" onclick="setWeightDur(52)">52w</button>
+      </div>
+    </div>
+
+    <!-- Week cards -->
+    <div class="wt-weeks-section">
+      <div class="wt-weeks-title">🗓 Weekly Log</div>
+      <div id="weightRows"></div>
+    </div>
+
+    <!-- Reset -->
+    <div class="wt-reset-wrap">
+      <button class="mini red hidden" id="weightResetBtn" onclick="resetWeight()">🗑 Reset All</button>
+    </div>
+
+    <!-- Hidden weeks select (kept for compatibility) -->
+    <select id="weightWeeks" style="display:none"></select>
+
   </div>
-
-  <label>Duration (Weeks)</label>
-  <select id="weightWeeks"></select>
-
-  <div class="results">
-    <div id="wStart">Start: --</div>
-    <div id="wCurrent">Current: --</div>
-    <div id="wChange">Change: --</div>
-    <div id="wAvg">Avg / Week: --</div>
-  </div>
-
-  <div id="weightRows"></div>
-  <button class="mini red hidden" id="weightResetBtn" onclick="resetWeight()">Reset weight log</button>
 </div>
 
 <script>
@@ -2633,11 +2908,18 @@ function initWeightWeeks(){
     if(w===12) o.selected=true;
     sel.appendChild(o);
   }
-  sel.addEventListener("change", ()=>{
-    pset("weight_weeks", sel.value);
-    renderWeightRows();
-    calcWeightSummary();
+  /* sync pill highlight on load */
+  const saved=pget("weight_weeks");
+  if(saved) setWeightDur(parseInt(saved,10), true);
+}
+function setWeightDur(w, silent){
+  pset("weight_weeks", String(w));
+  const sel=$("weightWeeks"); if(sel) sel.value=String(w);
+  /* highlight pill */
+  document.querySelectorAll(".wt-dur-pill").forEach(p=>{
+    p.classList.toggle("active", parseInt(p.textContent)===w || p.textContent===w+"w");
   });
+  if(!silent){ renderWeightRows(); calcWeightSummary(); }
 }
 function getWeightWeeks(){
   const saved=pget("weight_weeks");
@@ -2646,28 +2928,156 @@ function getWeightWeeks(){
 }
 function loadWeightTracker(){
   const saved=pget("weight_weeks");
-  if(saved) $("weightWeeks").value=saved;
+  if(saved){ setWeightDur(parseInt(saved,10), true); }
   renderWeightRows();
   calcWeightSummary();
 }
+/* ── photo helpers ── */
+function wPhotoKey(i){ return "w_photo_"+i; }
+function wGetPhoto(i){ return pget(wPhotoKey(i)) || ""; }
+function wSetPhoto(i, dataUrl){ pset(wPhotoKey(i), dataUrl); }
+function wRemovePhoto(i){ premove(wPhotoKey(i)); }
+
 function renderWeightRows(){
   const weeks=getWeightWeeks();
   const wrap=$("weightRows");
   wrap.innerHTML="";
   for(let i=1;i<=weeks;i++){
-    const row=document.createElement("div"); row.className="wrow";
-    const tag=document.createElement("div"); tag.className="wtag"; tag.textContent=`Week ${i}`;
+    const val=pget("w_"+i)||"";
+    const photo=wGetPhoto(i);
+    const hasVal=val!=="";
+    const hasPhoto=photo!=="";
+
+    /* card */
+    const card=document.createElement("div");
+    card.className="wt-week-card"+(hasVal?" has-value":"")+(hasPhoto?" has-photo":"");
+    card.dataset.week=i;
+
+    /* top row */
+    const top=document.createElement("div"); top.className="wt-week-top";
+
+    /* week number badge */
+    const num=document.createElement("div"); num.className="wt-week-num"; num.textContent=i;
+
+    /* mid: label + input */
+    const mid=document.createElement("div"); mid.className="wt-week-mid";
+    const lbl=document.createElement("div"); lbl.className="wt-week-label"; lbl.textContent=`Week ${i}`;
     const inp=document.createElement("input");
-    inp.type="number"; inp.min="0"; inp.step="0.1"; inp.placeholder="Weight (kg)";
-    inp.value = pget("w_"+i) || "";
-    inp.addEventListener("input", ()=>{
+    inp.className="wt-week-input"; inp.type="number"; inp.min="0"; inp.step="0.1";
+    inp.placeholder="kg"; inp.value=val;
+    inp.addEventListener("input",()=>{
       pset("w_"+i, inp.value||"");
+      card.classList.toggle("has-value", inp.value!=="");
+      num.style.background = inp.value ? "linear-gradient(135deg,#38bdf8,#818cf8)" : "";
       calcWeightSummary();
     });
-    row.appendChild(tag); row.appendChild(inp);
-    wrap.appendChild(row);
+    mid.appendChild(lbl); mid.appendChild(inp);
+
+    /* right: trend + photo btn */
+    const right=document.createElement("div"); right.className="wt-week-right";
+
+    /* trend arrow */
+    const trend=document.createElement("div"); trend.className="wt-trend none"; trend.dataset.trendIdx=i;
+
+    /* photo button */
+    const photoBtnWrap=document.createElement("div");
+    photoBtnWrap.className="wt-photo-btn"+(hasPhoto?" has-photo":"");
+    photoBtnWrap.title=hasPhoto?"View / change photo":"Upload progress photo";
+    photoBtnWrap.innerHTML=hasPhoto?"🖼":"📷";
+    photoBtnWrap.onclick=()=> hasPhoto ? togglePhotoPreview(i) : triggerPhotoUpload(i);
+
+    /* hidden file input */
+    const fileInp=document.createElement("input");
+    fileInp.type="file"; fileInp.accept="image/*"; fileInp.className="wt-file-input";
+    fileInp.id=`wtFile_${i}`;
+    fileInp.addEventListener("change",function(){
+      const file=this.files[0]; if(!file) return;
+      const reader=new FileReader();
+      reader.onload=e=>{
+        wSetPhoto(i, e.target.result);
+        renderWeightRows();
+        calcWeightSummary();
+        /* auto-open preview */
+        setTimeout(()=>togglePhotoPreview(i, true),80);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    right.appendChild(trend);
+    right.appendChild(photoBtnWrap);
+    right.appendChild(fileInp);
+
+    top.appendChild(num); top.appendChild(mid); top.appendChild(right);
+    card.appendChild(top);
+
+    /* photo preview (collapsed by default) */
+    if(hasPhoto){
+      const preview=document.createElement("div");
+      preview.className="wt-photo-preview"; preview.id=`wtPrev_${i}`;
+      const img=document.createElement("img"); img.src=photo; img.alt=`Week ${i}`;
+      const removeBtn=document.createElement("button");
+      removeBtn.className="wt-photo-remove"; removeBtn.innerHTML="✕";
+      removeBtn.onclick=(e)=>{ e.stopPropagation(); wRemovePhoto(i); renderWeightRows(); calcWeightSummary(); };
+      preview.appendChild(img); preview.appendChild(removeBtn);
+      card.appendChild(preview);
+    }
+
+    wrap.appendChild(card);
+  }
+  /* update trend arrows after all cards rendered */
+  updateTrendArrows(weeks);
+  renderWeightChart(weeks);
+}
+
+function triggerPhotoUpload(i){
+  const el=$(`wtFile_${i}`); if(el) el.click();
+}
+function togglePhotoPreview(i, forceOpen){
+  const prev=$(`wtPrev_${i}`); if(!prev) return;
+  if(forceOpen) prev.classList.add("open");
+  else prev.classList.toggle("open");
+}
+function updateTrendArrows(weeks){
+  let prev=null;
+  for(let i=1;i<=weeks;i++){
+    const v=parseFloat((pget("w_"+i)||"").trim());
+    const el=document.querySelector(`[data-trend-idx="${i}"]`);
+    if(!el) continue;
+    if(!isFinite(v)||v<=0){ el.className="wt-trend none"; prev=null; continue; }
+    if(prev===null){ el.className="wt-trend same"; el.textContent="●"; prev=v; continue; }
+    const diff=v-prev;
+    if(Math.abs(diff)<0.05){ el.className="wt-trend same"; el.textContent="→ 0"; }
+    else if(diff>0){ el.className="wt-trend up"; el.textContent=`▲ +${diff.toFixed(1)}`; }
+    else { el.className="wt-trend down"; el.textContent=`▼ ${diff.toFixed(1)}`; }
+    prev=v;
   }
 }
+function renderWeightChart(weeks){
+  const wrap=$("wtChartWrap"); if(!wrap) return;
+  const vals=[];
+  for(let i=1;i<=weeks;i++){
+    const v=parseFloat((pget("w_"+i)||"").trim());
+    vals.push(isFinite(v)&&v>0 ? v : null);
+  }
+  const filled=vals.filter(x=>x!==null);
+  if(filled.length<2){ wrap.style.display="none"; return; }
+  wrap.style.display="flex";
+  const mn=Math.min(...filled), mx=Math.max(...filled);
+  const range=mx-mn||1;
+  wrap.innerHTML="";
+  vals.forEach((v,i)=>{
+    const col=document.createElement("div"); col.className="wt-bar-col";
+    const bar=document.createElement("div"); bar.className="wt-bar";
+    if(i===vals.lastIndexOf(filled[filled.length-1])) bar.classList.add("is-last");
+    const pct=v===null?0: Math.max(8, Math.round(((v-mn)/range)*90+5));
+    bar.style.height=pct+"%";
+    const lbl=document.createElement("div"); lbl.className="wt-bar-lbl";
+    lbl.textContent= v===null?"" : `W${i+1}`;
+    col.appendChild(bar); col.appendChild(lbl);
+    wrap.appendChild(col);
+  });
+}
+
 function calcWeightSummary(){
   const weeks=getWeightWeeks();
   let start=null, last=null, lastIdx=null;
@@ -2679,27 +3089,31 @@ function calcWeightSummary(){
     }
   }
   if(start===null || last===null){
-    $("wStart").textContent="Start: --";
-    $("wCurrent").textContent="Current: --";
-    $("wChange").textContent="Change: --";
-    $("wAvg").textContent="Avg / Week: --";
+    $("wStart").textContent="--"; $("wStart").className="wt-stat-val blue";
+    $("wCurrent").textContent="--"; $("wCurrent").className="wt-stat-val blue";
+    $("wChange").textContent="--"; $("wChange").className="wt-stat-val";
+    $("wAvg").textContent="--"; $("wAvg").className="wt-stat-val";
     return;
   }
   const change=last-start;
-  const weeksPassed=Math.max(1, (lastIdx-1));
+  const weeksPassed=Math.max(1,(lastIdx-1));
   const avg=change/weeksPassed;
+  const sign=change>0?"+":"";
+  const avgSign=avg>0?"+":"";
 
-  $("wStart").textContent=`Start: ${start.toFixed(1)} kg`;
-  $("wCurrent").textContent=`Current: ${last.toFixed(1)} kg (Week ${lastIdx})`;
-  $("wChange").textContent=`Change: ${change.toFixed(1)} kg`;
-  $("wAvg").textContent=`Avg / Week: ${avg.toFixed(2)} kg/week`;
+  $("wStart").textContent=`${start.toFixed(1)} kg`; $("wStart").className="wt-stat-val blue";
+  $("wCurrent").textContent=`${last.toFixed(1)} kg`; $("wCurrent").className="wt-stat-val blue";
+  $("wChange").textContent=`${sign}${change.toFixed(1)} kg`;
+  $("wChange").className="wt-stat-val "+(change>0?"red":change<0?"green":"amber");
+  $("wAvg").textContent=`${avgSign}${avg.toFixed(2)} kg`;
+  $("wAvg").className="wt-stat-val "+(avg>0?"red":avg<0?"green":"amber");
 }
 function applyWeightButtons(){ $("weightResetBtn").classList.toggle("hidden", !canEditEverything()); }
 function resetWeight(){
   if(!canEditEverything()) return;
-  if(!confirm("Reset weight log?")) return;
+  if(!confirm("Reset weight log? This will also remove all progress photos.")) return;
   const weeks=getWeightWeeks();
-  for(let i=1;i<=weeks;i++) premove("w_"+i);
+  for(let i=1;i<=weeks;i++){ premove("w_"+i); premove(wPhotoKey(i)); }
   renderWeightRows();
   calcWeightSummary();
 }

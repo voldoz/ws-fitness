@@ -4206,99 +4206,81 @@ function updateEx(day, idx, key, val){
 
 /* ══════════════════════════════════════════════════
    EXERCISE IMAGE MAP
-   Uses ExerciseDB / free GIF sources.
-   getExerciseImage(name) → {url, emoji, muscle}
-   ══════════════════════════════════════════════════ */
+   Real photos from free-exercise-db (public domain) via jsDelivr CDN
+   getExerciseImage(name) -> {url, emoji, muscle}
+   ================================================== */
+const _EX_BASE = "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db/exercises/";
 const EX_IMG = {
   /* Chest */
-  "bench press":          {url:"https://static.jefit.com/assets/img/app/exercises/562-1.png", emoji:"🏋️", muscle:"Chest"},
-  "barbell bench press":  {url:"https://static.jefit.com/assets/img/app/exercises/562-1.png", emoji:"🏋️", muscle:"Chest"},
-  "incline dumbbell press":{url:"https://static.jefit.com/assets/img/app/exercises/590-1.png", emoji:"🏋️", muscle:"Chest"},
-  "incline bench press":  {url:"https://static.jefit.com/assets/img/app/exercises/590-1.png", emoji:"🏋️", muscle:"Chest"},
-  "dumbbell bench press": {url:"https://static.jefit.com/assets/img/app/exercises/590-1.png", emoji:"🏋️", muscle:"Chest"},
-  "cable flyes":          {url:"https://static.jefit.com/assets/img/app/exercises/606-1.png", emoji:"🤸", muscle:"Chest"},
-  "pec deck":             {url:"https://static.jefit.com/assets/img/app/exercises/606-1.png", emoji:"🤸", muscle:"Chest"},
-  "pec deck machine":     {url:"https://static.jefit.com/assets/img/app/exercises/606-1.png", emoji:"🤸", muscle:"Chest"},
-  "dips":                 {url:"https://static.jefit.com/assets/img/app/exercises/619-1.png", emoji:"💪", muscle:"Chest/Triceps"},
-  "tricep dips":          {url:"https://static.jefit.com/assets/img/app/exercises/619-1.png", emoji:"💪", muscle:"Triceps"},
+  "bench press":            {p:"Barbell_Bench_Press_-_Medium_Grip/0.jpg",          emoji:"\U0001F3CB\uFE0F", muscle:"Chest"},
+  "barbell bench press":    {p:"Barbell_Bench_Press_-_Medium_Grip/0.jpg",          emoji:"\U0001F3CB\uFE0F", muscle:"Chest"},
+  "incline dumbbell press": {p:"Incline_Dumbbell_Press/0.jpg",                     emoji:"\U0001F3CB\uFE0F", muscle:"Chest"},
+  "incline bench press":    {p:"Barbell_Incline_Bench_Press_-_Medium_Grip/0.jpg",  emoji:"\U0001F3CB\uFE0F", muscle:"Chest"},
+  "dumbbell bench press":   {p:"Dumbbell_Bench_Press/0.jpg",                       emoji:"\U0001F3CB\uFE0F", muscle:"Chest"},
+  "cable flyes":            {p:"Flat_Bench_Cable_Flyes/0.jpg",                     emoji:"\U0001F938", muscle:"Chest"},
+  "pec deck":               {p:"Flat_Bench_Cable_Flyes/0.jpg",                     emoji:"\U0001F938", muscle:"Chest"},
+  "pec deck machine":       {p:"Flat_Bench_Cable_Flyes/0.jpg",                     emoji:"\U0001F938", muscle:"Chest"},
+  "dips":                   {p:"Dips_-_Triceps_Version/0.jpg",                     emoji:"\U0001F4AA", muscle:"Chest/Triceps"},
+  "tricep dips":            {p:"Dips_-_Triceps_Version/0.jpg",                     emoji:"\U0001F4AA", muscle:"Triceps"},
   /* Shoulders */
-  "overhead press":       {url:"https://static.jefit.com/assets/img/app/exercises/579-1.png", emoji:"🏋️", muscle:"Shoulders"},
-  "dumbbell shoulder press":{url:"https://static.jefit.com/assets/img/app/exercises/584-1.png", emoji:"🏋️", muscle:"Shoulders"},
-  "arnold press":         {url:"https://static.jefit.com/assets/img/app/exercises/584-1.png", emoji:"🏋️", muscle:"Shoulders"},
-  "lateral raises":       {url:"https://static.jefit.com/assets/img/app/exercises/596-1.png", emoji:"🦅", muscle:"Side Delts"},
-  "front raises":         {url:"https://static.jefit.com/assets/img/app/exercises/596-1.png", emoji:"🦅", muscle:"Front Delts"},
-  "rear delt flyes":      {url:"https://static.jefit.com/assets/img/app/exercises/611-1.png", emoji:"🔙", muscle:"Rear Delts"},
-  "face pulls":           {url:"https://static.jefit.com/assets/img/app/exercises/611-1.png", emoji:"🔙", muscle:"Rear Delts"},
+  "overhead press":         {p:"Barbell_Shoulder_Press/0.jpg",                     emoji:"\U0001F3CB\uFE0F", muscle:"Shoulders"},
+  "dumbbell shoulder press":{p:"Dumbbell_Shoulder_Press/0.jpg",                    emoji:"\U0001F3CB\uFE0F", muscle:"Shoulders"},
+  "arnold press":           {p:"Arnold_Dumbbell_Press/0.jpg",                      emoji:"\U0001F3CB\uFE0F", muscle:"Shoulders"},
+  "lateral raises":         {p:"Side_Lateral_Raise/0.jpg",                         emoji:"\U0001F985", muscle:"Side Delts"},
+  "front raises":           {p:"Dumbbell_Front_Raise/0.jpg",                       emoji:"\U0001F985", muscle:"Front Delts"},
+  "rear delt flyes":        {p:"Dumbbell_Lying_Rear_Lateral_Raise/0.jpg",          emoji:"\U0001F519", muscle:"Rear Delts"},
+  "face pulls":             {p:"Face_Pull/0.jpg",                                  emoji:"\U0001F519", muscle:"Rear Delts"},
   /* Back */
-  "barbell row":          {url:"https://static.jefit.com/assets/img/app/exercises/573-1.png", emoji:"🔙", muscle:"Back"},
-  "deadlift":             {url:"https://static.jefit.com/assets/img/app/exercises/560-1.png", emoji:"⚡", muscle:"Back/Legs"},
-  "pull-ups":             {url:"https://static.jefit.com/assets/img/app/exercises/617-1.png", emoji:"🧗", muscle:"Back"},
-  "lat pulldown":         {url:"https://static.jefit.com/assets/img/app/exercises/616-1.png", emoji:"🔽", muscle:"Back"},
-  "seated cable row":     {url:"https://static.jefit.com/assets/img/app/exercises/614-1.png", emoji:"🔙", muscle:"Back"},
-  "seated row":           {url:"https://static.jefit.com/assets/img/app/exercises/614-1.png", emoji:"🔙", muscle:"Back"},
-  "cable row":            {url:"https://static.jefit.com/assets/img/app/exercises/614-1.png", emoji:"🔙", muscle:"Back"},
-  "t-bar row":            {url:"https://static.jefit.com/assets/img/app/exercises/573-1.png", emoji:"🔙", muscle:"Back"},
-  "shrugs":               {url:"https://static.jefit.com/assets/img/app/exercises/618-1.png", emoji:"🤷", muscle:"Traps"},
+  "barbell row":            {p:"Bent_Over_Barbell_Row/0.jpg",                      emoji:"\U0001F519", muscle:"Back"},
+  "deadlift":               {p:"Barbell_Deadlift/0.jpg",                           emoji:"\u26A1", muscle:"Back/Legs"},
+  "pull-ups":               {p:"Pull-ups/0.jpg",                                   emoji:"\U0001F9D7", muscle:"Back"},
+  "lat pulldown":           {p:"Close-Grip_Front_Lat_Pulldown/0.jpg",              emoji:"\u23EC", muscle:"Back"},
+  "seated cable row":       {p:"Seated_Cable_Rows/0.jpg",                          emoji:"\U0001F519", muscle:"Back"},
+  "seated row":             {p:"Seated_Cable_Rows/0.jpg",                          emoji:"\U0001F519", muscle:"Back"},
+  "cable row":              {p:"Seated_Cable_Rows/0.jpg",                          emoji:"\U0001F519", muscle:"Back"},
+  "t-bar row":              {p:"Lying_T-Bar_Row/0.jpg",                            emoji:"\U0001F519", muscle:"Back"},
+  "shrugs":                 {p:"Barbell_Shrug/0.jpg",                              emoji:"\U0001F937", muscle:"Traps"},
   /* Biceps */
-  "barbell curl":         {url:"https://static.jefit.com/assets/img/app/exercises/571-1.png", emoji:"💪", muscle:"Biceps"},
-  "hammer curl":          {url:"https://static.jefit.com/assets/img/app/exercises/572-1.png", emoji:"🔨", muscle:"Biceps"},
-  "incline dumbbell curl":{url:"https://static.jefit.com/assets/img/app/exercises/571-1.png", emoji:"💪", muscle:"Biceps"},
+  "barbell curl":           {p:"Barbell_Curl/0.jpg",                               emoji:"\U0001F4AA", muscle:"Biceps"},
+  "hammer curl":            {p:"Alternate_Hammer_Curl/0.jpg",                      emoji:"\U0001F528", muscle:"Biceps"},
+  "incline dumbbell curl":  {p:"Incline_Dumbbell_Curl/0.jpg",                      emoji:"\U0001F4AA", muscle:"Biceps"},
   /* Triceps */
-  "skull crushers":       {url:"https://static.jefit.com/assets/img/app/exercises/600-1.png", emoji:"💀", muscle:"Triceps"},
-  "tricep pushdowns":     {url:"https://static.jefit.com/assets/img/app/exercises/601-1.png", emoji:"⬇️", muscle:"Triceps"},
-  "overhead tricep extension":{url:"https://static.jefit.com/assets/img/app/exercises/600-1.png", emoji:"💪", muscle:"Triceps"},
-  "close-grip bench":     {url:"https://static.jefit.com/assets/img/app/exercises/562-1.png", emoji:"🏋️", muscle:"Triceps"},
+  "skull crushers":         {p:"EZ-Bar_Skullcrusher/0.jpg",                        emoji:"\U0001F480", muscle:"Triceps"},
+  "tricep pushdowns":       {p:"Cable_Incline_Pushdown/0.jpg",                     emoji:"\u2B07\uFE0F", muscle:"Triceps"},
+  "overhead tricep extension":{p:"Cable_Rope_Overhead_Triceps_Extension/0.jpg",    emoji:"\U0001F4AA", muscle:"Triceps"},
+  "close-grip bench":       {p:"Close-Grip_Barbell_Bench_Press/0.jpg",             emoji:"\U0001F3CB\uFE0F", muscle:"Triceps"},
   /* Legs */
-  "squat":                {url:"https://static.jefit.com/assets/img/app/exercises/553-1.png", emoji:"🦵", muscle:"Quads"},
-  "barbell squat":        {url:"https://static.jefit.com/assets/img/app/exercises/553-1.png", emoji:"🦵", muscle:"Quads"},
-  "front squat":          {url:"https://static.jefit.com/assets/img/app/exercises/553-1.png", emoji:"🦵", muscle:"Quads"},
-  "hack squat":           {url:"https://static.jefit.com/assets/img/app/exercises/556-1.png", emoji:"🦵", muscle:"Quads"},
-  "leg press":            {url:"https://static.jefit.com/assets/img/app/exercises/554-1.png", emoji:"🦵", muscle:"Quads"},
-  "romanian deadlift":    {url:"https://static.jefit.com/assets/img/app/exercises/558-1.png", emoji:"🦵", muscle:"Hamstrings"},
-  "leg curl":             {url:"https://static.jefit.com/assets/img/app/exercises/557-1.png", emoji:"🦵", muscle:"Hamstrings"},
-  "seated leg curl":      {url:"https://static.jefit.com/assets/img/app/exercises/557-1.png", emoji:"🦵", muscle:"Hamstrings"},
-  "leg extension":        {url:"https://static.jefit.com/assets/img/app/exercises/555-1.png", emoji:"🦵", muscle:"Quads"},
-  "walking lunges":       {url:"https://static.jefit.com/assets/img/app/exercises/565-1.png", emoji:"🚶", muscle:"Legs"},
-  "calf raises":          {url:"https://static.jefit.com/assets/img/app/exercises/564-1.png", emoji:"🦶", muscle:"Calves"},
-  "standing calf raises": {url:"https://static.jefit.com/assets/img/app/exercises/564-1.png", emoji:"🦶", muscle:"Calves"},
+  "squat":                  {p:"Barbell_Full_Squat/0.jpg",                         emoji:"\U0001F9B5", muscle:"Quads"},
+  "barbell squat":          {p:"Barbell_Squat/0.jpg",                              emoji:"\U0001F9B5", muscle:"Quads"},
+  "front squat":            {p:"Front_Barbell_Squat/0.jpg",                        emoji:"\U0001F9B5", muscle:"Quads"},
+  "hack squat":             {p:"Hack_Squat/0.jpg",                                 emoji:"\U0001F9B5", muscle:"Quads"},
+  "leg press":              {p:"Leg_Press/0.jpg",                                  emoji:"\U0001F9B5", muscle:"Quads"},
+  "romanian deadlift":      {p:"Romanian_Deadlift/0.jpg",                          emoji:"\U0001F9B5", muscle:"Hamstrings"},
+  "leg curl":               {p:"Leg_Curl/0.jpg",                                   emoji:"\U0001F9B5", muscle:"Hamstrings"},
+  "seated leg curl":        {p:"Seated_Leg_Curl/0.jpg",                            emoji:"\U0001F9B5", muscle:"Hamstrings"},
+  "leg extension":          {p:"Leg_Extensions/0.jpg",                             emoji:"\U0001F9B5", muscle:"Quads"},
+  "walking lunges":         {p:"Bodyweight_Walking_Lunge/0.jpg",                   emoji:"\U0001F6B6", muscle:"Legs"},
+  "calf raises":            {p:"Standing_Calf_Raises/0.jpg",                       emoji:"\U0001F9B6", muscle:"Calves"},
+  "standing calf raises":   {p:"Standing_Calf_Raises/0.jpg",                       emoji:"\U0001F9B6", muscle:"Calves"},
   /* Core */
-  "plank":                {url:"", emoji:"🧘", muscle:"Core"},
-  "hanging leg raises":   {url:"", emoji:"🏋️", muscle:"Core"},
-  "cable crunches":       {url:"", emoji:"🧘", muscle:"Core"},
-  "russian twists":       {url:"", emoji:"🌀", muscle:"Core"},
+  "plank":                  {p:"Plank/0.jpg",                                      emoji:"\U0001F9D8", muscle:"Core"},
+  "hanging leg raises":     {p:"Hanging_Leg_Raise/0.jpg",                          emoji:"\U0001F3CB\uFE0F", muscle:"Core"},
+  "cable crunches":         {p:"Cable_Crunch/0.jpg",                               emoji:"\U0001F9D8", muscle:"Core"},
+  "russian twists":         {p:"Russian_Twist/0.jpg",                              emoji:"\U0001F300", muscle:"Core"},
   /* Cardio */
-  "treadmill run":        {url:"", emoji:"🏃", muscle:"Cardio"},
-  "jump rope":            {url:"", emoji:"⏭️", muscle:"Cardio"},
-  "cycling":              {url:"", emoji:"🚴", muscle:"Cardio"},
+  "treadmill run":          {p:"",                                                  emoji:"\U0001F3C3", muscle:"Cardio"},
+  "jump rope":              {p:"",                                                  emoji:"\u23ED\uFE0F", muscle:"Cardio"},
+  "cycling":                {p:"",                                                  emoji:"\U0001F6B4", muscle:"Cardio"},
 };
 
 function getExerciseImage(name){
   const key=name.toLowerCase().trim();
-  /* exact match */
-  if(EX_IMG[key]) return EX_IMG[key];
-  /* partial match */
+  function _build(e){ return e ? Object.assign({},e,{url:e.p?_EX_BASE+e.p:""}) : null; }
+  if(EX_IMG[key]) return _build(EX_IMG[key]);
   for(const [k,v] of Object.entries(EX_IMG)){
-    if(key.includes(k)||k.includes(key)) return v;
+    if(key.includes(k)||k.includes(key)) return _build(v);
   }
-  return {url:"", emoji:"🏋️", muscle:""};
-}
-
-function openExLightbox(name, imgData){
-  let lb=document.getElementById("woExLightbox");
-  if(!lb){ lb=document.createElement("div"); lb.id="woExLightbox"; lb.className="wo-ex-lightbox"; document.body.appendChild(lb); }
-  lb.onclick=e=>{ if(e.target===lb) lb.style.display="none"; };
-  const muscle=imgData.muscle||"";
-  lb.innerHTML=`
-    ${imgData.url
-      ? `<img class="wo-ex-lightbox-img" src="${imgData.url}" alt="${name}"
-           onerror="this.style.display='none';this.nextSibling.style.display='block'"
-         /><div class="wo-ex-lightbox-noimg" style="display:none">${imgData.emoji||"🏋️"}</div>`
-      : `<div class="wo-ex-lightbox-noimg">${imgData.emoji||"🏋️"}</div>`}
-    <div class="wo-ex-lightbox-name">${name}</div>
-    ${muscle?`<div class="wo-ex-lightbox-meta">Muscle: ${muscle}</div>`:""}
-    <button class="wo-ex-lightbox-close" onclick="document.getElementById('woExLightbox').style.display='none'">✕ Close</button>
-  `;
-  lb.style.display="flex";
+  return {url:"", emoji:"\U0001F3CB\uFE0F", muscle:""};
 }
 
 function renderWorkouts(){

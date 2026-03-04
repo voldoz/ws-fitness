@@ -1903,14 +1903,14 @@ const FOOD_TYPES = {
     { key:"yogurt",   label:"زبادي",         en:"Greek Yogurt", density:10 },
   ],
   c: [
-    { key:"rice",     label:"أرز",           en:"Rice (cooked)",density:3  },
-    { key:"oats",     label:"شوفان",         en:"Oats (dry)",   density:14 },
-    { key:"potato",   label:"بطاطا",         en:"Potato",       density:2  },
-    { key:"bread",    label:"خبز",           en:"Bread",        density:9  },
-    { key:"pasta",    label:"باستا",         en:"Pasta (cooked)",density:5 },
-    { key:"sweetpot", label:"بطاطا حلوة",    en:"Sweet Potato", density:2  },
-    { key:"quinoa",   label:"كينوا",         en:"Quinoa (cooked)",density:4},
-    { key:"banana",   label:"موز",           en:"Banana",       density:1  },
+    { key:"rice",     label:"أرز",           en:"Rice (cooked)",  density:28 },
+    { key:"oats",     label:"شوفان",         en:"Oats (dry)",      density:67 },
+    { key:"potato",   label:"بطاطا",         en:"Potato",          density:17 },
+    { key:"bread",    label:"خبز",           en:"Bread",           density:49 },
+    { key:"pasta",    label:"باستا",         en:"Pasta (cooked)",  density:25 },
+    { key:"sweetpot", label:"بطاطا حلوة",    en:"Sweet Potato",    density:20 },
+    { key:"quinoa",   label:"كينوا",         en:"Quinoa (cooked)", density:21 },
+    { key:"banana",   label:"موز",           en:"Banana",          density:23 },
   ],
   f: [
     { key:"oliveoil", label:"زيت زيتون",     en:"Olive Oil",    density:100},
@@ -1939,7 +1939,7 @@ function selectFood(mealNum, slot, foodKey){
 
 /* get density for a meal slot; fallback to default */
 function getMealDensity(mealNum, slot){
-  const defaults = {p:30, c:3, f:100};
+  const defaults = {p:25, c:28, f:100};
   const mf = getMealFoods();
   const key = mf[mealNum] && mf[mealNum][slot];
   if(!key) return defaults[slot];

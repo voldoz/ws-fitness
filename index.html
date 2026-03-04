@@ -2078,64 +2078,77 @@ function renderMacrosPage(){
   const box = $("macMealStrips");
   box.innerHTML = "";
 
-  /* delegated click for both check-off and food selection */
+  /* ── single delegated listener ── */
   box._handler && box.removeEventListener("click", box._handler);
   box._handler = function(e){
-    // food-type button
+    /* 1 – food button */
     const fb = e.target.closest(".mac-food-btn");
     if(fb){
       e.stopPropagation();
       selectFood(Number(fb.dataset.meal), fb.dataset.slot, fb.dataset.food);
       return;
     }
-    // meal check-off (anywhere else on card)
-    const card = e.target.closest(".mac-meal-card");
-    if(!card) return;
-    toggleMeal(Number(card.dataset.meal));
+    /* 2 – accordion trigger */
+    const trig = e.target.closest(".mac-acc-trigger");
+    if(trig){
+      e.stopPropagation();
+      const card2  = trig.closest(".mac-meal-card");
+      const body2  = trig.nextElementSibling;
+      const isOpen = body2.classList.contains("open");
+      card2.querySelectorAll(".mac-acc-trigger").forEach(t=>t.classList.remove("open"));
+      card2.querySelectorAll(".mac-acc-body").forEach(b=>b.classList.remove("open"));
+      if(!isOpen){ trig.classList.add("open"); body2.classList.add("open"); }
+      return;
+    }
+    /* 3 – meal check-off: top row only */
+    const topRow = e.target.closest(".mac-meal-card-top");
+    if(topRow){
+      const card2 = topRow.closest(".mac-meal-card");
+      if(card2) toggleMeal(Number(card2.dataset.meal));
+    }
   };
   box.addEventListener("click", box._handler);
 
   const mealFoods = getMealFoods();
 
+  /* helper: scale grams of food needed for targetG of macro */
+  function scaleW(targetG, food, kcalBudget){
+    const byMacro = Math.max(0, Math.round(targetG / (food.density/100)));
+    const byCal   = Math.max(0, Math.round(kcalBudget / food.kcalPer100 * 100));
+    return Math.min(byMacro, byCal);
+  }
+
   for(let m=1; m<=meals; m++){
     const isDone = checked.map(Number).includes(m);
     const mSlots = mealFoods[m] || {};
 
-    /* per-meal density based on selected food */
-    const pdM = getMealDensity(m,"p");
-    const cdM = getMealDensity(m,"c");
-    const fdM = getMealDensity(m,"f");
-
-    /* kcal budget per macro slot (P=4kcal/g, C=4kcal/g, F=9kcal/g) */
+    /* kcal budgets */
     const pKcalBudget = pMeal * 4;
     const cKcalBudget = cMeal * 4;
     const fKcalBudget = fMeal * 9;
 
-    /* selected food objects (may be undefined if none chosen) */
+    /* selected food objects */
     const selFoodP = FOOD_TYPES.p.find(x=>x.key===mSlots.p);
     const selFoodC = FOOD_TYPES.c.find(x=>x.key===mSlots.c);
     const selFoodF = FOOD_TYPES.f.find(x=>x.key===mSlots.f);
 
-    /* calculate scale weight with calorie guard */
-    const pCalc = selFoodP
-      ? calcFoodWeight(pMeal, selFoodP, pKcalBudget)
-      : { weight: Math.round(pMeal/(pdM/100)), over:false, kcal: pKcalBudget };
-    const cCalc = selFoodC
-      ? calcFoodWeight(cMeal, selFoodC, cKcalBudget)
-      : { weight: Math.round(cMeal/(cdM/100)), over:false, kcal: cKcalBudget };
-    const fCalc = selFoodF
-      ? calcFoodWeight(fMeal, selFoodF, fKcalBudget)
-      : { weight: Math.round(fMeal/(fdM/100)), over:false, kcal: fKcalBudget };
+    /* scale weights */
+    const pScaleM = selFoodP
+      ? scaleW(pMeal, selFoodP, pKcalBudget)
+      : Math.max(0, Math.round(pMeal / (getMealDensity(m,"p")/100)));
+    const cScaleM = selFoodC
+      ? scaleW(cMeal, selFoodC, cKcalBudget)
+      : Math.max(0, Math.round(cMeal / (getMealDensity(m,"c")/100)));
+    const fScaleM = selFoodF
+      ? scaleW(fMeal, selFoodF, fKcalBudget)
+      : Math.max(0, Math.round(fMeal / (getMealDensity(m,"f")/100)));
 
-    const pScaleM = pCalc.weight;
-    const cScaleM = cCalc.weight;
-    const fScaleM = fCalc.weight;
-
+    /* card */
     const card = document.createElement("div");
     card.className = "mac-meal-card" + (isDone ? " checked" : "");
     card.dataset.meal = m;
 
-    /* ── top row: check + meal label + kcal ── */
+    /* top row */
     const top = document.createElement("div");
     top.className = "mac-meal-card-top";
     const chk = document.createElement("div");
@@ -2149,7 +2162,7 @@ function renderMacrosPage(){
     kcalLbl.textContent = `${kcalMeal} kcal`;
     top.append(chk, lbl, kcalLbl);
 
-    /* ── scale chips row ── */
+    /* chips */
     const chips = document.createElement("div");
     chips.className = "mac-meal-chips";
     chips.innerHTML =
@@ -2157,29 +2170,27 @@ function renderMacrosPage(){
       `<span class="mac-chip c">⚖ <b>${cScaleM}g</b><span class="scale"> → ${cMeal}g C</span></span>`+
       `<span class="mac-chip f">⚖ <b>${fScaleM}g</b><span class="scale"> → ${fMeal}g F</span></span>`;
 
-    /* ── accordion food sections ── */
-    function buildAccordion(slot, icon, title, targetG, kcalBudget){
+    /* accordion builder */
+    function buildAcc(slot, icon, title, targetG, kcalBudget){
       const selKey  = mSlots[slot];
       const selFood = FOOD_TYPES[slot].find(x=>x.key===selKey);
-      const res0    = selFood ? calcFoodWeight(targetG, selFood, kcalBudget) : null;
-      const scaleStr= res0 ? `⚖ ${res0.weight}g` : "اختر";
+      const badge   = selFood
+        ? selFood.label + " · ⚖ " + scaleW(targetG, selFood, kcalBudget) + "g"
+        : "اختر";
 
-      /* trigger button */
       const trig = document.createElement("button");
       trig.className = `mac-acc-trigger slot-${slot}`;
       trig.dataset.slot = slot;
       trig.innerHTML =
         `<span class="acc-left"><span>${icon}</span><span>${title}</span></span>`+
         `<span style="display:flex;align-items:center;gap:6px">`+
-          `<span class="acc-chosen">${selFood ? selFood.label+" · "+scaleStr : scaleStr}</span>`+
+          `<span class="acc-chosen">${badge}</span>`+
           `<span class="acc-arrow">▼</span>`+
         `</span>`;
 
-      /* body (hidden by default) */
       const body = document.createElement("div");
       body.className = "mac-acc-body";
 
-      /* group by cat */
       const groups = {};
       FOOD_TYPES[slot].forEach(food=>{
         if(!groups[food.cat]) groups[food.cat]=[];
@@ -2194,15 +2205,15 @@ function renderMacrosPage(){
         row.className = "mac-food-select-row";
         foods.forEach(food=>{
           const isActive = selKey === food.key;
-          const res      = calcFoodWeight(targetG, food, kcalBudget);
-          const btn      = document.createElement("button");
-          btn.className  = "mac-food-btn slot-"+slot + (isActive ? " active" : "");
+          const wg = scaleW(targetG, food, kcalBudget);
+          const btn = document.createElement("button");
+          btn.className = "mac-food-btn slot-"+slot + (isActive ? " active" : "");
           btn.dataset.meal = m;
           btn.dataset.slot = slot;
           btn.dataset.food = food.key;
           btn.innerHTML =
             `${food.label}`+
-            `<span class="food-scale">${isActive ? "⚖ "+res.weight+"g" : ""}</span>`;
+            `<span class="food-scale">${isActive ? "⚖ "+wg+"g" : ""}</span>`;
           row.appendChild(btn);
         });
         body.appendChild(row);
@@ -2210,9 +2221,9 @@ function renderMacrosPage(){
       return [trig, body];
     }
 
-    const [pTrig,pBody] = buildAccordion("p","🥩","بروتين",    pMeal, pKcalBudget);
-    const [cTrig,cBody] = buildAccordion("c","🍚","كارب",      cMeal, cKcalBudget);
-    const [fTrig,fBody] = buildAccordion("f","🫒","دهون صحية", fMeal, fKcalBudget);
+    const [pTrig,pBody] = buildAcc("p","🥩","بروتين",    pMeal, pKcalBudget);
+    const [cTrig,cBody] = buildAcc("c","🍚","كارب",      cMeal, cKcalBudget);
+    const [fTrig,fBody] = buildAcc("f","🫒","دهون صحية", fMeal, fKcalBudget);
     card.append(top, chips, pTrig, pBody, cTrig, cBody, fTrig, fBody);
     box.appendChild(card);
   }

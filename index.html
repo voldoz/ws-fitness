@@ -238,6 +238,17 @@
   .mac-food-btn.active.slot-f{ border-color:#a78bfa; background:#1e1040; color:#ede9fe; }
   .mac-food-btn .food-name{ font-weight:700; display:block; font-size:12px; }
   .mac-food-btn .food-detail{ font-size:9.5px; opacity:.6; display:block; }
+  /* over-calorie warning badge on food btn */
+  .mac-food-btn.over-cal{ border-color:#ef4444 !important; }
+  .mac-food-btn.over-cal .food-scale{ color:#ef4444 !important; }
+  .mac-kcal-summary{
+    display:flex; justify-content:space-between; align-items:center;
+    background:#0a1628; border-radius:10px; padding:8px 12px;
+    margin-top:8px; font-size:12px; gap:6px; flex-wrap:wrap;
+  }
+  .mac-kcal-ok{ color:#22c55e; font-weight:700; }
+  .mac-kcal-warn{ color:#f97316; font-weight:700; }
+  .mac-kcal-over{ color:#ef4444; font-weight:700; }
   .mac-food-btn .food-scale{ font-size:11px; display:block; margin-top:3px; font-weight:800; }
   .mac-food-btn.active.slot-p .food-scale{ color:#38bdf8; }
   .mac-food-btn.active.slot-c .food-scale{ color:#f97316; }
@@ -1902,65 +1913,83 @@ function resetMacroLog(){
   renderMacrosPage();
 }
 
-/* ─── Food-type database ────────────────────────────────────────────
-   Each category has: name (Arabic/English), density (g protein per
-   100g food), type: "p" | "c" | "f"
+/* ── Food database ──────────────────────────────────────────────────
+   density  = g of the TARGET macro per 100 g of food
+   kcalPer100 = real total calories per 100 g of food
+   cat      = sub-category label (Arabic)
    ─────────────────────────────────────────────────────────────────── */
-/* ── Food database with sub-categories ─────────────────────────────
-   density = g of the macro nutrient per 100 g of food
-   cat     = sub-category label (Arabic)
-─────────────────────────────────────────────────────────────────── */
 const FOOD_TYPES = {
   p: [
     /* لحوم */
-    { key:"chicken",  label:"دجاج صدر",       en:"Chicken Breast",   density:31, cat:"🍗 لحوم" },
-    { key:"beef",     label:"لحم بقري",        en:"Lean Beef",        density:26, cat:"🍗 لحوم" },
-    { key:"turkey",   label:"ديك رومي",        en:"Turkey Breast",    density:29, cat:"🍗 لحوم" },
+    { key:"chicken",  label:"دجاج صدر",       density:31, kcalPer100:165, cat:"🍗 لحوم" },
+    { key:"beef",     label:"لحم بقري",        density:26, kcalPer100:215, cat:"🍗 لحوم" },
+    { key:"turkey",   label:"ديك رومي",        density:29, kcalPer100:157, cat:"🍗 لحوم" },
     /* مأكولات بحرية */
-    { key:"tuna",     label:"تونة (علبة)",     en:"Canned Tuna",      density:26, cat:"🐟 بحرية" },
-    { key:"fish",     label:"سمك أبيض",        en:"White Fish",       density:22, cat:"🐟 بحرية" },
-    { key:"shrimp",   label:"جمبري",           en:"Shrimp",           density:24, cat:"🐟 بحرية" },
-    { key:"salmon",   label:"سلمون",           en:"Salmon",           density:20, cat:"🐟 بحرية" },
+    { key:"tuna",     label:"تونة (علبة)",     density:26, kcalPer100:116, cat:"🐟 بحرية" },
+    { key:"fish",     label:"سمك أبيض",        density:22, kcalPer100:105, cat:"🐟 بحرية" },
+    { key:"shrimp",   label:"جمبري",           density:24, kcalPer100:99,  cat:"🐟 بحرية" },
+    { key:"salmon",   label:"سلمون",           density:20, kcalPer100:208, cat:"🐟 بحرية" },
     /* بيض ومنتجات الألبان */
-    { key:"egg",      label:"بياض بيض",        en:"Egg Whites",       density:11, cat:"🥚 بيض وألبان" },
-    { key:"wholeegg", label:"بيضة كاملة",      en:"Whole Egg",        density:13, cat:"🥚 بيض وألبان" },
-    { key:"cottage",  label:"كوتج تشيز",       en:"Cottage Cheese",   density:11, cat:"🥚 بيض وألبان" },
-    { key:"yogurt",   label:"زبادي يوناني",    en:"Greek Yogurt",     density:10, cat:"🥚 بيض وألبان" },
-    { key:"milk",     label:"حليب",            en:"Milk (low-fat)",   density:3,  cat:"🥚 بيض وألبان" },
+    { key:"egg",      label:"بياض بيض",        density:11, kcalPer100:52,  cat:"🥚 بيض وألبان" },
+    { key:"wholeegg", label:"بيضة كاملة",      density:13, kcalPer100:155, cat:"🥚 بيض وألبان" },
+    { key:"cottage",  label:"كوتج تشيز",       density:11, kcalPer100:98,  cat:"🥚 بيض وألبان" },
+    { key:"yogurt",   label:"زبادي يوناني",    density:10, kcalPer100:59,  cat:"🥚 بيض وألبان" },
+    { key:"milk",     label:"حليب",            density:3,  kcalPer100:42,  cat:"🥚 بيض وألبان" },
   ],
   c: [
     /* حبوب */
-    { key:"rice",     label:"أرز أبيض",        en:"White Rice (cooked)",  density:28, cat:"🌾 حبوب" },
-    { key:"brownrice",label:"أرز بني",          en:"Brown Rice (cooked)",  density:23, cat:"🌾 حبوب" },
-    { key:"oats",     label:"شوفان جاف",        en:"Oats (dry)",           density:67, cat:"🌾 حبوب" },
-    { key:"bread",    label:"خبز أبيض",         en:"White Bread",          density:49, cat:"🌾 حبوب" },
-    { key:"wbread",   label:"خبز أسمر",         en:"Whole Wheat Bread",    density:41, cat:"🌾 حبوب" },
-    { key:"pasta",    label:"باستا",            en:"Pasta (cooked)",       density:25, cat:"🌾 حبوب" },
-    { key:"quinoa",   label:"كينوا",            en:"Quinoa (cooked)",      density:21, cat:"🌾 حبوب" },
+    { key:"rice",     label:"أرز أبيض",        density:28, kcalPer100:130, cat:"🌾 حبوب" },
+    { key:"brownrice",label:"أرز بني",          density:23, kcalPer100:111, cat:"🌾 حبوب" },
+    { key:"oats",     label:"شوفان جاف",        density:67, kcalPer100:389, cat:"🌾 حبوب" },
+    { key:"bread",    label:"خبز أبيض",         density:49, kcalPer100:265, cat:"🌾 حبوب" },
+    { key:"wbread",   label:"خبز أسمر",         density:41, kcalPer100:247, cat:"🌾 حبوب" },
+    { key:"pasta",    label:"باستا",            density:25, kcalPer100:131, cat:"🌾 حبوب" },
+    { key:"quinoa",   label:"كينوا",            density:21, kcalPer100:120, cat:"🌾 حبوب" },
     /* خضار نشوية */
-    { key:"potato",   label:"بطاطا بيضاء",     en:"White Potato",         density:17, cat:"🥔 نشويات" },
-    { key:"sweetpot", label:"بطاطا حلوة",       en:"Sweet Potato",         density:20, cat:"🥔 نشويات" },
+    { key:"potato",   label:"بطاطا بيضاء",     density:17, kcalPer100:77,  cat:"🥔 نشويات" },
+    { key:"sweetpot", label:"بطاطا حلوة",       density:20, kcalPer100:86,  cat:"🥔 نشويات" },
     /* فاكهة */
-    { key:"banana",   label:"موز",             en:"Banana",               density:23, cat:"🍌 فاكهة" },
-    { key:"apple",    label:"تفاح",            en:"Apple",                density:14, cat:"🍌 فاكهة" },
-    { key:"dates",    label:"تمر",             en:"Dates",                density:75, cat:"🍌 فاكهة" },
+    { key:"banana",   label:"موز",             density:23, kcalPer100:89,  cat:"🍌 فاكهة" },
+    { key:"apple",    label:"تفاح",            density:14, kcalPer100:52,  cat:"🍌 فاكهة" },
+    { key:"dates",    label:"تمر",             density:75, kcalPer100:277, cat:"🍌 فاكهة" },
   ],
   f: [
     /* زيوت */
-    { key:"oliveoil", label:"زيت زيتون",       en:"Olive Oil",            density:100, cat:"🫒 زيوت" },
-    { key:"coconut",  label:"زيت جوز الهند",   en:"Coconut Oil",          density:100, cat:"🫒 زيوت" },
+    { key:"oliveoil", label:"زيت زيتون",       density:100, kcalPer100:884, cat:"🫒 زيوت" },
+    { key:"coconut",  label:"زيت جوز الهند",   density:100, kcalPer100:892, cat:"🫒 زيوت" },
     /* مكسرات وبذور */
-    { key:"almond",   label:"لوز",             en:"Almonds",              density:49, cat:"🥜 مكسرات" },
-    { key:"walnut",   label:"جوز",             en:"Walnuts",              density:65, cat:"🥜 مكسرات" },
-    { key:"cashew",   label:"كاجو",            en:"Cashews",              density:44, cat:"🥜 مكسرات" },
-    { key:"peanutb",  label:"زبدة فول سوداني", en:"Peanut Butter",        density:50, cat:"🥜 مكسرات" },
-    { key:"seeds",    label:"بذور شيا/كتان",   en:"Chia/Flax Seeds",      density:31, cat:"🥜 مكسرات" },
+    { key:"almond",   label:"لوز",             density:49,  kcalPer100:579, cat:"🥜 مكسرات" },
+    { key:"walnut",   label:"جوز",             density:65,  kcalPer100:654, cat:"🥜 مكسرات" },
+    { key:"cashew",   label:"كاجو",            density:44,  kcalPer100:553, cat:"🥜 مكسرات" },
+    { key:"peanutb",  label:"زبدة فول سوداني", density:50,  kcalPer100:588, cat:"🥜 مكسرات" },
+    { key:"seeds",    label:"بذور شيا/كتان",   density:31,  kcalPer100:486, cat:"🥜 مكسرات" },
     /* أفوكادو وجبن */
-    { key:"avocado",  label:"أفوكادو",         en:"Avocado",              density:15, cat:"🥑 أخرى" },
-    { key:"cheese",   label:"جبن شيدر",        en:"Cheddar Cheese",       density:33, cat:"🥑 أخرى" },
-    { key:"egg_f",    label:"صفار بيض",        en:"Egg Yolk",             density:27, cat:"🥑 أخرى" },
+    { key:"avocado",  label:"أفوكادو",         density:15,  kcalPer100:160, cat:"🥑 أخرى" },
+    { key:"cheese",   label:"جبن شيدر",        density:33,  kcalPer100:403, cat:"🥑 أخرى" },
+    { key:"egg_f",    label:"صفار بيض",        density:27,  kcalPer100:322, cat:"🥑 أخرى" },
   ]
 };
+
+/*
+ * calcFoodWeight(targetMacroG, food, kcalBudget)
+ * ─────────────────────────────────────────────
+ * Returns the scale weight (g) of the given food that:
+ *   1. Delivers exactly targetMacroG of the target macro, AND
+ *   2. Does NOT exceed the kcalBudget for that slot.
+ *
+ * If method-1 weight would exceed the calorie budget we cap at
+ * the budget-based weight instead and show a warning flag.
+ */
+function calcFoodWeight(targetMacroG, food, kcalBudget){
+  // weight by macro: how many grams of food to hit the macro target
+  const byMacro = Math.max(0, Math.round(targetMacroG / (food.density / 100)));
+  // calories that weight would produce
+  const kcalForMacroWeight = Math.round(byMacro * food.kcalPer100 / 100);
+  // weight capped by calorie budget
+  const byCal  = Math.max(0, Math.round(kcalBudget / food.kcalPer100 * 100));
+  const over   = kcalForMacroWeight > kcalBudget;
+  return { weight: over ? byCal : byMacro, over, kcal: kcalForMacroWeight };
+}
 
 /* load / save per-meal food selections from localStorage */
 function getMealFoods(){
@@ -2090,10 +2119,30 @@ function renderMacrosPage(){
     const cdM = getMealDensity(m,"c");
     const fdM = getMealDensity(m,"f");
 
-    /* scale weight = net grams / (density / 100) */
-    const pScaleM = Math.max(0, Math.round(pMeal / (pdM/100)));
-    const cScaleM = Math.max(0, Math.round(cMeal / (cdM/100)));
-    const fScaleM = Math.max(0, Math.round(fMeal / (fdM/100)));
+    /* kcal budget per macro slot (P=4kcal/g, C=4kcal/g, F=9kcal/g) */
+    const pKcalBudget = pMeal * 4;
+    const cKcalBudget = cMeal * 4;
+    const fKcalBudget = fMeal * 9;
+
+    /* selected food objects (may be undefined if none chosen) */
+    const selFoodP = FOOD_TYPES.p.find(x=>x.key===mSlots.p);
+    const selFoodC = FOOD_TYPES.c.find(x=>x.key===mSlots.c);
+    const selFoodF = FOOD_TYPES.f.find(x=>x.key===mSlots.f);
+
+    /* calculate scale weight with calorie guard */
+    const pCalc = selFoodP
+      ? calcFoodWeight(pMeal, selFoodP, pKcalBudget)
+      : { weight: Math.round(pMeal/(pdM/100)), over:false, kcal: pKcalBudget };
+    const cCalc = selFoodC
+      ? calcFoodWeight(cMeal, selFoodC, cKcalBudget)
+      : { weight: Math.round(cMeal/(cdM/100)), over:false, kcal: cKcalBudget };
+    const fCalc = selFoodF
+      ? calcFoodWeight(fMeal, selFoodF, fKcalBudget)
+      : { weight: Math.round(fMeal/(fdM/100)), over:false, kcal: fKcalBudget };
+
+    const pScaleM = pCalc.weight;
+    const cScaleM = cCalc.weight;
+    const fScaleM = fCalc.weight;
 
     const card = document.createElement("div");
     card.className = "mac-meal-card" + (isDone ? " checked" : "");
@@ -2117,12 +2166,31 @@ function renderMacrosPage(){
     const chips = document.createElement("div");
     chips.className = "mac-meal-chips";
     chips.innerHTML =
-      `<span class="mac-chip p">⚖ <b>${pScaleM}g</b><span class="scale"> → ${pMeal}g P</span></span>`+
-      `<span class="mac-chip c">⚖ <b>${cScaleM}g</b><span class="scale"> → ${cMeal}g C</span></span>`+
-      `<span class="mac-chip f">⚖ <b>${fScaleM}g</b><span class="scale"> → ${fMeal}g F</span></span>`;
+      `<span class="mac-chip p">⚖ <b>${pScaleM}g</b><span class="scale"> → ${pMeal}g P</span>${pCalc.over?'<span style="color:#ef4444;font-size:9px"> ⚠️cap</span>':''}</span>`+
+      `<span class="mac-chip c">⚖ <b>${cScaleM}g</b><span class="scale"> → ${cMeal}g C</span>${cCalc.over?'<span style="color:#ef4444;font-size:9px"> ⚠️cap</span>':''}</span>`+
+      `<span class="mac-chip f">⚖ <b>${fScaleM}g</b><span class="scale"> → ${fMeal}g F</span>${fCalc.over?'<span style="color:#ef4444;font-size:9px"> ⚠️cap</span>':''}</span>`;
+
+    /* ── kcal summary row ── */
+    const totalFoodKcal = Math.round(
+      (selFoodP ? pScaleM * selFoodP.kcalPer100/100 : pKcalBudget) +
+      (selFoodC ? cScaleM * selFoodC.kcalPer100/100 : cKcalBudget) +
+      (selFoodF ? fScaleM * selFoodF.kcalPer100/100 : fKcalBudget)
+    );
+    const kcalDiff  = totalFoodKcal - kcalMeal;
+    const kcalClass = Math.abs(kcalDiff)<=15 ? "mac-kcal-ok"
+                    : kcalDiff > 0            ? "mac-kcal-over"
+                    :                           "mac-kcal-warn";
+    const kcalMsg   = Math.abs(kcalDiff)<=15 ? `✓ ${totalFoodKcal} kcal`
+                    : kcalDiff > 0            ? `⚠ ${totalFoodKcal} kcal (+${kcalDiff})`
+                    :                           `${totalFoodKcal} kcal (−${Math.abs(kcalDiff)})`;
+    const kcalSum = document.createElement("div");
+    kcalSum.className = "mac-kcal-summary";
+    kcalSum.innerHTML =
+      `<span style="opacity:.55">سعرات الوجبة</span>`+
+      `<span class="${kcalClass}">${kcalMsg} / ${kcalMeal} kcal</span>`;
 
     /* ── food-type selector sections (grouped by category) ── */
-    function buildFoodSection(slot, icon, title, targetG){
+    function buildFoodSection(slot, icon, title, targetG, kcalBudget){
       const section = document.createElement("div");
       section.className = "mac-food-section";
 
@@ -2149,16 +2217,22 @@ function renderMacrosPage(){
         row.className = "mac-food-select-row";
         foods.forEach(food=>{
           const isActive = mSlots[slot] === food.key;
-          const scaleG = Math.max(0, Math.round(targetG / (food.density/100)));
-          const btn = document.createElement("button");
-          btn.className = "mac-food-btn slot-"+slot + (isActive ? " active" : "");
+          const res      = calcFoodWeight(targetG, food, kcalBudget);
+          const btn      = document.createElement("button");
+          btn.className  = "mac-food-btn slot-"+slot
+                         + (isActive  ? " active"  : "")
+                         + (res.over  ? " over-cal": "");
           btn.dataset.meal = m;
           btn.dataset.slot = slot;
           btn.dataset.food = food.key;
+          /* show kcal per 100g so user knows the caloric density */
+          const calNote = res.over
+            ? `⚠ ${res.weight}g (cap)`
+            : (isActive ? `⚖ ${res.weight}g` : "");
           btn.innerHTML =
             `<span class="food-name">${food.label}</span>`+
-            `<span class="food-detail">${food.density}g/100g</span>`+
-            `<span class="food-scale">${isActive ? "⚖ "+scaleG+"g" : ""}</span>`;
+            `<span class="food-detail">${food.kcalPer100} kcal/100g</span>`+
+            `<span class="food-scale">${calNote}</span>`;
           row.appendChild(btn);
         });
         section.appendChild(row);
@@ -2166,10 +2240,10 @@ function renderMacrosPage(){
       return section;
     }
 
-    card.append(top, chips,
-      buildFoodSection("p","🥩","بروتين", pMeal),
-      buildFoodSection("c","🍚","كارب",   cMeal),
-      buildFoodSection("f","🫒","دهون صحية", fMeal)
+    card.append(top, chips, kcalSum,
+      buildFoodSection("p","🥩","بروتين",    pMeal, pKcalBudget),
+      buildFoodSection("c","🍚","كارب",      cMeal, cKcalBudget),
+      buildFoodSection("f","🫒","دهون صحية", fMeal, fKcalBudget)
     );
     box.appendChild(card);
   }

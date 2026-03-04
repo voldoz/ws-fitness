@@ -1892,13 +1892,16 @@ function getTodayLog(){
 
 /* Toggle a meal's checked state */
 function toggleMeal(mealIdx){
+  const idx = Number(mealIdx);
   const log = getMacroLog();
   const key = getTodayKey();
   if(!log[key]) log[key]={checked:[]};
-  const arr = log[key].checked;
-  const pos = arr.indexOf(mealIdx);
-  if(pos===-1) arr.push(mealIdx);
+  // ensure all values are numbers
+  let arr = (log[key].checked||[]).map(Number);
+  const pos = arr.indexOf(idx);
+  if(pos===-1) arr.push(idx);
   else arr.splice(pos,1);
+  log[key].checked = arr;
   pset("macro_log", JSON.stringify(log));
   renderMacrosPage();
 }
@@ -1994,12 +1997,21 @@ function renderMacrosPage(){
   const box = $("macMealStrips");
   box.innerHTML = "";
 
+  // single delegated listener – remove old one first
+  box._handler && box.removeEventListener("click", box._handler);
+  box._handler = function(e){
+    const card = e.target.closest(".mac-meal-card");
+    if(!card) return;
+    toggleMeal(Number(card.dataset.meal));
+  };
+  box.addEventListener("click", box._handler);
+
   for(let m=1; m<=meals; m++){
-    const isDone = checked.includes(m);
+    const isDone = checked.map(Number).includes(m);
 
     const card = document.createElement("div");
     card.className = "mac-meal-card" + (isDone ? " checked" : "");
-    card.onclick = ()=> toggleMeal(m);
+    card.dataset.meal = m;   // store meal index as data attribute
 
     /* top row */
     const top = document.createElement("div");
@@ -2007,7 +2019,7 @@ function renderMacrosPage(){
 
     const chk = document.createElement("div");
     chk.className = "mac-meal-check";
-    chk.textContent = isDone ? "✓" : "";
+    chk.textContent = isDone ? "\u2713" : "";
 
     const lbl = document.createElement("div");
     lbl.className = "mac-meal-num-label";

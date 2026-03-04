@@ -1543,14 +1543,7 @@ function renderCalcResults(){
     `Fat weight / meal (scale): ${fFood} g<br>`+
     `<div class="small">Density set per-meal in Macros page.</div>`;
 
-  const extraBurnDisplay = Number(r.extraBurnNeeded || 0);
-  let burnText = `Daily Burn Target: ${r.dailyBurn} kcal`;
-  if(extraBurnDisplay > 0){
-    burnText += ` &nbsp;<span style="color:#ef4444;font-weight:700">+ ${extraBurnDisplay} kcal نشاط بدني إضافي</span>`;
-    $("outBurn").innerHTML = burnText;
-  } else {
-    $("outBurn").textContent = burnText;
-  }
+  $("outBurn").textContent = `Daily Burn Target: ${r.dailyBurn} kcal`;
 }
 function renderSubscriberCalcView(){
   const r=loadCalcResults();

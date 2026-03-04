@@ -212,6 +212,276 @@
   .countBig{font-size:20px;font-weight:900}
   .countSmall{font-size:12px;opacity:.9;margin-top:4px}
 
+  /* ===== Calculator Page ===== */
+  @keyframes calc-fadeIn{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+  @keyframes calc-pop{ 0%{transform:scale(.94)} 60%{transform:scale(1.03)} 100%{transform:scale(1)} }
+
+  .calc-page{
+    animation:calc-fadeIn .4s ease;
+  }
+
+  /* ── Page header ── */
+  .calc-header{
+    background:linear-gradient(145deg,#0b1628,#0f1f35);
+    border-radius:22px; padding:16px 18px;
+    margin-bottom:16px;
+    border:1px solid rgba(56,189,248,.12);
+    box-shadow:0 8px 32px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .calc-header-title{
+    font-weight:900; font-size:18px;
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .calc-header-icon{
+    font-size:26px; line-height:1;
+  }
+  .calc-sub-warn{
+    font-size:12px; color:#fca5a5; margin-top:5px; font-weight:600;
+  }
+
+  /* ── Input sections ── */
+  .calc-section{
+    background:linear-gradient(145deg,#0d1829,#111e30);
+    border-radius:20px; padding:16px 16px 18px;
+    margin-bottom:12px;
+    border:1.5px solid rgba(255,255,255,.07);
+    box-shadow:0 4px 16px rgba(0,0,0,.25);
+    animation:calc-fadeIn .4s ease both;
+  }
+  .calc-section:nth-child(2){ animation-delay:.05s }
+  .calc-section:nth-child(3){ animation-delay:.10s }
+  .calc-section:nth-child(4){ animation-delay:.15s }
+  .calc-section-title{
+    font-size:11px; font-weight:800; letter-spacing:.1em;
+    text-transform:uppercase; margin-bottom:14px;
+    display:flex; align-items:center; gap:8px;
+    opacity:.55;
+  }
+  .calc-section-title::after{
+    content:''; flex:1; height:1px; background:rgba(255,255,255,.1);
+  }
+
+  /* ── Input rows (label + select side by side) ── */
+  .calc-field{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px; margin-bottom:10px;
+  }
+  .calc-field:last-child{ margin-bottom:0; }
+  .calc-field-label{
+    font-size:13px; font-weight:700; color:#94a3b8; flex-shrink:0;
+    display:flex; align-items:center; gap:6px;
+  }
+  .calc-field-label span{ font-size:16px; }
+  .calc-select{
+    flex:1; max-width:160px;
+    background:rgba(15,23,42,.9);
+    border:1.5px solid rgba(255,255,255,.1);
+    border-radius:12px; padding:9px 12px;
+    color:#e2e8f0; font-size:13px; font-weight:700;
+    outline:none; cursor:pointer;
+    transition:border-color .2s, box-shadow .2s;
+    -webkit-appearance:none;
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 10px center;
+    padding-right:28px;
+  }
+  .calc-select:focus{
+    border-color:rgba(56,189,248,.5);
+    box-shadow:0 0 0 3px rgba(56,189,248,.1);
+  }
+
+  /* ── Goal selector pills ── */
+  .calc-goal-row{
+    display:flex; gap:8px;
+  }
+  .calc-goal-btn{
+    flex:1; padding:10px 6px; border-radius:14px;
+    border:1.5px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.03);
+    color:#64748b; font-size:12px; font-weight:800;
+    cursor:pointer; text-align:center;
+    transition:all .2s ease;
+    -webkit-tap-highlight-color:transparent;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+  }
+  .calc-goal-btn .cgb-icon{ font-size:20px; }
+  .calc-goal-btn.active-cut{
+    background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(220,38,38,.08));
+    border-color:rgba(239,68,68,.5); color:#fca5a5;
+    box-shadow:0 0 16px rgba(239,68,68,.15);
+  }
+  .calc-goal-btn.active-maintain{
+    background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(22,163,74,.08));
+    border-color:rgba(34,197,94,.5); color:#86efac;
+    box-shadow:0 0 16px rgba(34,197,94,.15);
+  }
+  .calc-goal-btn.active-bulk{
+    background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(14,165,233,.08));
+    border-color:rgba(56,189,248,.5); color:#7dd3fc;
+    box-shadow:0 0 16px rgba(56,189,248,.15);
+  }
+
+  /* ── Calculate button ── */
+  .calc-btn-wrap{ margin-top:16px; }
+  .calc-primary-btn{
+    width:100%; padding:16px;
+    border:none; border-radius:16px;
+    background:linear-gradient(135deg,#0ea5e9,#2563eb,#7c3aed);
+    color:#fff; font-size:16px; font-weight:900;
+    cursor:pointer; letter-spacing:.03em;
+    box-shadow:0 6px 24px rgba(14,165,233,.3);
+    transition:opacity .2s, transform .15s, box-shadow .2s;
+    position:relative; overflow:hidden;
+  }
+  .calc-primary-btn::before{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);
+    pointer-events:none;
+  }
+  .calc-primary-btn:active{ transform:scale(.97); box-shadow:0 2px 12px rgba(14,165,233,.2); }
+  .calc-primary-btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+  /* ── Results card ── */
+  .calc-results-card{
+    background:linear-gradient(145deg,#0b1628,#0f1f35);
+    border-radius:22px; padding:18px 16px;
+    margin-top:16px;
+    border:1px solid rgba(56,189,248,.12);
+    box-shadow:0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+    animation:calc-fadeIn .4s ease;
+  }
+  .calc-results-title{
+    font-weight:900; font-size:15px;
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text; margin-bottom:16px;
+    display:flex; align-items:center; gap:6px;
+  }
+
+  /* ── Calories hero row ── */
+  .calc-kcal-hero{
+    background:rgba(14,165,233,.07);
+    border:1px solid rgba(56,189,248,.18);
+    border-radius:18px; padding:14px 16px;
+    margin-bottom:14px; text-align:center;
+  }
+  .calc-kcal-num{
+    font-size:38px; font-weight:900; line-height:1;
+    background:linear-gradient(135deg,#38bdf8,#818cf8);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .calc-kcal-label{
+    font-size:11px; color:#64748b; font-weight:600;
+    margin-top:4px; text-transform:uppercase; letter-spacing:.08em;
+  }
+  .calc-kcal-meta{
+    display:flex; justify-content:center; gap:10px; margin-top:10px;
+    flex-wrap:wrap;
+  }
+  .calc-meta-pill{
+    font-size:11px; font-weight:700; padding:4px 10px;
+    border-radius:20px; white-space:nowrap;
+  }
+  .calc-meta-pill.tdee{ background:rgba(100,116,139,.15); color:#94a3b8; border:1px solid rgba(100,116,139,.2); }
+  .calc-meta-pill.cut{  background:rgba(249,115,22,.12);  color:#f97316; border:1px solid rgba(249,115,22,.25); }
+  .calc-meta-pill.warn{ background:rgba(239,68,68,.12);   color:#fca5a5; border:1px solid rgba(239,68,68,.25); }
+  .calc-meta-pill.bulk{ background:rgba(34,197,94,.12);   color:#4ade80; border:1px solid rgba(34,197,94,.25); }
+
+  /* ── Macro row ── */
+  .calc-macro-row{
+    display:flex; gap:8px; margin-bottom:14px;
+  }
+  .calc-macro-box{
+    flex:1; border-radius:16px; padding:12px 8px;
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    border:1.5px solid transparent;
+  }
+  .calc-macro-box.p{
+    background:rgba(56,189,248,.07); border-color:rgba(56,189,248,.2);
+  }
+  .calc-macro-box.c{
+    background:rgba(249,115,22,.07); border-color:rgba(249,115,22,.2);
+  }
+  .calc-macro-box.f{
+    background:rgba(167,139,250,.07); border-color:rgba(167,139,250,.2);
+  }
+  .calc-macro-icon{ font-size:20px; }
+  .calc-macro-g{
+    font-size:22px; font-weight:900; line-height:1.1;
+  }
+  .calc-macro-box.p .calc-macro-g{ color:#38bdf8; }
+  .calc-macro-box.c .calc-macro-g{ color:#f97316; }
+  .calc-macro-box.f .calc-macro-g{ color:#a78bfa; }
+  .calc-macro-lbl{
+    font-size:9px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.08em; opacity:.45;
+  }
+  .calc-macro-sub{
+    font-size:10px; font-weight:700; opacity:.55; margin-top:1px;
+  }
+
+  /* ── Per-meal section ── */
+  .calc-meal-section{
+    background:rgba(255,255,255,.03);
+    border-radius:16px; padding:14px;
+    border:1px solid rgba(255,255,255,.07);
+    margin-bottom:14px;
+  }
+  .calc-meal-title{
+    font-size:11px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.08em; opacity:.45; margin-bottom:12px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .calc-meal-title::after{
+    content:''; flex:1; height:1px; background:rgba(255,255,255,.08);
+  }
+  .calc-meal-chips{
+    display:flex; gap:7px; flex-wrap:wrap;
+  }
+  .calc-meal-chip{
+    display:flex; flex-direction:column; align-items:center;
+    padding:8px 14px; border-radius:14px; gap:2px; flex:1; min-width:80px;
+    border:1.5px solid transparent;
+  }
+  .calc-meal-chip.p{ background:rgba(56,189,248,.08); border-color:rgba(56,189,248,.18); }
+  .calc-meal-chip.c{ background:rgba(249,115,22,.08); border-color:rgba(249,115,22,.18); }
+  .calc-meal-chip.f{ background:rgba(167,139,250,.08); border-color:rgba(167,139,250,.18); }
+  .calc-meal-chip-g{
+    font-size:18px; font-weight:900;
+  }
+  .calc-meal-chip.p .calc-meal-chip-g{ color:#38bdf8; }
+  .calc-meal-chip.c .calc-meal-chip-g{ color:#f97316; }
+  .calc-meal-chip.f .calc-meal-chip-g{ color:#a78bfa; }
+  .calc-meal-chip-lbl{
+    font-size:10px; font-weight:700; opacity:.5;
+    text-transform:uppercase; letter-spacing:.05em;
+  }
+  .calc-meal-chip-icon{ font-size:16px; margin-bottom:1px; }
+
+  /* ── Burn target strip ── */
+  .calc-burn-strip{
+    display:flex; align-items:center; gap:12px;
+    background:rgba(251,191,36,.06);
+    border:1px solid rgba(251,191,36,.18);
+    border-radius:14px; padding:12px 14px;
+  }
+  .calc-burn-icon{ font-size:22px; }
+  .calc-burn-info{ flex:1; }
+  .calc-burn-label{ font-size:11px; font-weight:700; color:#fbbf24; opacity:.7; }
+  .calc-burn-val{ font-size:18px; font-weight:900; color:#fbbf24; }
+  /* hidden calc results placeholder */
+  .calc-results-empty{
+    text-align:center; padding:24px 16px;
+    opacity:.35; font-size:13px;
+    background:rgba(15,23,42,.5); border-radius:18px; margin-top:14px;
+  }
+
   /* ===== Macros Page ===== */
   @keyframes mac-fadeIn{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
   @keyframes mac-pulse{ 0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,.3)} 50%{box-shadow:0 0 0 6px rgba(56,189,248,0)} }
@@ -810,58 +1080,115 @@
 
 <!-- CALC -->
 <div class="page" id="pCalc">
-  <div class="box">
-    <div style="font-weight:900;color:#38bdf8">Calculator</div>
-    <div class="small danger" id="calcSubWarn"></div>
-  </div>
+  <div class="calc-page">
 
-  <div id="calcInputsWrap">
-    <label>Weight</label><select id="weight"></select>
-    <label>Height</label><select id="height"></select>
-    <label>Age</label><select id="age"></select>
+    <!-- Header -->
+    <div class="calc-header">
+      <div>
+        <div class="calc-header-title">🧮 الحاسبة</div>
+        <div class="calc-sub-warn" id="calcSubWarn"></div>
+      </div>
+      <div class="calc-header-icon">⚡</div>
+    </div>
 
-    <label>Gender</label>
-    <select id="gender"><option value="male">Male</option><option value="female">Female</option></select>
+    <!-- Inputs -->
+    <div id="calcInputsWrap">
 
-    <label>Activity Days</label>
-    <select id="activityDays">
-      <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-      <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-    </select>
+      <!-- Section 1: Body -->
+      <div class="calc-section">
+        <div class="calc-section-title">👤 بيانات الجسم</div>
 
-    <label>Goal</label>
-    <select id="goal"><option value="cut">Cut</option><option value="maintain">Maintain</option><option value="bulk">Bulk</option></select>
+        <div class="calc-field">
+          <div class="calc-field-label"><span>⚖️</span> الوزن</div>
+          <select id="weight" class="calc-select"></select>
+        </div>
+        <div class="calc-field">
+          <div class="calc-field-label"><span>📏</span> الطول</div>
+          <select id="height" class="calc-select"></select>
+        </div>
+        <div class="calc-field">
+          <div class="calc-field-label"><span>🎂</span> العمر</div>
+          <select id="age" class="calc-select"></select>
+        </div>
+        <div class="calc-field">
+          <div class="calc-field-label"><span>🧬</span> الجنس</div>
+          <select id="gender" class="calc-select">
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+          </select>
+        </div>
+      </div>
 
-    <label>Protein Multiplier</label>
-    <select id="proteinFactor">
-      <option value="1.5">1.5</option><option value="1.8">1.8</option><option value="2">2</option>
-      <option value="2.2">2.2</option><option value="2.5">2.5</option>
-      <option value="2.8">2.8</option><option value="3">3</option>
-    </select>
+      <!-- Section 2: Activity & Goal -->
+      <div class="calc-section">
+        <div class="calc-section-title">🏃 النشاط والهدف</div>
 
-    <label>Meals</label>
-    <select id="meals">
-      <option value="2">2</option><option value="3">3</option><option value="4">4</option>
-      <option value="5">5</option><option value="6">6</option>
-    </select>
+        <div class="calc-field">
+          <div class="calc-field-label"><span>🗓️</span> أيام التمرين</div>
+          <select id="activityDays" class="calc-select">
+            <option value="1">1 يوم</option><option value="2">2 أيام</option>
+            <option value="3">3 أيام</option><option value="4">4 أيام</option>
+            <option value="5">5 أيام</option><option value="6">6 أيام</option>
+          </select>
+        </div>
 
-    <label>Weekly Goal</label>
-    <select id="weeklyGoal">
-      <option value="0.5">0.5 kg</option><option value="1">1 kg</option>
-      <option value="1.5">1.5 kg</option><option value="2">2 kg</option>
-    </select>
+        <!-- Goal pills -->
+        <div class="calc-field-label" style="margin-bottom:10px"><span>🎯</span> الهدف</div>
+        <div class="calc-goal-row" id="goalRow">
+          <button class="calc-goal-btn" data-goal="cut" onclick="setGoal('cut')">
+            <span class="cgb-icon">🔥</span>خسارة وزن
+          </button>
+          <button class="calc-goal-btn" data-goal="maintain" onclick="setGoal('maintain')">
+            <span class="cgb-icon">⚖️</span>ثبات
+          </button>
+          <button class="calc-goal-btn" data-goal="bulk" onclick="setGoal('bulk')">
+            <span class="cgb-icon">💪</span>زيادة كتلة
+          </button>
+        </div>
+        <input type="hidden" id="goal" value="cut">
 
-    <button class="primary" id="calcBtn">Calculate & Save</button>
-  </div>
+        <div class="calc-field" style="margin-top:12px" id="weeklyGoalField">
+          <div class="calc-field-label"><span>📉</span> الهدف الأسبوعي</div>
+          <select id="weeklyGoal" class="calc-select">
+            <option value="0.5">0.5 kg</option><option value="1">1 kg</option>
+            <option value="1.5">1.5 kg</option><option value="2">2 kg</option>
+          </select>
+        </div>
+      </div>
 
-  <div class="results" id="calcResults">
-    <div id="outCalories">Daily Calories: --</div>
-    <hr style="border:0;border-top:1px solid #334155;margin:10px 0">
-    <div id="outMacros">Protein/Carbs/Fat: --</div>
-    <hr style="border:0;border-top:1px solid #334155;margin:10px 0">
-    <div id="outPerMeal">Per Meal: --</div>
-    <hr style="border:0;border-top:1px solid #334155;margin:10px 0">
-    <div id="outBurn">Daily Burn Target: --</div>
+      <!-- Section 3: Nutrition -->
+      <div class="calc-section">
+        <div class="calc-section-title">🥗 التغذية</div>
+
+        <div class="calc-field">
+          <div class="calc-field-label"><span>🥩</span> معامل البروتين</div>
+          <select id="proteinFactor" class="calc-select">
+            <option value="1.5">1.5 g/kg</option><option value="1.8">1.8 g/kg</option>
+            <option value="2">2 g/kg</option><option value="2.2">2.2 g/kg</option>
+            <option value="2.5">2.5 g/kg</option><option value="2.8">2.8 g/kg</option>
+            <option value="3">3 g/kg</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <div class="calc-field-label"><span>🍽️</span> عدد الوجبات</div>
+          <select id="meals" class="calc-select">
+            <option value="2">2 وجبات</option><option value="3">3 وجبات</option>
+            <option value="4">4 وجبات</option><option value="5">5 وجبات</option>
+            <option value="6">6 وجبات</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Calculate button -->
+      <div class="calc-btn-wrap">
+        <button class="calc-primary-btn" id="calcBtn">⚡ احسب واحفظ</button>
+      </div>
+
+    </div><!-- /calcInputsWrap -->
+
+    <!-- Results -->
+    <div id="calcResults"></div>
+
   </div>
 </div>
 
@@ -1718,79 +2045,142 @@ function loadCalcInputs(){
   if(!raw) return;
   try{
     const d=JSON.parse(raw);
-    Object.keys(d).forEach(k=>{ if($(k)) $(k).value=d[k]; });
+    const skip=["goal"]; // handled by setGoal()
+    Object.keys(d).forEach(k=>{ if(!skip.includes(k) && $(k)) $(k).value=d[k]; });
+    if(d.goal) setGoal(d.goal);
   }catch{}
+}
+
+/* ── Goal pill helper ── */
+function setGoal(val){
+  $("goal").value = val;
+  document.querySelectorAll(".calc-goal-btn").forEach(btn=>{
+    btn.className = "calc-goal-btn";
+    if(btn.dataset.goal === val) btn.classList.add("active-"+val);
+  });
+  /* show/hide weekly goal row (not relevant for maintain) */
+  const wf = $("weeklyGoalField");
+  if(wf) wf.style.display = (val === "maintain") ? "none" : "flex";
 }
 function renderCalcMode(){
   if(isSub()){
     $("calcInputsWrap").classList.add("hidden");
   } else {
     $("calcInputsWrap").classList.remove("hidden");
-    const fields=["weight","height","age","gender","activityDays","goal","proteinFactor","meals","weeklyGoal"];
-    fields.forEach(id=>{ $(id).disabled = !canEditEverything(); $(id).style.opacity = $(id).disabled ? .75 : 1; });
+    const fields=["weight","height","age","gender","activityDays","proteinFactor","meals","weeklyGoal"];
+    fields.forEach(id=>{
+      const el=$(id); if(!el) return;
+      el.disabled = !canEditEverything();
+      el.style.opacity = el.disabled ? .75 : 1;
+    });
+    /* goal pill buttons */
+    document.querySelectorAll(".calc-goal-btn").forEach(btn=>{
+      btn.disabled = !canEditEverything();
+      btn.style.opacity = btn.disabled ? .75 : 1;
+    });
     $("calcBtn").disabled = !canEditEverything();
     $("calcBtn").style.opacity = $("calcBtn").disabled ? .75 : 1;
   }
 }
 function renderCalcResults(){
   const r = loadCalcResults();
+  const box = $("calcResults");
   if(!r){
-    $("outCalories").textContent = "Daily Calories: --";
-    $("outMacros").innerHTML = "Protein/Carbs/Fat: --";
-    $("outPerMeal").innerHTML = "Per Meal: --";
-    $("outBurn").textContent = "Daily Burn Target: --";
+    box.innerHTML = `<div class="calc-results-empty">🧮 أدخل بياناتك واضغط "احسب واحفظ" لعرض النتائج</div>`;
     return;
   }
 
-  /* ── عرض السعرات والعجز ── */
-  const tdeeVal   = Number(r.tdee   || 0);
   const goalVal   = r.goal || "";
+  const tdeeVal   = Number(r.tdee   || 0);
   const foodDef   = Number(r.foodDeficit        || 0);
   const extraBurn = Number(r.extraBurnNeeded     || 0);
   const totalDef  = Number(r.totalDailyDeficit   || r.dailyDelta || 0);
+  const meals     = Number(r.meals || 1);
 
-  let infoLines = "";
-  if(tdeeVal){
-    infoLines += `<div class="small" style="margin-top:5px;opacity:.75">TDEE: ${tdeeVal} kcal/day</div>`;
-  }
-  if(goalVal === "cut" && totalDef){
-    infoLines += `<div class="small" style="margin-top:3px;color:#f97316">عجز غذائي: −${foodDef} kcal/day</div>`;
+  const pMeal = Number(r.proteinMeal ?? Math.round((Number(r.protein)||0) / meals));
+  const cMeal = Number(r.carbsMeal   ?? Math.round((Number(r.carbs)||0)   / meals));
+  const fMeal = Number(r.fatMeal     ?? Math.round((Number(r.fat)||0)     / meals));
+
+  /* meta pills under calories */
+  let metaHtml = `<span class="calc-meta-pill tdee">TDEE: ${tdeeVal} kcal</span>`;
+  if(goalVal === "cut" && foodDef){
+    metaHtml += `<span class="calc-meta-pill cut">عجز: −${foodDef} kcal</span>`;
     if(extraBurn > 0){
-      infoLines += `<div class="small" style="margin-top:3px;color:#ef4444;font-weight:700">⚠ نشاط بدني إضافي مطلوب: ${extraBurn} kcal/day<br><span style="opacity:.75;font-weight:400">(الغذاء وحده لا يكفي لتحقيق الهدف الأسبوعي بأمان)</span></div>`;
+      metaHtml += `<span class="calc-meta-pill warn">⚠ نشاط إضافي: ${extraBurn} kcal</span>`;
     }
   }
   if(goalVal === "bulk" && totalDef){
-    infoLines += `<div class="small" style="margin-top:3px;color:#22c55e">فائض: +${totalDef} kcal/day</div>`;
+    metaHtml += `<span class="calc-meta-pill bulk">فائض: +${totalDef} kcal</span>`;
   }
 
-  $("outCalories").innerHTML = `Daily Calories: <b>${r.calories}</b> kcal${infoLines}`;
-  $("outMacros").innerHTML = `Protein: ${r.protein} g<br>Carbs: ${r.carbs} g<br>Fat: ${r.fat} g`;
+  /* goal badge label */
+  const goalLabels = { cut:"🔥 خسارة وزن", maintain:"⚖️ ثبات", bulk:"💪 زيادة كتلة" };
 
-  const meals = Number(r.meals || 1);
-  const pMeal = Number(r.proteinMeal ?? Math.round((Number(r.protein)||0) / meals));
-  const cMeal = Number(r.carbsMeal ?? Math.round((Number(r.carbs)||0) / meals));
-  const fMeal = Number(r.fatMeal ?? Math.round((Number(r.fat)||0) / meals));
+  box.innerHTML = `
+    <div class="calc-results-card">
+      <div class="calc-results-title">✅ نتائج الحسابة</div>
 
-  const pDensity = Number(r.pDensity || 30);
-  const cDensity = Number(r.cDensity || 20);
-  const fDensity = Number(r.fDensity || 100);
+      <!-- Calories hero -->
+      <div class="calc-kcal-hero">
+        <div class="calc-kcal-num">${Number(r.calories).toLocaleString()}</div>
+        <div class="calc-kcal-label">سعرة حرارية يومياً</div>
+        <div class="calc-kcal-meta">${metaHtml}</div>
+      </div>
 
-  const pFood = Number(r.proteinFoodMealG ?? Math.round(pMeal / (pDensity/100)));
-  const cFood = Number(r.carbFoodMealG ?? Math.round(cMeal / (cDensity/100)));
-  const fFood = Number(r.fatFoodMealG ?? Math.round(fMeal / (fDensity/100)));
+      <!-- Macros row -->
+      <div class="calc-macro-row">
+        <div class="calc-macro-box p">
+          <div class="calc-macro-icon">🥩</div>
+          <div class="calc-macro-g">${r.protein}</div>
+          <div class="calc-macro-lbl">بروتين</div>
+          <div class="calc-macro-sub">g / day</div>
+        </div>
+        <div class="calc-macro-box c">
+          <div class="calc-macro-icon">🍚</div>
+          <div class="calc-macro-g">${r.carbs}</div>
+          <div class="calc-macro-lbl">كارب</div>
+          <div class="calc-macro-sub">g / day</div>
+        </div>
+        <div class="calc-macro-box f">
+          <div class="calc-macro-icon">🫒</div>
+          <div class="calc-macro-g">${r.fat}</div>
+          <div class="calc-macro-lbl">دهون</div>
+          <div class="calc-macro-sub">g / day</div>
+        </div>
+      </div>
 
-  $("outPerMeal").innerHTML =
-    `Per Meal (${meals} meals):<br><br>`+
-    `Protein / meal: ${pMeal} g<br>`+
-    `Carbs / meal: ${cMeal} g<br>`+
-    `Fat / meal: ${fMeal} g<br>`+
-    `<hr style="border:0;border-top:1px solid #334155;margin:10px 0">`+
-    `Protein weight / meal (scale): ${pFood} g<br>`+
-    `Carb weight / meal (scale): ${cFood} g<br>`+
-    `Fat weight / meal (scale): ${fFood} g<br>`+
-    `<div class="small">Density set per-meal in Macros page.</div>`;
+      <!-- Per meal -->
+      <div class="calc-meal-section">
+        <div class="calc-meal-title">لكل وجبة · ${meals} وجبات</div>
+        <div class="calc-meal-chips">
+          <div class="calc-meal-chip p">
+            <div class="calc-meal-chip-icon">🥩</div>
+            <div class="calc-meal-chip-g">${pMeal}g</div>
+            <div class="calc-meal-chip-lbl">بروتين</div>
+          </div>
+          <div class="calc-meal-chip c">
+            <div class="calc-meal-chip-icon">🍚</div>
+            <div class="calc-meal-chip-g">${cMeal}g</div>
+            <div class="calc-meal-chip-lbl">كارب</div>
+          </div>
+          <div class="calc-meal-chip f">
+            <div class="calc-meal-chip-icon">🫒</div>
+            <div class="calc-meal-chip-g">${fMeal}g</div>
+            <div class="calc-meal-chip-lbl">دهون</div>
+          </div>
+        </div>
+      </div>
 
-  $("outBurn").textContent = `Daily Burn Target: ${r.dailyBurn} kcal`;
+      <!-- Daily burn -->
+      <div class="calc-burn-strip">
+        <div class="calc-burn-icon">🔥</div>
+        <div class="calc-burn-info">
+          <div class="calc-burn-label">هدف الحرق اليومي</div>
+          <div class="calc-burn-val" id="outBurn">${r.dailyBurn} kcal</div>
+        </div>
+      </div>
+
+    </div>`;
 }
 function renderSubscriberCalcView(){
   const r=loadCalcResults();
@@ -2318,6 +2708,7 @@ function resetWeight(){
 (function init(){
   ensureAdmin();
   initCalcDropdowns();
+  setGoal('cut');   /* default goal pill highlight */
   initWeightWeeks();
   hydrateHeader();
 

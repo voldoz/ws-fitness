@@ -2065,11 +2065,23 @@ function setMealFoods(obj){ pset("meal_foods", JSON.stringify(obj)); }
 
 /* pick a food for a slot (mealNum, slot "p"|"c"|"f") */
 function selectFood(mealNum, slot, foodKey){
+  /* remember which accordion is open so we can restore it after re-render */
+  const openBody = document.querySelector(".mac-acc-body.open");
+  const openAccId = openBody ? openBody.dataset.accId : null;
+
   const mf = getMealFoods();
   if(!mf[mealNum]) mf[mealNum]={};
   mf[mealNum][slot] = foodKey;
   setMealFoods(mf);
   renderMacrosPage();
+
+  /* re-open the same accordion after DOM rebuild */
+  if(openAccId){
+    const body2 = document.querySelector(`.mac-acc-body[data-acc-id="${openAccId}"]`);
+    const trig2 = document.querySelector(`.mac-acc-trigger[data-acc-id="${openAccId}"]`);
+    if(body2) body2.classList.add("open");
+    if(trig2) trig2.classList.add("open");
+  }
 }
 
 /* get density for a meal slot; fallback to default */

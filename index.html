@@ -183,17 +183,199 @@
   }
   .burn-day-done.empty{ background:#1e293b; color:#475569; }
 
-  /* workouts compact */
-  .day-card{background:#0b1220;border-radius:14px;padding:12px;margin-bottom:12px}
-  .day-head{display:flex;justify-content:space-between;align-items:center;background:#0f172a;border-radius:12px;padding:10px;cursor:pointer}
-  .day-name{color:#38bdf8;font-weight:900}
-  .exercise{background:#1e293b;border-radius:12px;padding:8px 10px;margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .exercise input{margin:0;border-radius:10px}
-  .exercise-name{flex:1;min-width:180px}
-  .counter{display:flex;align-items:center;gap:4px;background:#0f172a;border-radius:10px;padding:4px 6px;white-space:nowrap}
-  .counter button{background:#2563eb;border:0;color:#fff;width:28px;height:28px;border-radius:8px;font-weight:900;cursor:pointer}
-  .counter span{min-width:118px;text-align:center;font-weight:900}
-  .delbtn{background:#ef4444;border:0;color:#fff;width:34px;height:34px;border-radius:10px;font-weight:900;cursor:pointer}
+  /* ===== Workout Page ===== */
+  @keyframes wo-fadeIn{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  @keyframes wo-slideDown{ from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:none} }
+
+  .wo-page{ animation:wo-fadeIn .35s ease; }
+
+  /* Header */
+  .wo-header{
+    background:linear-gradient(145deg,#0b1628,#0f1f35);
+    border-radius:22px; padding:16px 18px; margin-bottom:14px;
+    border:1px solid rgba(56,189,248,.12);
+    box-shadow:0 8px 32px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .wo-header-title{
+    font-weight:900; font-size:18px;
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .wo-header-sub{ font-size:11px; color:#64748b; margin-top:3px; font-weight:600; }
+  .wo-header-icon{ font-size:28px; }
+
+  /* Summary strip */
+  .wo-summary{
+    display:flex; gap:8px; margin-bottom:14px; overflow-x:auto;
+    padding-bottom:2px; scrollbar-width:none;
+  }
+  .wo-summary::-webkit-scrollbar{ display:none; }
+  .wo-stat-pill{
+    flex-shrink:0; background:linear-gradient(145deg,#0d1829,#111e30);
+    border-radius:16px; padding:10px 14px;
+    border:1.5px solid rgba(255,255,255,.07);
+    display:flex; flex-direction:column; align-items:center; gap:2px; min-width:72px;
+  }
+  .wo-stat-pill-val{ font-size:20px; font-weight:900; color:#e2e8f0; line-height:1; }
+  .wo-stat-pill-lbl{ font-size:9px; font-weight:700; opacity:.45; text-transform:uppercase; letter-spacing:.05em; }
+
+  /* Day cards */
+  .wo-day-card{
+    background:linear-gradient(145deg,#0d1829,#111e30);
+    border-radius:20px; margin-bottom:10px;
+    border:1.5px solid rgba(255,255,255,.06);
+    overflow:hidden;
+    transition:border-color .25s, box-shadow .25s;
+    animation:wo-fadeIn .3s ease both;
+  }
+  .wo-day-card.is-open{
+    border-color:rgba(56,189,248,.2);
+    box-shadow:0 4px 24px rgba(56,189,248,.06);
+  }
+  .wo-day-card.has-exercises{ border-color:rgba(129,140,248,.15); }
+
+  /* Day header */
+  .wo-day-head{
+    display:flex; align-items:center; gap:12px;
+    padding:14px 16px; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+  }
+  .wo-day-badge{
+    width:38px; height:38px; border-radius:12px; flex-shrink:0;
+    background:rgba(255,255,255,.04); border:1.5px solid rgba(255,255,255,.08);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-size:9px; font-weight:800; text-transform:uppercase;
+    color:#64748b; letter-spacing:.03em; line-height:1.2;
+    transition:all .25s;
+  }
+  .wo-day-card.is-open .wo-day-badge{
+    background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(129,140,248,.15));
+    border-color:rgba(56,189,248,.3); color:#38bdf8;
+  }
+  .wo-day-badge-num{ font-size:14px; font-weight:900; }
+  .wo-day-info{ flex:1; min-width:0; }
+  .wo-day-name{ font-size:15px; font-weight:800; color:#e2e8f0; }
+  .wo-day-meta{ font-size:11px; color:#475569; margin-top:1px; font-weight:600; }
+  .wo-day-right{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .wo-ex-count{
+    font-size:11px; font-weight:800; padding:3px 9px; border-radius:10px;
+    background:rgba(129,140,248,.1); color:#818cf8;
+    border:1px solid rgba(129,140,248,.2);
+  }
+  .wo-day-chev{
+    width:28px; height:28px; border-radius:9px;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; color:#64748b; transition:transform .25s, background .2s;
+  }
+  .wo-day-card.is-open .wo-day-chev{
+    transform:rotate(180deg);
+    background:rgba(56,189,248,.08); color:#38bdf8;
+  }
+
+  /* Day body */
+  .wo-day-body{
+    max-height:0; overflow:hidden;
+    transition:max-height .38s cubic-bezier(.4,0,.2,1);
+    border-top:0px solid transparent;
+  }
+  .wo-day-card.is-open .wo-day-body{
+    max-height:2000px;
+    border-top:1px solid rgba(255,255,255,.05);
+  }
+  .wo-day-inner{ padding:12px 14px 14px; display:flex; flex-direction:column; gap:8px; }
+
+  /* Add exercise button */
+  .wo-add-btn{
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    padding:10px; border-radius:14px;
+    border:1.5px dashed rgba(56,189,248,.25);
+    background:rgba(56,189,248,.04); color:#38bdf8;
+    font-size:13px; font-weight:700; cursor:pointer;
+    transition:all .2s; -webkit-tap-highlight-color:transparent;
+  }
+  .wo-add-btn:hover{ background:rgba(56,189,248,.08); border-color:rgba(56,189,248,.4); }
+
+  /* Exercise row */
+  .wo-ex-row{
+    background:rgba(255,255,255,.03);
+    border-radius:14px; padding:10px 12px;
+    border:1.5px solid rgba(255,255,255,.06);
+    display:flex; flex-direction:column; gap:8px;
+    animation:wo-slideDown .2s ease;
+    transition:border-color .2s;
+  }
+  .wo-ex-row:hover{ border-color:rgba(129,140,248,.15); }
+
+  /* Exercise top row: number + name + delete */
+  .wo-ex-top{ display:flex; align-items:center; gap:8px; }
+  .wo-ex-num{
+    width:24px; height:24px; border-radius:8px; flex-shrink:0;
+    background:rgba(129,140,248,.12); border:1px solid rgba(129,140,248,.2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:10px; font-weight:900; color:#818cf8;
+  }
+  .wo-ex-input{
+    flex:1; background:rgba(255,255,255,.05);
+    border:1.5px solid rgba(255,255,255,.08);
+    border-radius:10px; padding:7px 10px;
+    color:#e2e8f0; font-size:13px; font-weight:600;
+    outline:none; transition:border-color .2s;
+  }
+  .wo-ex-input:focus{ border-color:rgba(129,140,248,.4); }
+  .wo-ex-input::placeholder{ color:#475569; }
+  .wo-ex-del{
+    width:30px; height:30px; border-radius:9px; flex-shrink:0;
+    background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.15);
+    color:#f87171; font-size:14px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .2s;
+  }
+  .wo-ex-del:hover{ background:rgba(239,68,68,.18); border-color:rgba(239,68,68,.3); }
+
+  /* Sets / Weight counters */
+  .wo-ex-counters{ display:flex; gap:8px; flex-wrap:wrap; }
+  .wo-counter{
+    flex:1; min-width:130px;
+    background:rgba(255,255,255,.03); border-radius:12px;
+    border:1.5px solid rgba(255,255,255,.06);
+    display:flex; align-items:center; overflow:hidden;
+  }
+  .wo-counter-btn{
+    width:34px; height:34px; flex-shrink:0; border:none;
+    background:transparent; color:#94a3b8;
+    font-size:18px; font-weight:900; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s, color .15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wo-counter-btn:active{ background:rgba(56,189,248,.1); color:#38bdf8; }
+  .wo-counter-btn:disabled{ opacity:.3; cursor:default; }
+  .wo-counter-mid{ flex:1; text-align:center; }
+  .wo-counter-val{ font-size:15px; font-weight:900; color:#e2e8f0; display:block; }
+  .wo-counter-lbl{ font-size:9px; font-weight:700; opacity:.4; text-transform:uppercase; letter-spacing:.05em; }
+
+  /* PR badge */
+  .wo-pr-badge{
+    display:inline-flex; align-items:center; gap:3px;
+    font-size:9px; font-weight:800; padding:2px 6px; border-radius:6px;
+    background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(245,158,11,.1));
+    border:1px solid rgba(251,191,36,.25); color:#fbbf24;
+    margin-top:2px;
+  }
+
+  /* Rest day chip */
+  .wo-rest-chip{
+    display:flex; align-items:center; gap:6px;
+    padding:8px 12px; border-radius:12px;
+    background:rgba(100,116,139,.06); border:1px solid rgba(100,116,139,.1);
+    color:#475569; font-size:12px; font-weight:700;
+  }
+
+  /* Reset wrap */
+  .wo-reset-wrap{ margin-top:14px; text-align:center; }
 
   /* ===== Weight Page ===== */
   @keyframes wt-fadeIn{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
@@ -1495,11 +1677,29 @@
 
 <!-- WORKOUTS -->
 <div class="page" id="pWork">
-  <div class="box">
-    <div style="font-weight:900;color:#38bdf8">Workouts</div>
+  <div class="wo-page">
+
+    <!-- Header -->
+    <div class="wo-header">
+      <div>
+        <div class="wo-header-title">💪 Workouts</div>
+        <div class="wo-header-sub">Weekly training plan</div>
+      </div>
+      <div class="wo-header-icon">🏋️</div>
+    </div>
+
+    <!-- Summary pills -->
+    <div class="wo-summary" id="woSummary"></div>
+
+    <!-- Day cards -->
+    <div id="workContainer"></div>
+
+    <!-- Reset -->
+    <div class="wo-reset-wrap">
+      <button class="mini red hidden" id="workResetBtn" onclick="resetWorkouts()">🗑 Reset Workouts</button>
+    </div>
+
   </div>
-  <div id="workContainer"></div>
-  <button class="mini red hidden" id="workResetBtn" onclick="resetWorkouts()">Reset workouts</button>
 </div>
 
 <!-- DAILY BURN -->
@@ -2907,65 +3107,160 @@ function renderWorkouts(){
   wrap.innerHTML="";
   const d=loadWorkouts();
 
-  weekDays.forEach(day=>{
-    const card=document.createElement("div"); card.className="day-card";
-    const head=document.createElement("div"); head.className="day-head"; head.onclick=()=>toggleDay(day);
-    const nm=document.createElement("div"); nm.className="day-name"; nm.textContent=day;
-    const chev=document.createElement("div"); chev.textContent = (pget("open_"+day)==="1") ? "▲" : "▼";
-    head.appendChild(nm); head.appendChild(chev);
+  /* ── summary pills ── */
+  const sumWrap=$("woSummary");
+  if(sumWrap){
+    let totalEx=0, activeDays=0, totalSets=0, totalKg=0;
+    weekDays.forEach(day=>{
+      const exs=d[day]||[];
+      if(exs.length){ activeDays++; totalEx+=exs.length; }
+      exs.forEach(ex=>{
+        totalSets+=parseInt(ex.sets||3,10);
+        totalKg+=parseFloat(ex.maxWeight||0)||0;
+      });
+    });
+    const bestKg=weekDays.reduce((mx,day)=>{
+      const exs=d[day]||[];
+      exs.forEach(ex=>{ const w=parseFloat(ex.maxWeight||0)||0; if(w>mx) mx=w; });
+      return mx;
+    },0);
+    const pills=[
+      {val:activeDays, lbl:"Active\nDays"},
+      {val:totalEx,    lbl:"Exercises"},
+      {val:totalSets,  lbl:"Total\nSets"},
+      {val:bestKg?bestKg+"kg":"--", lbl:"Top\nWeight"},
+    ];
+    sumWrap.innerHTML="";
+    pills.forEach(p=>{
+      const pill=document.createElement("div"); pill.className="wo-stat-pill";
+      pill.innerHTML=`<span class="wo-stat-pill-val">${p.val}</span><span class="wo-stat-pill-lbl">${p.lbl}</span>`;
+      sumWrap.appendChild(pill);
+    });
+  }
+
+  /* day abbreviations */
+  const DAY_SHORT={Sunday:"SUN",Monday:"MON",Tuesday:"TUE",Wednesday:"WED",Thursday:"THU",Friday:"FRI",Saturday:"SAT"};
+  const DAY_NUM  ={Sunday:0,Monday:1,Tuesday:2,Wednesday:3,Thursday:4,Friday:5,Saturday:6};
+  const todayIdx = new Date().getDay(); /* 0=Sun */
+
+  weekDays.forEach((day,wi)=>{
+    const isOpen=(pget("open_"+day)==="1");
+    const exs=d[day]||[];
+    const isToday=(DAY_NUM[day]===todayIdx);
+
+    const card=document.createElement("div");
+    card.className="wo-day-card"+(isOpen?" is-open":"")+(exs.length?" has-exercises":"");
+    card.style.animationDelay=`${wi*0.04}s`;
+
+    /* ── head ── */
+    const head=document.createElement("div"); head.className="wo-day-head";
+    head.onclick=()=>toggleDay(day);
+
+    const badge=document.createElement("div"); badge.className="wo-day-badge";
+    badge.innerHTML=`<span class="wo-day-badge-num">${DAY_NUM[day]+1}</span>${DAY_SHORT[day]}`;
+
+    const info=document.createElement("div"); info.className="wo-day-info";
+    const nm=document.createElement("div"); nm.className="wo-day-name";
+    nm.textContent=day+(isToday?" 📍":"");
+    const meta=document.createElement("div"); meta.className="wo-day-meta";
+    meta.textContent=exs.length?`${exs.length} exercise${exs.length>1?"s":""}  ·  ${exs.reduce((s,e)=>s+parseInt(e.sets||3,10),0)} sets`:"Rest day";
+    info.appendChild(nm); info.appendChild(meta);
+
+    const right=document.createElement("div"); right.className="wo-day-right";
+    if(exs.length){
+      const cnt=document.createElement("div"); cnt.className="wo-ex-count";
+      cnt.textContent=exs.length; right.appendChild(cnt);
+    }
+    const chev=document.createElement("div"); chev.className="wo-day-chev"; chev.innerHTML="&#9660;";
+    right.appendChild(chev);
+
+    head.appendChild(badge); head.appendChild(info); head.appendChild(right);
     card.appendChild(head);
 
-    const open = (pget("open_"+day)==="1");
-    if(open){
-      if(canEditEverything()){
-        const btn=document.createElement("button");
-        btn.className="mini"; btn.textContent="+ Add Exercise";
-        btn.onclick=(e)=>{ e.stopPropagation(); addExercise(day); };
-        card.appendChild(btn);
-      }
-      (d[day]||[]).forEach((ex, idx)=>{
-        const row=document.createElement("div"); row.className="exercise";
+    /* ── body (collapsible) ── */
+    const body=document.createElement("div"); body.className="wo-day-body";
+    const inner=document.createElement("div"); inner.className="wo-day-inner";
 
-        const name=document.createElement("input");
-        name.className="exercise-name";
-        name.placeholder="Exercise";
-        name.value=ex.name||"";
-        name.oninput=(e)=>updateEx(day, idx, "name", e.target.value);
-        name.disabled = !canEditEverything();
-        name.style.opacity = name.disabled ? .75 : 1;
-
-        const sets=document.createElement("div"); sets.className="counter";
-        const sm=document.createElement("button"); sm.textContent="-";
-        sm.onclick=()=>{ const cur=parseInt(ex.sets||3,10); if(cur>1){ updateEx(day,idx,"sets",cur-1); renderWorkouts(); } };
-        sm.disabled=!canEditEverything(); sm.style.opacity=sm.disabled?.75:1;
-        const sv=document.createElement("span"); sv.textContent=`Sets: ${parseInt(ex.sets||3,10)}`;
-        const sp=document.createElement("button"); sp.textContent="+";
-        sp.onclick=()=>{ const cur=parseInt(ex.sets||3,10); updateEx(day,idx,"sets",cur+1); renderWorkouts(); };
-        sp.disabled=!canEditEverything(); sp.style.opacity=sp.disabled?.75:1;
-        sets.appendChild(sm); sets.appendChild(sv); sets.appendChild(sp);
-
-        const wt=document.createElement("div"); wt.className="counter";
-        const wm=document.createElement("button"); wm.textContent="-";
-        wm.onclick=()=>{ let w=parseFloat(ex.maxWeight||0); if(!isFinite(w)) w=0; w=Math.max(0,w-2.5); updateEx(day,idx,"maxWeight",w); renderWorkouts(); };
-        wm.disabled=!canEditMaxWeight(); wm.style.opacity=wm.disabled?.75:1;
-        const wv=document.createElement("span"); wv.textContent=`Max: ${(parseFloat(ex.maxWeight||0)||0)} kg`;
-        const wp=document.createElement("button"); wp.textContent="+";
-        wp.onclick=()=>{ let w=parseFloat(ex.maxWeight||0); if(!isFinite(w)) w=0; w=w+2.5; updateEx(day,idx,"maxWeight",w); renderWorkouts(); };
-        wp.disabled=!canEditMaxWeight(); wp.style.opacity=wp.disabled?.75:1;
-        wt.appendChild(wm); wt.appendChild(wv); wt.appendChild(wp);
-
-        row.appendChild(name); row.appendChild(sets); row.appendChild(wt);
-
-        if(canEditEverything()){
-          const del=document.createElement("button");
-          del.className="delbtn";
-          del.textContent="X";
-          del.onclick=()=>delExercise(day, idx);
-          row.appendChild(del);
-        }
-        card.appendChild(row);
-      });
+    /* Add exercise button */
+    if(canEditEverything()){
+      const addBtn=document.createElement("div"); addBtn.className="wo-add-btn";
+      addBtn.innerHTML="<span>＋</span> Add Exercise";
+      addBtn.onclick=()=>addExercise(day);
+      inner.appendChild(addBtn);
     }
+
+    /* Exercise rows */
+    if(exs.length===0 && !canEditEverything()){
+      const rest=document.createElement("div"); rest.className="wo-rest-chip";
+      rest.innerHTML="🛌 Rest Day — no exercises scheduled";
+      inner.appendChild(rest);
+    }
+
+    exs.forEach((ex,idx)=>{
+      const row=document.createElement("div"); row.className="wo-ex-row";
+
+      /* top: num + name input + delete */
+      const top=document.createElement("div"); top.className="wo-ex-top";
+
+      const num=document.createElement("div"); num.className="wo-ex-num"; num.textContent=idx+1;
+
+      const nameInp=document.createElement("input"); nameInp.className="wo-ex-input";
+      nameInp.placeholder="Exercise name…"; nameInp.value=ex.name||"";
+      nameInp.disabled=!canEditEverything(); nameInp.style.opacity=nameInp.disabled?.6:1;
+      nameInp.oninput=e=>updateEx(day,idx,"name",e.target.value);
+
+      top.appendChild(num); top.appendChild(nameInp);
+
+      if(canEditEverything()){
+        const del=document.createElement("button"); del.className="wo-ex-del"; del.innerHTML="✕";
+        del.onclick=()=>delExercise(day,idx);
+        top.appendChild(del);
+      }
+      row.appendChild(top);
+
+      /* counters: sets + weight */
+      const counters=document.createElement("div"); counters.className="wo-ex-counters";
+
+      /* Sets counter */
+      const setsDiv=document.createElement("div"); setsDiv.className="wo-counter";
+      const sm=document.createElement("button"); sm.className="wo-counter-btn"; sm.textContent="−";
+      sm.disabled=!canEditEverything();
+      sm.onclick=()=>{ const c=parseInt(ex.sets||3,10); if(c>1){ updateEx(day,idx,"sets",c-1); renderWorkouts(); } };
+      const sMid=document.createElement("div"); sMid.className="wo-counter-mid";
+      sMid.innerHTML=`<span class="wo-counter-val">${parseInt(ex.sets||3,10)}</span><span class="wo-counter-lbl">Sets</span>`;
+      const sp=document.createElement("button"); sp.className="wo-counter-btn"; sp.textContent="+";
+      sp.disabled=!canEditEverything();
+      sp.onclick=()=>{ const c=parseInt(ex.sets||3,10); updateEx(day,idx,"sets",c+1); renderWorkouts(); };
+      setsDiv.appendChild(sm); setsDiv.appendChild(sMid); setsDiv.appendChild(sp);
+
+      /* Weight counter */
+      const wtDiv=document.createElement("div"); wtDiv.className="wo-counter";
+      const wm=document.createElement("button"); wm.className="wo-counter-btn"; wm.textContent="−";
+      wm.disabled=!canEditMaxWeight();
+      wm.onclick=()=>{ let w=parseFloat(ex.maxWeight||0)||0; w=Math.max(0,parseFloat((w-2.5).toFixed(1))); updateEx(day,idx,"maxWeight",w); renderWorkouts(); };
+      const wMid=document.createElement("div"); wMid.className="wo-counter-mid";
+      const wVal=parseFloat(ex.maxWeight||0)||0;
+      wMid.innerHTML=`<span class="wo-counter-val">${wVal} kg</span><span class="wo-counter-lbl">Max Weight</span>`;
+      const wpp=document.createElement("button"); wpp.className="wo-counter-btn"; wpp.textContent="+";
+      wpp.disabled=!canEditMaxWeight();
+      wpp.onclick=()=>{ let w=parseFloat(ex.maxWeight||0)||0; w=parseFloat((w+2.5).toFixed(1)); updateEx(day,idx,"maxWeight",w); renderWorkouts(); };
+      wtDiv.appendChild(wm); wtDiv.appendChild(wMid); wtDiv.appendChild(wpp);
+
+      counters.appendChild(setsDiv); counters.appendChild(wtDiv);
+      row.appendChild(counters);
+
+      /* PR badge if weight > 0 */
+      if(wVal>0){
+        const pr=document.createElement("div"); pr.className="wo-pr-badge";
+        pr.innerHTML=`🏆 Best: ${wVal} kg · ${parseInt(ex.sets||3,10)} sets`;
+        row.appendChild(pr);
+      }
+
+      inner.appendChild(row);
+    });
+
+    body.appendChild(inner);
+    card.appendChild(body);
     wrap.appendChild(card);
   });
 }

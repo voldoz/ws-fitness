@@ -1085,7 +1085,7 @@
     <!-- Header -->
     <div class="calc-header">
       <div>
-        <div class="calc-header-title">🧮 الحاسبة</div>
+        <div class="calc-header-title">🧮 Calculator</div>
         <div class="calc-sub-warn" id="calcSubWarn"></div>
       </div>
       <div class="calc-header-icon">⚡</div>
@@ -1096,59 +1096,59 @@
 
       <!-- Section 1: Body -->
       <div class="calc-section">
-        <div class="calc-section-title">👤 بيانات الجسم</div>
+        <div class="calc-section-title">👤 Body Stats</div>
 
         <div class="calc-field">
-          <div class="calc-field-label"><span>⚖️</span> الوزن</div>
+          <div class="calc-field-label"><span>⚖️</span> Weight</div>
           <select id="weight" class="calc-select"></select>
         </div>
         <div class="calc-field">
-          <div class="calc-field-label"><span>📏</span> الطول</div>
+          <div class="calc-field-label"><span>📏</span> Height</div>
           <select id="height" class="calc-select"></select>
         </div>
         <div class="calc-field">
-          <div class="calc-field-label"><span>🎂</span> العمر</div>
+          <div class="calc-field-label"><span>🎂</span> Age</div>
           <select id="age" class="calc-select"></select>
         </div>
         <div class="calc-field">
-          <div class="calc-field-label"><span>🧬</span> الجنس</div>
+          <div class="calc-field-label"><span>🧬</span> Gender</div>
           <select id="gender" class="calc-select">
-            <option value="male">ذكر</option>
-            <option value="female">أنثى</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
           </select>
         </div>
       </div>
 
       <!-- Section 2: Activity & Goal -->
       <div class="calc-section">
-        <div class="calc-section-title">🏃 النشاط والهدف</div>
+        <div class="calc-section-title">🏃 Activity &amp; Goal</div>
 
         <div class="calc-field">
-          <div class="calc-field-label"><span>🗓️</span> أيام التمرين</div>
+          <div class="calc-field-label"><span>🗓️</span> Activity Days</div>
           <select id="activityDays" class="calc-select">
-            <option value="1">1 يوم</option><option value="2">2 أيام</option>
-            <option value="3">3 أيام</option><option value="4">4 أيام</option>
-            <option value="5">5 أيام</option><option value="6">6 أيام</option>
+            <option value="1">1 day</option><option value="2">2 days</option>
+            <option value="3">3 days</option><option value="4">4 days</option>
+            <option value="5">5 days</option><option value="6">6 days</option>
           </select>
         </div>
 
         <!-- Goal pills -->
-        <div class="calc-field-label" style="margin-bottom:10px"><span>🎯</span> الهدف</div>
+        <div class="calc-field-label" style="margin-bottom:10px"><span>🎯</span> Goal</div>
         <div class="calc-goal-row" id="goalRow">
           <button class="calc-goal-btn" data-goal="cut" onclick="setGoal('cut')">
-            <span class="cgb-icon">🔥</span>خسارة وزن
+            <span class="cgb-icon">🔥</span>Fat Loss
           </button>
           <button class="calc-goal-btn" data-goal="maintain" onclick="setGoal('maintain')">
-            <span class="cgb-icon">⚖️</span>ثبات
+            <span class="cgb-icon">⚖️</span>Maintain
           </button>
           <button class="calc-goal-btn" data-goal="bulk" onclick="setGoal('bulk')">
-            <span class="cgb-icon">💪</span>زيادة كتلة
+            <span class="cgb-icon">💪</span>Bulk
           </button>
         </div>
         <input type="hidden" id="goal" value="cut">
 
         <div class="calc-field" style="margin-top:12px" id="weeklyGoalField">
-          <div class="calc-field-label"><span>📉</span> الهدف الأسبوعي</div>
+          <div class="calc-field-label"><span>📉</span> Weekly Goal</div>
           <select id="weeklyGoal" class="calc-select">
             <option value="0.5">0.5 kg</option><option value="1">1 kg</option>
             <option value="1.5">1.5 kg</option><option value="2">2 kg</option>
@@ -1158,10 +1158,10 @@
 
       <!-- Section 3: Nutrition -->
       <div class="calc-section">
-        <div class="calc-section-title">🥗 التغذية</div>
+        <div class="calc-section-title">🥗 Nutrition</div>
 
         <div class="calc-field">
-          <div class="calc-field-label"><span>🥩</span> معامل البروتين</div>
+          <div class="calc-field-label"><span>🥩</span> Protein Factor</div>
           <select id="proteinFactor" class="calc-select">
             <option value="1.5">1.5 g/kg</option><option value="1.8">1.8 g/kg</option>
             <option value="2">2 g/kg</option><option value="2.2">2.2 g/kg</option>
@@ -1170,18 +1170,18 @@
           </select>
         </div>
         <div class="calc-field">
-          <div class="calc-field-label"><span>🍽️</span> عدد الوجبات</div>
+          <div class="calc-field-label"><span>🍽️</span> Meals / Day</div>
           <select id="meals" class="calc-select">
-            <option value="2">2 وجبات</option><option value="3">3 وجبات</option>
-            <option value="4">4 وجبات</option><option value="5">5 وجبات</option>
-            <option value="6">6 وجبات</option>
+            <option value="2">2 meals</option><option value="3">3 meals</option>
+            <option value="4">4 meals</option><option value="5">5 meals</option>
+            <option value="6">6 meals</option>
           </select>
         </div>
       </div>
 
       <!-- Calculate button -->
       <div class="calc-btn-wrap">
-        <button class="calc-primary-btn" id="calcBtn">⚡ احسب واحفظ</button>
+        <button class="calc-primary-btn" id="calcBtn">⚡ Calculate &amp; Save</button>
       </div>
 
     </div><!-- /calcInputsWrap -->
@@ -2086,7 +2086,7 @@ function renderCalcResults(){
   const r = loadCalcResults();
   const box = $("calcResults");
   if(!r){
-    box.innerHTML = `<div class="calc-results-empty">🧮 أدخل بياناتك واضغط "احسب واحفظ" لعرض النتائج</div>`;
+    box.innerHTML = `<div class="calc-results-empty">🧮 Enter your details and tap "Calculate & Save" to see your results.</div>`;
     return;
   }
 
@@ -2104,26 +2104,26 @@ function renderCalcResults(){
   /* meta pills under calories */
   let metaHtml = `<span class="calc-meta-pill tdee">TDEE: ${tdeeVal} kcal</span>`;
   if(goalVal === "cut" && foodDef){
-    metaHtml += `<span class="calc-meta-pill cut">عجز: −${foodDef} kcal</span>`;
+    metaHtml += `<span class="calc-meta-pill cut">Deficit: −${foodDef} kcal</span>`;
     if(extraBurn > 0){
-      metaHtml += `<span class="calc-meta-pill warn">⚠ نشاط إضافي: ${extraBurn} kcal</span>`;
+      metaHtml += `<span class="calc-meta-pill warn">⚠ Extra activity: ${extraBurn} kcal</span>`;
     }
   }
   if(goalVal === "bulk" && totalDef){
-    metaHtml += `<span class="calc-meta-pill bulk">فائض: +${totalDef} kcal</span>`;
+    metaHtml += `<span class="calc-meta-pill bulk">Surplus: +${totalDef} kcal</span>`;
   }
 
   /* goal badge label */
-  const goalLabels = { cut:"🔥 خسارة وزن", maintain:"⚖️ ثبات", bulk:"💪 زيادة كتلة" };
+  const goalLabels = { cut:"🔥 Fat Loss", maintain:"⚖️ Maintain", bulk:"💪 Bulk" };
 
   box.innerHTML = `
     <div class="calc-results-card">
-      <div class="calc-results-title">✅ نتائج الحسابة</div>
+      <div class="calc-results-title">✅ Your Results</div>
 
       <!-- Calories hero -->
       <div class="calc-kcal-hero">
         <div class="calc-kcal-num">${Number(r.calories).toLocaleString()}</div>
-        <div class="calc-kcal-label">سعرة حرارية يومياً</div>
+        <div class="calc-kcal-label">Daily Calories</div>
         <div class="calc-kcal-meta">${metaHtml}</div>
       </div>
 
@@ -2132,41 +2132,41 @@ function renderCalcResults(){
         <div class="calc-macro-box p">
           <div class="calc-macro-icon">🥩</div>
           <div class="calc-macro-g">${r.protein}</div>
-          <div class="calc-macro-lbl">بروتين</div>
+          <div class="calc-macro-lbl">Protein</div>
           <div class="calc-macro-sub">g / day</div>
         </div>
         <div class="calc-macro-box c">
           <div class="calc-macro-icon">🍚</div>
           <div class="calc-macro-g">${r.carbs}</div>
-          <div class="calc-macro-lbl">كارب</div>
+          <div class="calc-macro-lbl">Carbs</div>
           <div class="calc-macro-sub">g / day</div>
         </div>
         <div class="calc-macro-box f">
           <div class="calc-macro-icon">🫒</div>
           <div class="calc-macro-g">${r.fat}</div>
-          <div class="calc-macro-lbl">دهون</div>
+          <div class="calc-macro-lbl">Fat</div>
           <div class="calc-macro-sub">g / day</div>
         </div>
       </div>
 
       <!-- Per meal -->
       <div class="calc-meal-section">
-        <div class="calc-meal-title">لكل وجبة · ${meals} وجبات</div>
+        <div class="calc-meal-title">Per Meal · ${meals} meals</div>
         <div class="calc-meal-chips">
           <div class="calc-meal-chip p">
             <div class="calc-meal-chip-icon">🥩</div>
             <div class="calc-meal-chip-g">${pMeal}g</div>
-            <div class="calc-meal-chip-lbl">بروتين</div>
+            <div class="calc-meal-chip-lbl">Protein</div>
           </div>
           <div class="calc-meal-chip c">
             <div class="calc-meal-chip-icon">🍚</div>
             <div class="calc-meal-chip-g">${cMeal}g</div>
-            <div class="calc-meal-chip-lbl">كارب</div>
+            <div class="calc-meal-chip-lbl">Carbs</div>
           </div>
           <div class="calc-meal-chip f">
             <div class="calc-meal-chip-icon">🫒</div>
             <div class="calc-meal-chip-g">${fMeal}g</div>
-            <div class="calc-meal-chip-lbl">دهون</div>
+            <div class="calc-meal-chip-lbl">Fat</div>
           </div>
         </div>
       </div>
@@ -2175,7 +2175,7 @@ function renderCalcResults(){
       <div class="calc-burn-strip">
         <div class="calc-burn-icon">🔥</div>
         <div class="calc-burn-info">
-          <div class="calc-burn-label">هدف الحرق اليومي</div>
+          <div class="calc-burn-label">Daily Burn Target</div>
           <div class="calc-burn-val" id="outBurn">${r.dailyBurn} kcal</div>
         </div>
       </div>

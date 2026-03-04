@@ -372,7 +372,7 @@
   .wt-trend.same{ background:rgba(100,116,139,.12); color:#94a3b8; }
   .wt-trend.none{ opacity:0; }
 
-  /* photo upload button */
+  /* ── Photo toggle button (top-right of card) ── */
   .wt-photo-btn{
     width:36px; height:36px; border-radius:12px;
     background:rgba(129,140,248,.1); border:1.5px solid rgba(129,140,248,.2);
@@ -380,37 +380,116 @@
     cursor:pointer; font-size:16px;
     transition:all .2s; flex-shrink:0;
     -webkit-tap-highlight-color:transparent;
+    position:relative;
   }
   .wt-photo-btn:active{ transform:scale(.92); }
   .wt-photo-btn.has-photo{
     background:rgba(129,140,248,.2); border-color:rgba(129,140,248,.5);
     box-shadow:0 0 10px rgba(129,140,248,.2);
   }
+  /* count badge on photo btn */
+  .wt-photo-count{
+    position:absolute; top:-5px; right:-5px;
+    background:linear-gradient(135deg,#818cf8,#6366f1);
+    color:#fff; font-size:9px; font-weight:900;
+    width:16px; height:16px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    border:1.5px solid #0a1220;
+  }
 
-  /* photo preview */
-  .wt-photo-preview{
-    margin:0 14px 14px;
-    border-radius:14px; overflow:hidden;
-    border:1.5px solid rgba(129,140,248,.25);
-    position:relative; max-height:0;
+  /* ── Gallery panel (collapsible) ── */
+  .wt-gallery-panel{
+    max-height:0; overflow:hidden;
     transition:max-height .38s cubic-bezier(.4,0,.2,1);
+    background:#070e1a;
+    border-top:1px solid rgba(129,140,248,.12);
+  }
+  .wt-gallery-panel.open{ max-height:600px; }
+  .wt-gallery-inner{
+    padding:12px 14px 14px;
+  }
+  /* thumbnail grid */
+  .wt-thumb-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:8px;
+    margin-bottom:10px;
+  }
+  .wt-thumb{
+    position:relative; border-radius:12px; overflow:hidden;
+    aspect-ratio:1/1; cursor:pointer;
+    border:1.5px solid rgba(129,140,248,.2);
     background:#0a1220;
+    transition:transform .15s;
   }
-  .wt-photo-preview.open{ max-height:400px; }
-  .wt-photo-preview img{
-    width:100%; display:block;
-    border-radius:12px;
+  .wt-thumb:active{ transform:scale(.94); }
+  .wt-thumb img{
+    width:100%; height:100%; object-fit:cover; display:block;
   }
-  .wt-photo-remove{
-    position:absolute; top:8px; right:8px;
-    background:rgba(0,0,0,.6); border:none;
-    color:#fff; font-size:14px; width:28px; height:28px;
-    border-radius:8px; cursor:pointer; display:flex;
-    align-items:center; justify-content:center;
+  .wt-thumb-del{
+    position:absolute; top:4px; right:4px;
+    width:22px; height:22px; border-radius:7px;
+    background:rgba(0,0,0,.65); border:none;
+    color:#fff; font-size:11px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
     backdrop-filter:blur(4px);
-    transition:background .2s;
+    transition:background .15s;
   }
-  .wt-photo-remove:hover{ background:rgba(239,68,68,.7); }
+  .wt-thumb-del:hover{ background:rgba(239,68,68,.8); }
+  /* add-more button (inside grid) */
+  .wt-thumb-add{
+    aspect-ratio:1/1; border-radius:12px;
+    border:1.5px dashed rgba(129,140,248,.3);
+    background:rgba(129,140,248,.04);
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:4px; cursor:pointer;
+    color:#818cf8; font-size:20px;
+    transition:all .2s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wt-thumb-add:hover{ background:rgba(129,140,248,.1); border-color:rgba(129,140,248,.5); }
+  .wt-thumb-add span{ font-size:10px; font-weight:700; opacity:.7; }
+
+  /* ── Lightbox ── */
+  .wt-lightbox{
+    position:fixed; inset:0; z-index:9999;
+    background:rgba(0,0,0,.92);
+    display:flex; align-items:center; justify-content:center;
+    padding:16px;
+    opacity:0; pointer-events:none;
+    transition:opacity .25s;
+  }
+  .wt-lightbox.open{ opacity:1; pointer-events:all; }
+  .wt-lightbox-img{
+    max-width:100%; max-height:88vh;
+    border-radius:16px; object-fit:contain;
+    box-shadow:0 0 60px rgba(0,0,0,.8);
+  }
+  .wt-lightbox-close{
+    position:absolute; top:16px; right:16px;
+    width:40px; height:40px; border-radius:12px;
+    background:rgba(255,255,255,.12); border:none;
+    color:#fff; font-size:20px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(8px);
+  }
+  .wt-lightbox-nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:40px; height:40px; border-radius:12px;
+    background:rgba(255,255,255,.12); border:none;
+    color:#fff; font-size:20px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(8px); transition:background .15s;
+  }
+  .wt-lightbox-nav:hover{ background:rgba(255,255,255,.22); }
+  .wt-lightbox-prev{ left:12px; }
+  .wt-lightbox-next{ right:12px; }
+  .wt-lightbox-counter{
+    position:absolute; bottom:20px; left:50%; transform:translateX(-50%);
+    background:rgba(0,0,0,.5); color:#fff;
+    font-size:12px; font-weight:700;
+    padding:4px 12px; border-radius:20px;
+    backdrop-filter:blur(6px);
+  }
 
   /* hidden file input */
   .wt-file-input{ display:none; }
@@ -2932,25 +3011,80 @@ function loadWeightTracker(){
   renderWeightRows();
   calcWeightSummary();
 }
-/* ── photo helpers ── */
-function wPhotoKey(i){ return "w_photo_"+i; }
-function wGetPhoto(i){ return pget(wPhotoKey(i)) || ""; }
-function wSetPhoto(i, dataUrl){ pset(wPhotoKey(i), dataUrl); }
-function wRemovePhoto(i){ premove(wPhotoKey(i)); }
+/* ══════════════════════════════════════════════
+   Multi-photo helpers  (array stored as JSON)
+   ══════════════════════════════════════════════ */
+function wPhotosKey(i){ return "w_photos_"+i; }
+function wGetPhotos(i){
+  try{ return JSON.parse(pget(wPhotosKey(i))||"[]"); }catch{ return []; }
+}
+function wSavePhotos(i, arr){ pset(wPhotosKey(i), JSON.stringify(arr)); }
+function wAddPhoto(i, dataUrl){
+  const arr=wGetPhotos(i); arr.push(dataUrl); wSavePhotos(i,arr);
+}
+function wDeletePhoto(i, idx){
+  const arr=wGetPhotos(i); arr.splice(idx,1); wSavePhotos(i,arr);
+}
+function wRemoveAllPhotos(i){ premove(wPhotosKey(i)); }
+
+/* ── lightbox state ── */
+let _lbWeek=0, _lbIdx=0;
+function openLightbox(weekNum, idx){
+  _lbWeek=weekNum; _lbIdx=idx;
+  renderLightbox();
+  $("wtLightbox").classList.add("open");
+  document.body.style.overflow="hidden";
+}
+function closeLightbox(){
+  $("wtLightbox").classList.remove("open");
+  document.body.style.overflow="";
+}
+function lbNav(dir){
+  const arr=wGetPhotos(_lbWeek);
+  _lbIdx=(_lbIdx+dir+arr.length)%arr.length;
+  renderLightbox();
+}
+function renderLightbox(){
+  const arr=wGetPhotos(_lbWeek);
+  if(!arr.length) return;
+  const el=$("wtLbImg"); if(el){ el.src=arr[_lbIdx]; }
+  const ctr=$("wtLbCounter"); if(ctr) ctr.textContent=`${_lbIdx+1} / ${arr.length}`;
+  /* hide nav arrows if only 1 photo */
+  const prev=$("wtLbPrev"), next=$("wtLbNext");
+  const multi=arr.length>1;
+  if(prev) prev.style.display=multi?"flex":"none";
+  if(next) next.style.display=multi?"flex":"none";
+}
+
+/* ── build lightbox DOM once ── */
+function ensureLightbox(){
+  if($("wtLightbox")) return;
+  const lb=document.createElement("div"); lb.className="wt-lightbox"; lb.id="wtLightbox";
+  lb.onclick=(e)=>{ if(e.target===lb) closeLightbox(); };
+  lb.innerHTML=`
+    <img class="wt-lightbox-img" id="wtLbImg" src="" alt="progress">
+    <button class="wt-lightbox-close" onclick="closeLightbox()">✕</button>
+    <button class="wt-lightbox-nav wt-lightbox-prev" id="wtLbPrev" onclick="lbNav(-1)">‹</button>
+    <button class="wt-lightbox-nav wt-lightbox-next" id="wtLbNext" onclick="lbNav(1)">›</button>
+    <div class="wt-lightbox-counter" id="wtLbCounter"></div>
+  `;
+  document.body.appendChild(lb);
+}
 
 function renderWeightRows(){
+  ensureLightbox();
   const weeks=getWeightWeeks();
   const wrap=$("weightRows");
   wrap.innerHTML="";
   for(let i=1;i<=weeks;i++){
     const val=pget("w_"+i)||"";
-    const photo=wGetPhoto(i);
+    const photos=wGetPhotos(i);
     const hasVal=val!=="";
-    const hasPhoto=photo!=="";
+    const hasPhotos=photos.length>0;
 
     /* card */
     const card=document.createElement("div");
-    card.className="wt-week-card"+(hasVal?" has-value":"")+(hasPhoto?" has-photo":"");
+    card.className="wt-week-card"+(hasVal?" has-value":"")+(hasPhotos?" has-photo":"");
     card.dataset.week=i;
 
     /* top row */
@@ -2958,6 +3092,7 @@ function renderWeightRows(){
 
     /* week number badge */
     const num=document.createElement("div"); num.className="wt-week-num"; num.textContent=i;
+    if(hasVal) num.style.background="linear-gradient(135deg,#38bdf8,#818cf8)";
 
     /* mid: label + input */
     const mid=document.createElement("div"); mid.className="wt-week-mid";
@@ -2979,48 +3114,80 @@ function renderWeightRows(){
     /* trend arrow */
     const trend=document.createElement("div"); trend.className="wt-trend none"; trend.dataset.trendIdx=i;
 
-    /* photo button */
-    const photoBtnWrap=document.createElement("div");
-    photoBtnWrap.className="wt-photo-btn"+(hasPhoto?" has-photo":"");
-    photoBtnWrap.title=hasPhoto?"View / change photo":"Upload progress photo";
-    photoBtnWrap.innerHTML=hasPhoto?"🖼":"📷";
-    photoBtnWrap.onclick=()=> hasPhoto ? togglePhotoPreview(i) : triggerPhotoUpload(i);
+    /* photo toggle button */
+    const photoBtn=document.createElement("div");
+    photoBtn.className="wt-photo-btn"+(hasPhotos?" has-photo":"");
+    photoBtn.title=hasPhotos?`${photos.length} photo(s) – tap to view`:"Upload progress photo";
+    photoBtn.innerHTML=hasPhotos?"🖼":"📷";
+    if(hasPhotos){
+      const badge=document.createElement("span"); badge.className="wt-photo-count";
+      badge.textContent=photos.length; photoBtn.appendChild(badge);
+    }
+    photoBtn.onclick=()=>{
+      const panel=card.querySelector(".wt-gallery-panel");
+      if(panel){ panel.classList.toggle("open"); }
+      else { triggerPhotoUpload(i); }
+    };
 
-    /* hidden file input */
+    /* hidden multi-file input */
     const fileInp=document.createElement("input");
-    fileInp.type="file"; fileInp.accept="image/*"; fileInp.className="wt-file-input";
-    fileInp.id=`wtFile_${i}`;
+    fileInp.type="file"; fileInp.accept="image/*"; fileInp.multiple=true;
+    fileInp.className="wt-file-input"; fileInp.id=`wtFile_${i}`;
     fileInp.addEventListener("change",function(){
-      const file=this.files[0]; if(!file) return;
-      const reader=new FileReader();
-      reader.onload=e=>{
-        wSetPhoto(i, e.target.result);
-        renderWeightRows();
-        calcWeightSummary();
-        /* auto-open preview */
-        setTimeout(()=>togglePhotoPreview(i, true),80);
-      };
-      reader.readAsDataURL(file);
+      if(!this.files.length) return;
+      let loaded=0;
+      const total=this.files.length;
+      Array.from(this.files).forEach(file=>{
+        const reader=new FileReader();
+        reader.onload=e=>{
+          wAddPhoto(i, e.target.result);
+          loaded++;
+          if(loaded===total){
+            renderWeightRows();
+            calcWeightSummary();
+            /* auto-open gallery panel */
+            setTimeout(()=>{
+              const c=document.querySelector(`[data-week="${i}"]`);
+              if(c){ const p=c.querySelector(".wt-gallery-panel"); if(p) p.classList.add("open"); }
+            },60);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+      this.value=""; /* reset so same file can be re-selected */
     });
 
     right.appendChild(trend);
-    right.appendChild(photoBtnWrap);
+    right.appendChild(photoBtn);
     right.appendChild(fileInp);
 
     top.appendChild(num); top.appendChild(mid); top.appendChild(right);
     card.appendChild(top);
 
-    /* photo preview (collapsed by default) */
-    if(hasPhoto){
-      const preview=document.createElement("div");
-      preview.className="wt-photo-preview"; preview.id=`wtPrev_${i}`;
-      const img=document.createElement("img"); img.src=photo; img.alt=`Week ${i}`;
-      const removeBtn=document.createElement("button");
-      removeBtn.className="wt-photo-remove"; removeBtn.innerHTML="✕";
-      removeBtn.onclick=(e)=>{ e.stopPropagation(); wRemovePhoto(i); renderWeightRows(); calcWeightSummary(); };
-      preview.appendChild(img); preview.appendChild(removeBtn);
-      card.appendChild(preview);
-    }
+    /* gallery panel */
+    const panel=document.createElement("div"); panel.className="wt-gallery-panel";
+    const inner=document.createElement("div"); inner.className="wt-gallery-inner";
+
+    /* thumbnail grid */
+    const grid=document.createElement("div"); grid.className="wt-thumb-grid";
+    photos.forEach((src,idx)=>{
+      const thumb=document.createElement("div"); thumb.className="wt-thumb";
+      const img=document.createElement("img"); img.src=src; img.alt=`Week ${i} #${idx+1}`;
+      img.onclick=()=>openLightbox(i,idx);
+      const del=document.createElement("button"); del.className="wt-thumb-del"; del.innerHTML="✕";
+      del.onclick=(e)=>{ e.stopPropagation(); wDeletePhoto(i,idx); renderWeightRows(); calcWeightSummary(); };
+      thumb.appendChild(img); thumb.appendChild(del);
+      grid.appendChild(thumb);
+    });
+    /* add-more tile */
+    const addTile=document.createElement("div"); addTile.className="wt-thumb-add";
+    addTile.innerHTML="➕<span>Add photo</span>";
+    addTile.onclick=()=>triggerPhotoUpload(i);
+    grid.appendChild(addTile);
+
+    inner.appendChild(grid);
+    panel.appendChild(inner);
+    card.appendChild(panel);
 
     wrap.appendChild(card);
   }
@@ -3031,11 +3198,6 @@ function renderWeightRows(){
 
 function triggerPhotoUpload(i){
   const el=$(`wtFile_${i}`); if(el) el.click();
-}
-function togglePhotoPreview(i, forceOpen){
-  const prev=$(`wtPrev_${i}`); if(!prev) return;
-  if(forceOpen) prev.classList.add("open");
-  else prev.classList.toggle("open");
 }
 function updateTrendArrows(weeks){
   let prev=null;
@@ -3113,7 +3275,7 @@ function resetWeight(){
   if(!canEditEverything()) return;
   if(!confirm("Reset weight log? This will also remove all progress photos.")) return;
   const weeks=getWeightWeeks();
-  for(let i=1;i<=weeks;i++){ premove("w_"+i); premove(wPhotoKey(i)); }
+  for(let i=1;i<=weeks;i++){ premove("w_"+i); wRemoveAllPhotos(i); }
   renderWeightRows();
   calcWeightSummary();
 }

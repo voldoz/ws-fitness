@@ -136,10 +136,7 @@
     border:1.5px solid transparent; transition:border-color .2s;
     position:relative; overflow:hidden;
   }
-  .burn-day-row.today-row{
-    border-color:#0ea5e9;
-    background:linear-gradient(90deg,#071a2e,#0b1a32);
-  }
+  /* today-row removed */
   .burn-day-row.done-row{ border-color:rgba(34,197,94,.3); }
   /* cumulative fill bar behind row */
   .burn-day-fill{
@@ -156,9 +153,7 @@
     font-weight:900; font-size:14px; color:#38bdf8;
     flex-shrink:0; position:relative; z-index:1;
   }
-  .burn-day-num.today-num{
-    background:linear-gradient(135deg,#0ea5e9,#2563eb); color:#fff;
-  }
+  /* today-num removed */
   .burn-day-num.done-num{ background:#052e16; color:#22c55e; }
   .burn-day-info{ flex:1; position:relative; z-index:1; min-width:0; }
   .burn-day-label{ font-weight:700; font-size:13px; }
@@ -218,136 +213,293 @@
   .countSmall{font-size:12px;opacity:.9;margin-top:4px}
 
   /* ===== Macros Page ===== */
+  @keyframes mac-fadeIn{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  @keyframes mac-pulse{ 0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,.3)} 50%{box-shadow:0 0 0 6px rgba(56,189,248,0)} }
+  @keyframes mac-shimmer{
+    0%{background-position:-200% center}
+    100%{background-position:200% center}
+  }
+
+  /* ── Hero card ── */
   .mac-hero{
-    background:#0b1220;border-radius:16px;padding:14px 16px;margin-bottom:14px;
+    background:linear-gradient(145deg,#0b1628,#0f1f35);
+    border-radius:22px; padding:18px 16px 14px;
+    margin-bottom:14px;
+    border:1px solid rgba(56,189,248,.12);
+    box-shadow:0 8px 32px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+    animation:mac-fadeIn .4s ease;
   }
-  .mac-hero-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-  .mac-title{font-weight:900;font-size:16px;color:#38bdf8;}
-  .mac-calories{font-size:13px;opacity:.75;}
-  .mac-rings{display:flex;gap:10px;margin-bottom:10px;}
+  .mac-hero-row{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:14px;
+  }
+  .mac-title{
+    font-weight:900;font-size:17px;
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .mac-calories{
+    font-size:12px; background:rgba(56,189,248,.12);
+    border:1px solid rgba(56,189,248,.2); color:#7dd3fc;
+    padding:4px 10px; border-radius:20px; font-weight:700;
+  }
+
+  /* ── Macro rings row ── */
+  .mac-rings{ display:flex; gap:8px; margin-bottom:14px; }
   .mac-ring-box{
-    flex:1;background:#0f172a;border-radius:14px;padding:10px 8px;
-    display:flex;flex-direction:column;align-items:center;gap:4px;
+    flex:1; background:rgba(15,23,42,.7);
+    border-radius:18px; padding:12px 8px 10px;
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    border:1px solid rgba(255,255,255,.06);
+    transition:transform .2s,box-shadow .2s;
   }
-  .mac-ring-svg{width:64px;height:64px;}
-  .mac-ring-label{font-size:10px;opacity:.65;text-align:center;}
-  .mac-ring-val{font-size:13px;font-weight:900;}
-  .mac-ring-val.p{color:#38bdf8;}
-  .mac-ring-val.c{color:#f97316;}
-  .mac-ring-val.f{color:#a78bfa;}
+  .mac-ring-box:active{ transform:scale(.96); }
+  .mac-ring-box.p{ border-color:rgba(56,189,248,.18); }
+  .mac-ring-box.c{ border-color:rgba(249,115,22,.18); }
+  .mac-ring-box.f{ border-color:rgba(167,139,250,.18); }
+  .mac-ring-svg{ width:68px; height:68px; }
+  .mac-ring-label{ font-size:9px; letter-spacing:.06em; text-transform:uppercase; opacity:.5; text-align:center; margin-top:2px; }
+  .mac-ring-val{ font-size:14px; font-weight:900; }
+  .mac-ring-val.p{ color:#38bdf8; }
+  .mac-ring-val.c{ color:#f97316; }
+  .mac-ring-val.f{ color:#a78bfa; }
+  .mac-ring-sub{ font-size:10px; font-weight:600; opacity:.55; }
 
-  .mac-meals-label{
-    font-size:11px;opacity:.6;margin-bottom:6px;text-align:center;
-  }
-  .mac-meal-strip{
-    display:flex;align-items:center;gap:10px;
-    background:#0f172a;border-radius:12px;padding:10px 12px;
-    margin-bottom:8px;
-  }
-  .mac-meal-num{
-    min-width:28px;height:28px;border-radius:8px;
-    background:#1e293b;display:flex;align-items:center;justify-content:center;
-    font-weight:900;font-size:12px;color:#38bdf8;
-  }
-  .mac-meal-macros{flex:1;display:flex;gap:6px;flex-wrap:wrap;}
-  .mac-chip{
-    border-radius:8px;padding:4px 8px;font-size:11px;font-weight:900;
-    display:inline-flex;align-items:center;gap:3px;
-  }
-  .mac-chip.p{background:#0e3a58;color:#38bdf8;}
-  .mac-chip.c{background:#431d07;color:#f97316;}
-  .mac-chip.f{background:#2d1b6b;color:#a78bfa;}
-  .mac-chip .scale{font-size:10px;opacity:.75;}
-
-  .mac-scale-section{
-    background:#0b1220;border-radius:16px;padding:14px 16px;margin-bottom:14px;
-  }
-  .mac-scale-title{font-weight:900;color:#38bdf8;margin-bottom:10px;font-size:14px;}
-  .mac-scale-row{
-    display:flex;align-items:center;gap:10px;
-    background:#0f172a;border-radius:12px;padding:10px 12px;margin-bottom:8px;
-  }
-  .mac-scale-icon{font-size:18px;min-width:26px;text-align:center;}
-  .mac-scale-info{flex:1;}
-  .mac-scale-name{font-weight:800;font-size:13px;}
-  .mac-scale-sub{font-size:11px;opacity:.6;margin-top:2px;}
-  .mac-scale-gram{
-    font-size:20px;font-weight:900;color:#22c55e;
-    min-width:60px;text-align:right;
-  }
-
-
-
-  .mac-progress-wrap{margin-bottom:14px;}
+  /* ── Progress bars ── */
+  .mac-progress-wrap{ margin-bottom:4px; }
   .mac-prog-row{
-    display:flex;align-items:center;gap:8px;margin-bottom:6px;
+    display:flex; align-items:center; gap:8px; margin-bottom:7px;
   }
-  .mac-prog-label{font-size:12px;font-weight:700;min-width:52px;}
-  .mac-prog-bar-bg{flex:1;background:#0f172a;border-radius:999px;height:10px;overflow:hidden;}
-  .mac-prog-bar-fill{height:100%;border-radius:999px;transition:width .3s;}
-  .mac-prog-bar-fill.p{background:#38bdf8;}
-  .mac-prog-bar-fill.c{background:#f97316;}
-  .mac-prog-bar-fill.f{background:#a78bfa;}
-  .mac-prog-pct{font-size:11px;opacity:.7;min-width:34px;text-align:right;}
-  .mac-prog-remain{font-size:11px;min-width:54px;text-align:right;opacity:.8;}
+  .mac-prog-label{ font-size:11px; font-weight:800; min-width:48px; }
+  .mac-prog-bar-bg{
+    flex:1; background:rgba(15,23,42,.8);
+    border-radius:999px; height:8px; overflow:hidden;
+    border:1px solid rgba(255,255,255,.05);
+  }
+  .mac-prog-bar-fill{ height:100%; border-radius:999px; transition:width .5s cubic-bezier(.4,0,.2,1); }
+  .mac-prog-bar-fill.p{ background:linear-gradient(90deg,#0ea5e9,#38bdf8); }
+  .mac-prog-bar-fill.c{ background:linear-gradient(90deg,#ea580c,#f97316); }
+  .mac-prog-bar-fill.f{ background:linear-gradient(90deg,#7c3aed,#a78bfa); }
+  .mac-prog-pct{ font-size:10px; opacity:.6; min-width:30px; text-align:right; }
+  .mac-prog-remain{ font-size:10px; min-width:52px; text-align:right; opacity:.75; }
 
   .mac-no-data{
-    text-align:center;padding:20px;opacity:.5;font-size:14px;
+    text-align:center; padding:30px 20px; opacity:.45; font-size:14px;
+    background:rgba(15,23,42,.5); border-radius:18px; margin-bottom:14px;
   }
 
-  /* meal check-off */
-  /* ══ Accordion ══════════════════════════════════════════════════ */
-  .mac-acc-wrap{
-    margin-top:8px;
-    border-radius:14px;
-    overflow:hidden;
-    border:1.5px solid transparent;
-    transition:border-color .25s;
+  /* ══ Meals section ══════════════════════════════════════════════ */
+  .mac-scale-section{
+    border-radius:22px;
+    padding:0;
+    margin-bottom:14px;
+    overflow:visible;
   }
-  .mac-acc-wrap.slot-p{ border-color:rgba(56,189,248,.2); }
-  .mac-acc-wrap.slot-c{ border-color:rgba(249,115,22,.2); }
-  .mac-acc-wrap.slot-f{ border-color:rgba(167,139,250,.2); }
+  .mac-meals-header{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:12px;
+  }
+  .mac-meals-title{
+    font-weight:900; font-size:15px;
+    background:linear-gradient(90deg,#38bdf8,#818cf8);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .mac-meals-badge{
+    font-size:11px; font-weight:700; padding:4px 12px;
+    border-radius:20px; background:rgba(34,197,94,.12);
+    border:1px solid rgba(34,197,94,.2); color:#4ade80;
+  }
+
+  /* ══ Meal Card ══════════════════════════════════════════════════ */
+  .mac-meal-card{
+    background:linear-gradient(145deg,#0d1829,#111e30);
+    border-radius:20px; margin-bottom:10px;
+    border:1.5px solid rgba(255,255,255,.07);
+    transition:border-color .3s, background .3s, box-shadow .3s;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none; overflow:hidden;
+    box-shadow:0 4px 16px rgba(0,0,0,.3);
+    animation:mac-fadeIn .35s ease both;
+  }
+  .mac-meal-card:nth-child(2){ animation-delay:.04s }
+  .mac-meal-card:nth-child(3){ animation-delay:.08s }
+  .mac-meal-card:nth-child(4){ animation-delay:.12s }
+  .mac-meal-card:nth-child(5){ animation-delay:.16s }
+  .mac-meal-card:nth-child(6){ animation-delay:.20s }
+  .mac-meal-card.checked{
+    background:linear-gradient(145deg,#071a0f,#091d12);
+    border-color:rgba(34,197,94,.35);
+    box-shadow:0 4px 20px rgba(34,197,94,.1);
+  }
+
+  /* header = clickable top row */
+  .mac-meal-card-top{
+    display:flex; align-items:center; gap:12px;
+    padding:14px 16px;
+    cursor:pointer;
+    position:relative;
+  }
+  .mac-meal-card-top::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(90deg,rgba(255,255,255,.02),transparent);
+    pointer-events:none;
+  }
+
+  /* check circle */
+  .mac-meal-check{
+    width:38px; height:38px; border-radius:50%;
+    border:2px solid rgba(255,255,255,.12);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; font-weight:900; color:transparent;
+    transition:all .25s cubic-bezier(.4,0,.2,1); flex-shrink:0;
+    background:rgba(15,23,42,.5);
+  }
+  .mac-meal-card.checked .mac-meal-check{
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+    border-color:#22c55e; color:#fff;
+    box-shadow:0 0 14px rgba(34,197,94,.35);
+  }
+
+  /* meal info in header */
+  .mac-meal-header-info{ flex:1; min-width:0; }
+  .mac-meal-num-label{
+    font-weight:900; font-size:14px; color:#e2e8f0; margin-bottom:2px;
+  }
+  .mac-meal-macros-preview{
+    display:flex; gap:6px; flex-wrap:nowrap; overflow:hidden;
+  }
+  .mac-mpv-chip{
+    font-size:10px; font-weight:700; padding:2px 7px;
+    border-radius:10px; white-space:nowrap; flex-shrink:0;
+  }
+  .mac-mpv-chip.p{ background:rgba(56,189,248,.12); color:#7dd3fc; }
+  .mac-mpv-chip.c{ background:rgba(249,115,22,.12); color:#fdba74; }
+  .mac-mpv-chip.f{ background:rgba(167,139,250,.12); color:#c4b5fd; }
+
+  .mac-meal-right{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .mac-meal-kcal{
+    font-size:11px; font-weight:700; padding:3px 8px;
+    border-radius:10px; background:rgba(255,255,255,.06);
+    color:#94a3b8; white-space:nowrap;
+  }
+  .mac-meal-arrow{
+    width:26px; height:26px; border-radius:50%;
+    background:rgba(255,255,255,.06);
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; color:#64748b;
+    transition:transform .32s cubic-bezier(.4,0,.2,1), background .2s;
+    flex-shrink:0;
+  }
+  .mac-meal-card.meal-open .mac-meal-arrow{
+    transform:rotate(180deg);
+    background:rgba(56,189,248,.12); color:#38bdf8;
+  }
+
+  /* body = collapsible content */
+  .mac-meal-body{
+    max-height:0; overflow:hidden;
+    transition:max-height .42s cubic-bezier(.4,0,.2,1);
+    padding:0 14px;
+  }
+  .mac-meal-card.meal-open .mac-meal-body{
+    max-height:2000px;
+    padding:0 14px 16px;
+  }
+
+  /* chips inside body */
+  .mac-meal-chips{
+    display:flex; gap:6px; flex-wrap:wrap;
+    margin-bottom:12px;
+    padding-top:2px;
+  }
+  .mac-chip{
+    border-radius:10px; padding:6px 10px; font-size:11px; font-weight:800;
+    display:inline-flex; align-items:center; gap:4px;
+    border:1px solid transparent;
+  }
+  .mac-chip.p{
+    background:rgba(56,189,248,.1); color:#38bdf8;
+    border-color:rgba(56,189,248,.18);
+  }
+  .mac-chip.c{
+    background:rgba(249,115,22,.1); color:#f97316;
+    border-color:rgba(249,115,22,.18);
+  }
+  .mac-chip.f{
+    background:rgba(167,139,250,.1); color:#a78bfa;
+    border-color:rgba(167,139,250,.18);
+  }
+  .mac-chip .scale{ font-size:9.5px; opacity:.7; }
+  .mac-chip-icon{ font-size:13px; }
+
+  /* ══ Inner Food Accordion ═══════════════════════════════════════ */
+  .mac-acc-wrap{
+    margin-bottom:8px; border-radius:16px; overflow:hidden;
+    border:1.5px solid transparent;
+    transition:border-color .25s, box-shadow .25s;
+  }
+  .mac-acc-wrap.slot-p{
+    border-color:rgba(56,189,248,.2);
+    box-shadow:0 2px 12px rgba(56,189,248,.06);
+  }
+  .mac-acc-wrap.slot-c{
+    border-color:rgba(249,115,22,.2);
+    box-shadow:0 2px 12px rgba(249,115,22,.06);
+  }
+  .mac-acc-wrap.slot-f{
+    border-color:rgba(167,139,250,.2);
+    box-shadow:0 2px 12px rgba(167,139,250,.06);
+  }
   .mac-acc-trigger{
     display:flex; align-items:center; justify-content:space-between;
-    width:100%; padding:11px 14px;
+    width:100%; padding:12px 14px;
     border:none; cursor:pointer;
     -webkit-tap-highlight-color:transparent;
     user-select:none; transition:background .2s;
     position:relative;
   }
-  .mac-acc-trigger.slot-p{ background:rgba(56,189,248,.1); }
-  .mac-acc-trigger.slot-c{ background:rgba(249,115,22,.1); }
-  .mac-acc-trigger.slot-f{ background:rgba(167,139,250,.1); }
-  .mac-acc-trigger.open.slot-p{ background:rgba(56,189,248,.17); }
-  .mac-acc-trigger.open.slot-c{ background:rgba(249,115,22,.17); }
-  .mac-acc-trigger.open.slot-f{ background:rgba(167,139,250,.17); }
+  .mac-acc-trigger.slot-p{ background:rgba(56,189,248,.08); }
+  .mac-acc-trigger.slot-c{ background:rgba(249,115,22,.08); }
+  .mac-acc-trigger.slot-f{ background:rgba(167,139,250,.08); }
+  .mac-acc-trigger.open.slot-p{ background:rgba(56,189,248,.15); }
+  .mac-acc-trigger.open.slot-c{ background:rgba(249,115,22,.15); }
+  .mac-acc-trigger.open.slot-f{ background:rgba(167,139,250,.15); }
   .acc-left{ display:flex; align-items:center; gap:9px; min-width:0; flex:1; }
   .acc-icon-wrap{
-    width:32px; height:32px; border-radius:10px; flex-shrink:0;
+    width:34px; height:34px; border-radius:12px; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
-    font-size:16px;
+    font-size:17px;
   }
-  .slot-p .acc-icon-wrap{ background:rgba(56,189,248,.15); }
-  .slot-c .acc-icon-wrap{ background:rgba(249,115,22,.15); }
-  .slot-f .acc-icon-wrap{ background:rgba(167,139,250,.15); }
-  .acc-title{ font-size:13px; font-weight:800; }
+  .slot-p .acc-icon-wrap{
+    background:linear-gradient(135deg,rgba(14,165,233,.2),rgba(56,189,248,.1));
+  }
+  .slot-c .acc-icon-wrap{
+    background:linear-gradient(135deg,rgba(234,88,12,.2),rgba(249,115,22,.1));
+  }
+  .slot-f .acc-icon-wrap{
+    background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(167,139,250,.1));
+  }
+  .acc-info{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+  .acc-title{ font-size:12px; font-weight:800; letter-spacing:.02em; }
   .slot-p .acc-title{ color:#7dd3fc; }
   .slot-c .acc-title{ color:#fdba74; }
   .slot-f .acc-title{ color:#c4b5fd; }
   .acc-badge{
-    font-size:10.5px; padding:3px 9px; border-radius:20px;
+    font-size:10px; padding:2px 8px; border-radius:20px;
     font-weight:700; white-space:nowrap; overflow:hidden;
-    text-overflow:ellipsis; max-width:140px;
+    text-overflow:ellipsis; max-width:160px; display:inline-block;
   }
-  .slot-p .acc-badge{ background:rgba(56,189,248,.18); color:#38bdf8; }
-  .slot-c .acc-badge{ background:rgba(249,115,22,.18); color:#f97316; }
-  .slot-f .acc-badge{ background:rgba(167,139,250,.18); color:#a78bfa; }
-  .acc-right{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .slot-p .acc-badge{ background:rgba(56,189,248,.15); color:#38bdf8; }
+  .slot-c .acc-badge{ background:rgba(249,115,22,.15); color:#f97316; }
+  .slot-f .acc-badge{ background:rgba(167,139,250,.15); color:#a78bfa; }
+  .acc-right{ display:flex; align-items:center; gap:7px; flex-shrink:0; }
   .acc-arrow{
-    width:22px; height:22px; border-radius:50%;
+    width:24px; height:24px; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
     font-size:11px; opacity:.6;
-    transition:transform .28s cubic-bezier(.4,0,.2,1), opacity .2s;
+    transition:transform .3s cubic-bezier(.4,0,.2,1), opacity .2s;
   }
   .slot-p .acc-arrow{ background:rgba(56,189,248,.15); color:#38bdf8; }
   .slot-c .acc-arrow{ background:rgba(249,115,22,.15); color:#f97316; }
@@ -355,110 +507,77 @@
   .mac-acc-trigger.open .acc-arrow{ transform:rotate(180deg); opacity:1; }
 
   .mac-acc-body{
-    max-height:0;
-    overflow:hidden;
-    transition:max-height .35s cubic-bezier(.4,0,.2,1), padding .3s;
+    max-height:0; overflow:hidden;
+    transition:max-height .38s cubic-bezier(.4,0,.2,1), padding .3s;
     padding:0 12px;
   }
   .mac-acc-body.open{
     max-height:600px;
-    padding:10px 12px 14px;
+    padding:12px 14px 16px;
   }
-  .mac-acc-body.slot-p{ background:rgba(56,189,248,.05); }
-  .mac-acc-body.slot-c{ background:rgba(249,115,22,.05); }
-  .mac-acc-body.slot-f{ background:rgba(167,139,250,.05); }
+  .mac-acc-body.slot-p{ background:rgba(56,189,248,.04); }
+  .mac-acc-body.slot-c{ background:rgba(249,115,22,.04); }
+  .mac-acc-body.slot-f{ background:rgba(167,139,250,.04); }
 
+  /* ── Food group labels ── */
   .mac-food-group-label{
-    font-size:9px; font-weight:800; letter-spacing:.1em;
-    text-transform:uppercase; opacity:.4; margin:10px 0 6px;
-    display:flex; align-items:center; gap:5px;
+    font-size:9px; font-weight:800; letter-spacing:.12em;
+    text-transform:uppercase; opacity:.35; margin:12px 0 7px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .mac-food-group-label::before{
+    content:''; width:3px; height:3px; border-radius:50%;
+    background:currentColor; opacity:.7;
   }
   .mac-food-group-label::after{
-    content:''; flex:1; height:1px; background:currentColor; opacity:.3;
+    content:''; flex:1; height:1px; background:currentColor; opacity:.2;
   }
-  .mac-food-select-row{ display:flex; gap:7px; flex-wrap:wrap; margin-bottom:3px; }
+
+  /* ── Food buttons ── */
+  .mac-food-select-row{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:4px; }
   .mac-food-btn{
-    padding:7px 13px; border-radius:22px;
-    border:1.5px solid rgba(255,255,255,.07); background:rgba(255,255,255,.04);
-    color:#64748b; font-size:12px; font-weight:600;
+    padding:7px 12px; border-radius:20px;
+    border:1.5px solid rgba(255,255,255,.06);
+    background:rgba(255,255,255,.03);
+    color:#64748b; font-size:11.5px; font-weight:600;
     cursor:pointer; transition:all .18s ease; white-space:nowrap;
     -webkit-tap-highlight-color:transparent;
-    display:flex; align-items:center; gap:5px;
+    display:flex; align-items:center; gap:4px;
   }
-  .mac-food-btn:active{ transform:scale(.9); }
+  .mac-food-btn:hover{ background:rgba(255,255,255,.07); color:#94a3b8; }
+  .mac-food-btn:active{ transform:scale(.91); }
   .mac-food-btn.active.slot-p{
-    background:linear-gradient(135deg,#0c2d45,#0a3d5e);
-    border-color:#38bdf8; color:#e0f2fe;
-    box-shadow:0 0 12px rgba(56,189,248,.2);
+    background:linear-gradient(135deg,rgba(14,165,233,.2),rgba(56,189,248,.1));
+    border-color:rgba(56,189,248,.5); color:#e0f2fe;
+    box-shadow:0 0 14px rgba(56,189,248,.18);
   }
   .mac-food-btn.active.slot-c{
-    background:linear-gradient(135deg,#2c1200,#3d1a00);
-    border-color:#f97316; color:#fed7aa;
-    box-shadow:0 0 12px rgba(249,115,22,.2);
+    background:linear-gradient(135deg,rgba(234,88,12,.2),rgba(249,115,22,.1));
+    border-color:rgba(249,115,22,.5); color:#fed7aa;
+    box-shadow:0 0 14px rgba(249,115,22,.18);
   }
   .mac-food-btn.active.slot-f{
-    background:linear-gradient(135deg,#1a0f3a,#250f4a);
-    border-color:#a78bfa; color:#ede9fe;
-    box-shadow:0 0 12px rgba(167,139,250,.2);
+    background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(167,139,250,.1));
+    border-color:rgba(167,139,250,.5); color:#ede9fe;
+    box-shadow:0 0 14px rgba(167,139,250,.18);
   }
   .mac-food-btn .food-scale{
     font-size:10px; font-weight:800;
-    padding:2px 7px; border-radius:12px; margin-left:2px;
+    padding:2px 7px; border-radius:10px; margin-left:1px;
   }
-  .mac-food-btn.active.slot-p .food-scale{ background:rgba(56,189,248,.2); color:#7dd3fc; }
-  .mac-food-btn.active.slot-c .food-scale{ background:rgba(249,115,22,.2); color:#fdba74; }
-  .mac-food-btn.active.slot-f .food-scale{ background:rgba(167,139,250,.2); color:#c4b5fd; }
-  /* ══ Meal card (outer accordion) ══════════════════════════════════ */
-  .mac-meal-card{
-    background:#0f172a; border-radius:16px;
-    margin-bottom:10px;
-    border:1.5px solid #1e293b;
-    transition:border-color .25s, background .25s;
-    -webkit-tap-highlight-color:transparent;
-    user-select:none;
-    overflow:hidden;
+  .mac-food-btn.active.slot-p .food-scale{
+    background:rgba(56,189,248,.2); color:#7dd3fc;
   }
-  .mac-meal-card.checked{ background:#071f12; border-color:#22c55e; }
-  /* header = clickable top row */
-  .mac-meal-card-top{
-    display:flex; align-items:center; gap:12px;
-    padding:13px 14px;
-    cursor:pointer;
+  .mac-food-btn.active.slot-c .food-scale{
+    background:rgba(249,115,22,.2); color:#fdba74;
   }
-  .mac-meal-check{
-    width:34px; height:34px; border-radius:50%; border:2px solid #334155;
-    display:flex; align-items:center; justify-content:center;
-    font-size:17px; font-weight:900; color:transparent;
-    transition:all .2s; flex-shrink:0;
+  .mac-food-btn.active.slot-f .food-scale{
+    background:rgba(167,139,250,.2); color:#c4b5fd;
   }
-  .mac-meal-card.checked .mac-meal-check{
-    background:#22c55e; border-color:#22c55e; color:#fff;
-  }
-  .mac-meal-num-label{ font-weight:900; font-size:14px; color:#38bdf8; flex:1; }
-  .mac-meal-kcal{ font-size:12px; opacity:.55; white-space:nowrap; }
-  .mac-meal-arrow{
-    width:22px; height:22px; border-radius:50%;
-    background:rgba(255,255,255,.06);
-    display:flex; align-items:center; justify-content:center;
-    font-size:11px; color:#64748b;
-    transition:transform .3s cubic-bezier(.4,0,.2,1);
-    flex-shrink:0;
-  }
-  .mac-meal-card.meal-open .mac-meal-arrow{ transform:rotate(180deg); }
-  /* body = collapsible content */
-  .mac-meal-body{
-    max-height:0;
-    overflow:hidden;
-    transition:max-height .38s cubic-bezier(.4,0,.2,1);
-    padding:0 14px;
-  }
-  .mac-meal-card.meal-open .mac-meal-body{
-    max-height:2000px;
-    padding:0 14px 14px;
-  }
-  .mac-meal-chips{
-    display:flex; gap:6px; flex-wrap:wrap;
-    margin-bottom:10px; padding-left:46px;
+
+  /* ── Divider between acc sections ── */
+  .mac-acc-divider{
+    height:1px; background:rgba(255,255,255,.05); margin:4px 0;
   }
 </style>
 </head>
@@ -829,69 +948,90 @@
 
   <!-- No data banner -->
   <div id="macNoData" class="mac-no-data" style="display:none;">
-    &#x26A0; Use Calculator first to generate your macros.
+    ⚠️ استخدم الحاسبة أولاً لإنشاء ماكروزك اليومية.
   </div>
 
   <!-- Summary hero: rings + progress bars -->
   <div class="mac-hero" id="macHero">
     <div class="mac-hero-row">
-      <div class="mac-title">&#x1F4CA; Daily Macros</div>
-      <div class="mac-calories" id="macCaloriesLabel">-- kcal / day</div>
+      <div class="mac-title">📊 الماكروز اليومية</div>
+      <div class="mac-calories" id="macCaloriesLabel">-- kcal</div>
     </div>
 
     <!-- Rings -->
     <div class="mac-rings">
-      <div class="mac-ring-box">
-        <svg class="mac-ring-svg" viewBox="0 0 64 64">
-          <circle cx="32" cy="32" r="26" fill="none" stroke="#0e3a58" stroke-width="8"/>
-          <circle id="ringP" cx="32" cy="32" r="26" fill="none" stroke="#38bdf8"
-            stroke-width="8" stroke-dasharray="163.4" stroke-dashoffset="163.4"
-            stroke-linecap="round" transform="rotate(-90 32 32)"/>
-          <text x="32" y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" id="ringPtxt">0%</text>
+      <div class="mac-ring-box p">
+        <svg class="mac-ring-svg" viewBox="0 0 68 68">
+          <circle cx="34" cy="34" r="28" fill="none" stroke="rgba(56,189,248,.12)" stroke-width="7"/>
+          <circle id="ringP" cx="34" cy="34" r="28" fill="none" stroke="url(#gradP)"
+            stroke-width="7" stroke-dasharray="175.9" stroke-dashoffset="175.9"
+            stroke-linecap="round" transform="rotate(-90 34 34)"/>
+          <defs>
+            <linearGradient id="gradP" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#0ea5e9"/>
+              <stop offset="100%" stop-color="#38bdf8"/>
+            </linearGradient>
+          </defs>
+          <text x="34" y="38" text-anchor="middle" fill="#7dd3fc" font-size="11" font-weight="900" id="ringPtxt">0%</text>
         </svg>
         <div class="mac-ring-val p" id="macPTotal">-- g</div>
-        <div class="mac-ring-label">Protein<br><span id="macPRemain" style="color:#38bdf8;font-weight:700"></span></div>
+        <div class="mac-ring-label">بروتين</div>
+        <div class="mac-ring-sub" id="macPRemain"></div>
       </div>
-      <div class="mac-ring-box">
-        <svg class="mac-ring-svg" viewBox="0 0 64 64">
-          <circle cx="32" cy="32" r="26" fill="none" stroke="#431d07" stroke-width="8"/>
-          <circle id="ringC" cx="32" cy="32" r="26" fill="none" stroke="#f97316"
-            stroke-width="8" stroke-dasharray="163.4" stroke-dashoffset="163.4"
-            stroke-linecap="round" transform="rotate(-90 32 32)"/>
-          <text x="32" y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" id="ringCtxt">0%</text>
+      <div class="mac-ring-box c">
+        <svg class="mac-ring-svg" viewBox="0 0 68 68">
+          <circle cx="34" cy="34" r="28" fill="none" stroke="rgba(249,115,22,.12)" stroke-width="7"/>
+          <circle id="ringC" cx="34" cy="34" r="28" fill="none" stroke="url(#gradC)"
+            stroke-width="7" stroke-dasharray="175.9" stroke-dashoffset="175.9"
+            stroke-linecap="round" transform="rotate(-90 34 34)"/>
+          <defs>
+            <linearGradient id="gradC" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#ea580c"/>
+              <stop offset="100%" stop-color="#f97316"/>
+            </linearGradient>
+          </defs>
+          <text x="34" y="38" text-anchor="middle" fill="#fdba74" font-size="11" font-weight="900" id="ringCtxt">0%</text>
         </svg>
         <div class="mac-ring-val c" id="macCTotal">-- g</div>
-        <div class="mac-ring-label">Carbs<br><span id="macCRemain" style="color:#f97316;font-weight:700"></span></div>
+        <div class="mac-ring-label">كارب</div>
+        <div class="mac-ring-sub" id="macCRemain"></div>
       </div>
-      <div class="mac-ring-box">
-        <svg class="mac-ring-svg" viewBox="0 0 64 64">
-          <circle cx="32" cy="32" r="26" fill="none" stroke="#2d1b6b" stroke-width="8"/>
-          <circle id="ringF" cx="32" cy="32" r="26" fill="none" stroke="#a78bfa"
-            stroke-width="8" stroke-dasharray="163.4" stroke-dashoffset="163.4"
-            stroke-linecap="round" transform="rotate(-90 32 32)"/>
-          <text x="32" y="36" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" id="ringFtxt">0%</text>
+      <div class="mac-ring-box f">
+        <svg class="mac-ring-svg" viewBox="0 0 68 68">
+          <circle cx="34" cy="34" r="28" fill="none" stroke="rgba(167,139,250,.12)" stroke-width="7"/>
+          <circle id="ringF" cx="34" cy="34" r="28" fill="none" stroke="url(#gradF)"
+            stroke-width="7" stroke-dasharray="175.9" stroke-dashoffset="175.9"
+            stroke-linecap="round" transform="rotate(-90 34 34)"/>
+          <defs>
+            <linearGradient id="gradF" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#7c3aed"/>
+              <stop offset="100%" stop-color="#a78bfa"/>
+            </linearGradient>
+          </defs>
+          <text x="34" y="38" text-anchor="middle" fill="#c4b5fd" font-size="11" font-weight="900" id="ringFtxt">0%</text>
         </svg>
         <div class="mac-ring-val f" id="macFTotal">-- g</div>
-        <div class="mac-ring-label">Fat<br><span id="macFRemain" style="color:#a78bfa;font-weight:700"></span></div>
+        <div class="mac-ring-label">دهون</div>
+        <div class="mac-ring-sub" id="macFRemain"></div>
       </div>
     </div>
 
     <!-- Progress bars -->
     <div class="mac-progress-wrap">
       <div class="mac-prog-row">
-        <div class="mac-prog-label" style="color:#38bdf8">Protein</div>
+        <div class="mac-prog-label" style="color:#7dd3fc">🥩</div>
         <div class="mac-prog-bar-bg"><div class="mac-prog-bar-fill p" id="barP" style="width:0%"></div></div>
         <div class="mac-prog-pct" id="barPpct">0%</div>
         <div class="mac-prog-remain" id="barPrem"></div>
       </div>
       <div class="mac-prog-row">
-        <div class="mac-prog-label" style="color:#f97316">Carbs</div>
+        <div class="mac-prog-label" style="color:#fdba74">🍚</div>
         <div class="mac-prog-bar-bg"><div class="mac-prog-bar-fill c" id="barC" style="width:0%"></div></div>
         <div class="mac-prog-pct" id="barCpct">0%</div>
         <div class="mac-prog-remain" id="barCrem"></div>
       </div>
       <div class="mac-prog-row">
-        <div class="mac-prog-label" style="color:#a78bfa">Fat</div>
+        <div class="mac-prog-label" style="color:#c4b5fd">🫒</div>
         <div class="mac-prog-bar-bg"><div class="mac-prog-bar-fill f" id="barF" style="width:0%"></div></div>
         <div class="mac-prog-pct" id="barFpct">0%</div>
         <div class="mac-prog-remain" id="barFrem"></div>
@@ -901,12 +1041,12 @@
 
   <!-- Meal check-off list (generated by JS) -->
   <div class="mac-scale-section" id="macScaleSection">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <div class="mac-scale-title" style="margin:0;">&#x1F37D; Meals</div>
-      <div id="macMealsCountLabel" style="font-size:12px;opacity:.6;"></div>
+    <div class="mac-meals-header">
+      <div class="mac-meals-title">🍽 وجباتك اليومية</div>
+      <div id="macMealsCountLabel" class="mac-meals-badge">0 / 0</div>
     </div>
     <div id="macMealStrips"></div>
-    <button class="mini red hidden" id="macResetBtn" onclick="resetMacroLog()" style="margin-top:8px;">&#x1F5D1; Reset Today</button>
+    <button class="mini red hidden" id="macResetBtn" onclick="resetMacroLog()" style="margin-top:10px;">🗑 إعادة تعيين اليوم</button>
   </div>
 
 </div>
@@ -1772,22 +1912,13 @@ $("calcBtn").addEventListener("click", calcAndSave);
 /* ========= Daily Burn (redesigned) ========= */
 const DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-function getAutoTodayIndex(){
-  const saved=pget("today_index");
-  if(saved) return parseInt(saved,10);
-  return 1; /* يبدأ من اليوم 1 دائماً — مستقل عن تاريخ الجهاز */
-}
-
 function buildWeekInputs(){
   const grid=$("daysGrid");
   if(grid.dataset.built==="1") return;
   grid.innerHTML="";
-  const todayIdx=getAutoTodayIndex();
-  $("todayIndex").value=todayIdx;
   for(let d=1; d<=7; d++){
-    const isToday = d===todayIdx;
     const row = document.createElement("div");
-    row.className = "burn-day-row" + (isToday?" today-row":"");
+    row.className = "burn-day-row";
     row.id = `dayRow_${d}`;
 
     /* background fill bar (cumulative progress) */
@@ -1798,7 +1929,7 @@ function buildWeekInputs(){
 
     /* day number badge */
     const num = document.createElement("div");
-    num.className = "burn-day-num" + (isToday?" today-num":"");
+    num.className = "burn-day-num";
     num.id = `dayNum_${d}`;
     num.textContent = d;
 
@@ -1814,7 +1945,6 @@ function buildWeekInputs(){
     const cumul = document.createElement("span");
     cumul.className = "burn-day-cumul";
     cumul.id = `dayCumul_${d}`;
-    sub.appendChild(document.createTextNode(isToday?"Today":(d<todayIdx?"Past":"Upcoming")));
     sub.appendChild(cumul);
     info.appendChild(lbl);
     info.appendChild(sub);
@@ -1843,23 +1973,9 @@ function buildWeekInputs(){
 }
 
 function loadWeekInputs(){
-  const todayIdx=getAutoTodayIndex();
   for(let d=1; d<=7; d++){
     const v=pget(`day_${d}`)||"";
     const el=$(`day_${d}`); if(el) el.value=v;
-    /* update status label */
-    const sub=$(`daySub_${d}`);
-    if(sub){
-      const txt = d===todayIdx?"Today":(d<todayIdx?"Past":"Upcoming");
-      const cumul = sub.querySelector(`#dayCumul_${d}`);
-      sub.childNodes[0].textContent = txt;
-    }
-    const row=$(`dayRow_${d}`);
-    if(row){
-      row.classList.toggle("today-row",d===todayIdx);
-      const numEl=row.querySelector(".burn-day-num");
-      if(numEl) numEl.classList.toggle("today-num",d===todayIdx);
-    }
   }
 }
 
@@ -1875,7 +1991,6 @@ function syncWeeklyTarget(){
 
 function recalcWeek(){
   const target    = getWeeklyTarget();
-  const todayIdx  = getAutoTodayIndex();
   const CIRC      = 314.16;  /* 2π × r=50 */
 
   /* collect per-day values */
@@ -1899,13 +2014,13 @@ function recalcWeek(){
     $("burnRingPct").textContent="0%";
     $("burnRingTrack").style.strokeDashoffset=CIRC;
     /* clear all rows */
-    for(let d=1;d<=7;d++) updateDayRow(d, 0, 0, target, todayIdx);
+    for(let d=1;d<=7;d++) updateDayRow(d, 0, 0, target);
     return;
   }
   $("wkWarn").textContent="";
 
   const remaining  = Math.max(0, target - burned);
-  const remDays    = Math.max(0, 7 - todayIdx + 1); /* today + days after */
+  const remDays    = vals.filter(v=>v===0).length; /* unfilled days remaining */
   const perDay     = remDays>0 ? Math.ceil(remaining/remDays) : 0;
   const pct        = Math.min(100, Math.round((burned/target)*100));
 
@@ -1941,11 +2056,11 @@ function recalcWeek(){
   let cumul=0;
   for(let d=1;d<=7;d++){
     cumul+=vals[d-1];
-    updateDayRow(d, vals[d-1], cumul, target, todayIdx);
+    updateDayRow(d, vals[d-1], cumul, target);
   }
 }
 
-function updateDayRow(d, dayVal, cumulVal, target, todayIdx){
+function updateDayRow(d, dayVal, cumulVal, target){
   const row   = $(`dayRow_${d}`);
   const done  = $(`dayDone_${d}`);
   const fill  = $(`dayFill_${d}`);
@@ -1954,19 +2069,17 @@ function updateDayRow(d, dayVal, cumulVal, target, todayIdx){
   if(!row) return;
 
   const hasBurn = dayVal > 0;
-  const isToday = d === todayIdx;
 
   /* done icon */
   if(done) done.classList.toggle("empty", !hasBurn);
 
   /* row class */
-  row.classList.toggle("done-row", hasBurn && !isToday);
+  row.classList.toggle("done-row", hasBurn);
 
   /* number badge */
   if(numEl){
     numEl.className = "burn-day-num";
-    if(isToday)       numEl.classList.add("today-num");
-    else if(hasBurn)  numEl.classList.add("done-num");
+    if(hasBurn) numEl.classList.add("done-num");
   }
 
   /* cumulative fill bar width */
@@ -2343,29 +2456,12 @@ function setMealFoods(obj){ pset("meal_foods", JSON.stringify(obj)); }
 
 /* pick a food for a slot (mealNum, slot "p"|"c"|"f") */
 function selectFood(mealNum, slot, foodKey){
-  /* remember which accordions/meals are open before re-render */
-  const openAccId   = (document.querySelector(".mac-acc-body.open") || {}).dataset?.accId || null;
-  const openMealIds = [...document.querySelectorAll(".mac-meal-card.meal-open")]
-                        .map(c => Number(c.dataset.meal));
-
   const mf = getMealFoods();
   if(!mf[mealNum]) mf[mealNum]={};
   mf[mealNum][slot] = foodKey;
   setMealFoods(mf);
+  /* renderMacrosPage now preserves open accordion + meal states internally */
   renderMacrosPage();
-
-  /* restore open meals */
-  openMealIds.forEach(id=>{
-    const c = document.querySelector(`.mac-meal-card[data-meal="${id}"]`);
-    if(c) c.classList.add("meal-open");
-  });
-  /* restore open food accordion */
-  if(openAccId){
-    const b = document.querySelector(`.mac-acc-body[data-acc-id="${openAccId}"]`);
-    const t = document.querySelector(`.mac-acc-trigger[data-acc-id="${openAccId}"]`);
-    if(b) b.classList.add("open");
-    if(t) t.classList.add("open");
-  }
 }
 
 /* get density for a meal slot; fallback to default */
@@ -2386,7 +2482,7 @@ function renderMacrosPage(){
   $("macResetBtn").classList.toggle("hidden", !canEditEverything());
   if(!r) return;
 
-  const CIRC  = 163.4;
+  const CIRC  = 175.9;   /* 2π × 28  (new ring r=28) */
   const tP    = Number(r.protein||0);
   const tC    = Number(r.carbs||0);
   const tF    = Number(r.fat||0);
@@ -2409,8 +2505,8 @@ function renderMacrosPage(){
   const lF = Math.round(fMeal * doneCount);
 
   /* header */
-  $("macCaloriesLabel").textContent = `${kcal.toLocaleString()} kcal / day`;
-  $("macMealsCountLabel").textContent = `${doneCount} / ${meals} done`;
+  $("macCaloriesLabel").textContent = `${kcal.toLocaleString()} kcal`;
+  $("macMealsCountLabel").textContent = `${doneCount} / ${meals} ✓`;
 
   /* rings */
   function pct(a,b){ return b>0 ? Math.min(100,Math.round((a/b)*100)) : 0; }
@@ -2429,19 +2525,19 @@ function renderMacrosPage(){
   $("macFTotal").textContent = `${tF} g`;
 
   const remP=Math.max(0,tP-lP), remC=Math.max(0,tC-lC), remF=Math.max(0,tF-lF);
-  $("macPRemain").textContent = doneCount>0 ? `${lP}g / ${remP}g left` : "";
-  $("macCRemain").textContent = doneCount>0 ? `${lC}g / ${remC}g left` : "";
-  $("macFRemain").textContent = doneCount>0 ? `${lF}g / ${remF}g left` : "";
+  $("macPRemain").textContent = doneCount>0 ? `${lP}g مُنجز · ${remP}g متبقى` : "";
+  $("macCRemain").textContent = doneCount>0 ? `${lC}g مُنجز · ${remC}g متبقى` : "";
+  $("macFRemain").textContent = doneCount>0 ? `${lF}g مُنجز · ${remF}g متبقى` : "";
 
   /* progress bars */
   function setBar(barId,pctId,remId,pctVal,remVal){
     $(barId).style.width = pctVal+"%";
     $(pctId).textContent = pctVal+"%";
     if(remVal<=0){
-      $(remId).textContent="Done!";
+      $(remId).textContent="✓";
       $(remId).style.color="#22c55e";
     } else {
-      $(remId).textContent=`${remVal}g left`;
+      $(remId).textContent=`${remVal}g`;
       $(remId).style.color="";
     }
   }
@@ -2451,6 +2547,13 @@ function renderMacrosPage(){
 
   /* ── Meal Cards ── */
   const box = $("macMealStrips");
+
+  /* remember open accordion ids before clearing */
+  const openAccIds = new Set();
+  box.querySelectorAll(".mac-acc-body.open").forEach(b=>openAccIds.add(b.dataset.accId));
+  const openMealIds = new Set();
+  box.querySelectorAll(".mac-meal-card.meal-open").forEach(c=>openMealIds.add(c.dataset.meal));
+
   box.innerHTML = "";
 
   /* ── single delegated listener ── */
@@ -2496,22 +2599,17 @@ function renderMacrosPage(){
 
   const mealFoods = getMealFoods();
 
-  /* helper: scale grams of food needed for targetG of macro
-   * Weight is always driven by the macro target only.
-   * (calorie-cap removed: real protein foods like beef/salmon have
-   *  mixed macros and a per-slot kcal cap produced wrong low values) */
+  /* helper: scale grams of food needed for targetG of macro */
   function scaleW(targetG, food){
     return Math.max(0, Math.round(targetG / (food.density / 100)));
   }
 
+  /* meal number emoji labels */
+  const mealNums = ["","١","٢","٣","٤","٥","٦"];
+
   for(let m=1; m<=meals; m++){
     const isDone = checked.map(Number).includes(m);
     const mSlots = mealFoods[m] || {};
-
-    /* kcal budgets (kept for badge display, not used for weight cap) */
-    const pKcalBudget = kcalMeal;
-    const cKcalBudget = kcalMeal;
-    const fKcalBudget = kcalMeal;
 
     /* selected food objects */
     const selFoodP = FOOD_TYPES.p.find(x=>x.key===mSlots.p);
@@ -2529,43 +2627,67 @@ function renderMacrosPage(){
       ? scaleW(fMeal, selFoodF)
       : Math.max(0, Math.round(fMeal / (getMealDensity(m,"f")/100)));
 
-    /* card */
+    /* ── card ── */
     const card = document.createElement("div");
-    card.className = "mac-meal-card" + (isDone ? " checked" : "");
+    const isCardOpen = openMealIds.has(String(m));
+    card.className = "mac-meal-card" + (isDone ? " checked" : "") + (isCardOpen ? " meal-open" : "");
     card.dataset.meal = m;
 
-    /* top row */
+    /* ── top row ── */
     const top = document.createElement("div");
     top.className = "mac-meal-card-top";
+
+    /* check circle */
     const chk = document.createElement("div");
     chk.className = "mac-meal-check";
-    chk.textContent = isDone ? "\u2713" : "";
+    chk.innerHTML = isDone ? "✓" : "";
+
+    /* meal header info block */
+    const headerInfo = document.createElement("div");
+    headerInfo.className = "mac-meal-header-info";
+
     const lbl = document.createElement("div");
     lbl.className = "mac-meal-num-label";
-    lbl.textContent = `وجبة ${m}`;
+    lbl.innerHTML = `وجبة ${mealNums[m]||m}`;
+
+    /* preview macro chips in header */
+    const preview = document.createElement("div");
+    preview.className = "mac-meal-macros-preview";
+    preview.innerHTML =
+      `<span class="mac-mpv-chip p">🥩 ${pScaleM}g</span>`+
+      `<span class="mac-mpv-chip c">🍚 ${cScaleM}g</span>`+
+      `<span class="mac-mpv-chip f">🫒 ${fScaleM}g</span>`;
+
+    headerInfo.append(lbl, preview);
+
+    /* right side: kcal + arrow */
+    const right = document.createElement("div");
+    right.className = "mac-meal-right";
     const kcalLbl = document.createElement("div");
     kcalLbl.className = "mac-meal-kcal";
     kcalLbl.textContent = `${kcalMeal} kcal`;
     const arr = document.createElement("div");
     arr.className = "mac-meal-arrow";
     arr.textContent = "▾";
-    top.append(chk, lbl, kcalLbl, arr);
+    right.append(kcalLbl, arr);
 
-    /* chips */
+    top.append(chk, headerInfo, right);
+
+    /* ── body chips (detailed) ── */
     const chips = document.createElement("div");
     chips.className = "mac-meal-chips";
     chips.innerHTML =
-      `<span class="mac-chip p">⚖ <b>${pScaleM}g</b><span class="scale"> → ${pMeal}g P</span></span>`+
-      `<span class="mac-chip c">⚖ <b>${cScaleM}g</b><span class="scale"> → ${cMeal}g C</span></span>`+
-      `<span class="mac-chip f">⚖ <b>${fScaleM}g</b><span class="scale"> → ${fMeal}g F</span></span>`;
+      `<span class="mac-chip p"><span class="mac-chip-icon">🥩</span> <b>${pScaleM}g</b><span class="scale"> ← ${pMeal}g بروتين</span></span>`+
+      `<span class="mac-chip c"><span class="mac-chip-icon">🍚</span> <b>${cScaleM}g</b><span class="scale"> ← ${cMeal}g كارب</span></span>`+
+      `<span class="mac-chip f"><span class="mac-chip-icon">🫒</span> <b>${fScaleM}g</b><span class="scale"> ← ${fMeal}g دهون</span></span>`;
 
-    /* accordion builder — wraps trigger+body in one element */
+    /* ── accordion builder ── */
     function buildAcc(slot, icon, title, targetG){
       const accId   = `acc-${m}-${slot}`;
       const selKey  = mSlots[slot];
       const selFood = FOOD_TYPES[slot].find(x=>x.key===selKey);
       const wSel    = selFood ? scaleW(targetG, selFood) : null;
-      const badge   = selFood ? selFood.label+" · ⚖"+wSel+"g" : "اختر";
+      const badge   = selFood ? `${selFood.label} · ⚖${wSel}g` : "اختر ▸";
 
       const wrap = document.createElement("div");
       wrap.className = `mac-acc-wrap slot-${slot}`;
@@ -2578,8 +2700,10 @@ function renderMacrosPage(){
       trig.innerHTML =
         `<span class="acc-left">`+
           `<span class="acc-icon-wrap">${icon}</span>`+
-          `<span class="acc-title">${title}</span>`+
-          `<span class="acc-badge">${badge}</span>`+
+          `<span class="acc-info">`+
+            `<span class="acc-title">${title}</span>`+
+            `<span class="acc-badge">${badge}</span>`+
+          `</span>`+
         `</span>`+
         `<span class="acc-right">`+
           `<span class="acc-arrow">▾</span>`+
@@ -2589,6 +2713,12 @@ function renderMacrosPage(){
       const body = document.createElement("div");
       body.className = `mac-acc-body slot-${slot}`;
       body.dataset.accId = accId;
+
+      /* restore open state */
+      if(openAccIds.has(accId)){
+        trig.classList.add("open");
+        body.classList.add("open");
+      }
 
       /* group by cat */
       const groups = {};
@@ -2629,6 +2759,7 @@ function renderMacrosPage(){
     const pAcc = buildAcc("p","🥩","بروتين",    pMeal);
     const cAcc = buildAcc("c","🍚","كارب",      cMeal);
     const fAcc = buildAcc("f","🫒","دهون صحية", fMeal);
+
     /* meal body — collapsible */
     const mealBody = document.createElement("div");
     mealBody.className = "mac-meal-body";

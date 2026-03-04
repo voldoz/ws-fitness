@@ -236,19 +236,6 @@
   .mac-food-btn.active.slot-p{ border-color:#38bdf8; background:#0c2a3e; color:#e0f2fe; }
   .mac-food-btn.active.slot-c{ border-color:#f97316; background:#2c1000; color:#fed7aa; }
   .mac-food-btn.active.slot-f{ border-color:#a78bfa; background:#1e1040; color:#ede9fe; }
-  .mac-food-btn .food-name{ font-weight:700; display:block; font-size:12px; }
-  .mac-food-btn .food-detail{ font-size:9.5px; opacity:.6; display:block; }
-  /* over-calorie warning badge on food btn */
-  .mac-food-btn.over-cal{ border-color:#ef4444 !important; }
-  .mac-food-btn.over-cal .food-scale{ color:#ef4444 !important; }
-  .mac-kcal-summary{
-    display:flex; justify-content:space-between; align-items:center;
-    background:#0a1628; border-radius:10px; padding:8px 12px;
-    margin-top:8px; font-size:12px; gap:6px; flex-wrap:wrap;
-  }
-  .mac-kcal-ok{ color:#22c55e; font-weight:700; }
-  .mac-kcal-warn{ color:#f97316; font-weight:700; }
-  .mac-kcal-over{ color:#ef4444; font-weight:700; }
   .mac-food-btn .food-scale{ font-size:11px; display:block; margin-top:3px; font-weight:800; }
   .mac-food-btn.active.slot-p .food-scale{ color:#38bdf8; }
   .mac-food-btn.active.slot-c .food-scale{ color:#f97316; }
@@ -2166,85 +2153,67 @@ function renderMacrosPage(){
     const chips = document.createElement("div");
     chips.className = "mac-meal-chips";
     chips.innerHTML =
-      `<span class="mac-chip p">⚖ <b>${pScaleM}g</b><span class="scale"> → ${pMeal}g P</span>${pCalc.over?'<span style="color:#ef4444;font-size:9px"> ⚠️cap</span>':''}</span>`+
-      `<span class="mac-chip c">⚖ <b>${cScaleM}g</b><span class="scale"> → ${cMeal}g C</span>${cCalc.over?'<span style="color:#ef4444;font-size:9px"> ⚠️cap</span>':''}</span>`+
-      `<span class="mac-chip f">⚖ <b>${fScaleM}g</b><span class="scale"> → ${fMeal}g F</span>${fCalc.over?'<span style="color:#ef4444;font-size:9px"> ⚠️cap</span>':''}</span>`;
+      `<span class="mac-chip p">⚖ <b>${pScaleM}g</b><span class="scale"> → ${pMeal}g P</span></span>`+
+      `<span class="mac-chip c">⚖ <b>${cScaleM}g</b><span class="scale"> → ${cMeal}g C</span></span>`+
+      `<span class="mac-chip f">⚖ <b>${fScaleM}g</b><span class="scale"> → ${fMeal}g F</span></span>`;
 
-    /* ── kcal summary row ── */
-    const totalFoodKcal = Math.round(
-      (selFoodP ? pScaleM * selFoodP.kcalPer100/100 : pKcalBudget) +
-      (selFoodC ? cScaleM * selFoodC.kcalPer100/100 : cKcalBudget) +
-      (selFoodF ? fScaleM * selFoodF.kcalPer100/100 : fKcalBudget)
-    );
-    const kcalDiff  = totalFoodKcal - kcalMeal;
-    const kcalClass = Math.abs(kcalDiff)<=15 ? "mac-kcal-ok"
-                    : kcalDiff > 0            ? "mac-kcal-over"
-                    :                           "mac-kcal-warn";
-    const kcalMsg   = Math.abs(kcalDiff)<=15 ? `✓ ${totalFoodKcal} kcal`
-                    : kcalDiff > 0            ? `⚠ ${totalFoodKcal} kcal (+${kcalDiff})`
-                    :                           `${totalFoodKcal} kcal (−${Math.abs(kcalDiff)})`;
-    const kcalSum = document.createElement("div");
-    kcalSum.className = "mac-kcal-summary";
-    kcalSum.innerHTML =
-      `<span style="opacity:.55">سعرات الوجبة</span>`+
-      `<span class="${kcalClass}">${kcalMsg} / ${kcalMeal} kcal</span>`;
+    /* ── accordion food sections ── */
+    function buildAccordion(slot, icon, title, targetG, kcalBudget){
+      const selKey  = mSlots[slot];
+      const selFood = FOOD_TYPES[slot].find(x=>x.key===selKey);
+      const res0    = selFood ? calcFoodWeight(targetG, selFood, kcalBudget) : null;
+      const scaleStr= res0 ? `⚖ ${res0.weight}g` : "اختر";
 
-    /* ── food-type selector sections (grouped by category) ── */
-    function buildFoodSection(slot, icon, title, targetG, kcalBudget){
-      const section = document.createElement("div");
-      section.className = "mac-food-section";
+      /* trigger button */
+      const trig = document.createElement("button");
+      trig.className = `mac-acc-trigger slot-${slot}`;
+      trig.dataset.slot = slot;
+      trig.innerHTML =
+        `<span class="acc-left"><span>${icon}</span><span>${title}</span></span>`+
+        `<span style="display:flex;align-items:center;gap:6px">`+
+          `<span class="acc-chosen">${selFood ? selFood.label+" · "+scaleStr : scaleStr}</span>`+
+          `<span class="acc-arrow">▼</span>`+
+        `</span>`;
 
-      /* section header */
-      const hdr = document.createElement("div");
-      hdr.className = "mac-food-section-header";
-      hdr.innerHTML = `<span>${icon}</span>${title}`;
-      section.appendChild(hdr);
+      /* body (hidden by default) */
+      const body = document.createElement("div");
+      body.className = "mac-acc-body";
 
-      /* group foods by cat */
+      /* group by cat */
       const groups = {};
       FOOD_TYPES[slot].forEach(food=>{
         if(!groups[food.cat]) groups[food.cat]=[];
         groups[food.cat].push(food);
       });
-
       Object.entries(groups).forEach(([catLabel, foods])=>{
         const catDiv = document.createElement("div");
         catDiv.className = "mac-food-group-label";
         catDiv.textContent = catLabel;
-        section.appendChild(catDiv);
-
+        body.appendChild(catDiv);
         const row = document.createElement("div");
         row.className = "mac-food-select-row";
         foods.forEach(food=>{
-          const isActive = mSlots[slot] === food.key;
+          const isActive = selKey === food.key;
           const res      = calcFoodWeight(targetG, food, kcalBudget);
           const btn      = document.createElement("button");
-          btn.className  = "mac-food-btn slot-"+slot
-                         + (isActive  ? " active"  : "")
-                         + (res.over  ? " over-cal": "");
+          btn.className  = "mac-food-btn slot-"+slot + (isActive ? " active" : "");
           btn.dataset.meal = m;
           btn.dataset.slot = slot;
           btn.dataset.food = food.key;
-          /* show kcal per 100g so user knows the caloric density */
-          const calNote = res.over
-            ? `⚠ ${res.weight}g (cap)`
-            : (isActive ? `⚖ ${res.weight}g` : "");
           btn.innerHTML =
-            `<span class="food-name">${food.label}</span>`+
-            `<span class="food-detail">${food.kcalPer100} kcal/100g</span>`+
-            `<span class="food-scale">${calNote}</span>`;
+            `${food.label}`+
+            `<span class="food-scale">${isActive ? "⚖ "+res.weight+"g" : ""}</span>`;
           row.appendChild(btn);
         });
-        section.appendChild(row);
+        body.appendChild(row);
       });
-      return section;
+      return [trig, body];
     }
 
-    card.append(top, chips, kcalSum,
-      buildFoodSection("p","🥩","بروتين",    pMeal, pKcalBudget),
-      buildFoodSection("c","🍚","كارب",      cMeal, cKcalBudget),
-      buildFoodSection("f","🫒","دهون صحية", fMeal, fKcalBudget)
-    );
+    const [pTrig,pBody] = buildAccordion("p","🥩","بروتين",    pMeal, pKcalBudget);
+    const [cTrig,cBody] = buildAccordion("c","🍚","كارب",      cMeal, cKcalBudget);
+    const [fTrig,fBody] = buildAccordion("f","🫒","دهون صحية", fMeal, fKcalBudget);
+    card.append(top, chips, pTrig, pBody, cTrig, cBody, fTrig, fBody);
     box.appendChild(card);
   }
 }

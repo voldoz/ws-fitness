@@ -43,64 +43,150 @@
   .seg button.active{background:linear-gradient(90deg,#0ea5e9,#2563eb)}
 
   /* ===== Daily Burn redesign ===== */
-  .burn-header-box{
-    background:#0b1220;border-radius:16px;padding:14px 16px;margin-bottom:14px;
-    display:flex;flex-direction:column;gap:6px;
+
+  /* ── Hero ring card ── */
+  .burn-hero{
+    background:linear-gradient(145deg,#0a1628,#0d1f3c);
+    border:1.5px solid #1e3a5f; border-radius:20px;
+    padding:18px 16px 14px; margin-bottom:14px;
+    position:relative; overflow:hidden;
   }
-  .burn-weekly-bar-wrap{
-    background:#0f172a;border-radius:10px;height:12px;overflow:hidden;margin-top:4px;
+  .burn-hero::before{
+    content:''; position:absolute; top:-40px; right:-40px;
+    width:160px; height:160px; border-radius:50%;
+    background:radial-gradient(circle,rgba(14,165,233,.12),transparent 70%);
+    pointer-events:none;
   }
-  .burn-weekly-bar-fill{
-    height:100%;border-radius:10px;
-    background:linear-gradient(90deg,#0ea5e9,#2563eb);
-    transition:width .4s;
-  }
-  .burn-days-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
-  .burn-day-row{
-    background:#0b1220;border-radius:14px;padding:12px 14px;
-    display:flex;align-items:center;gap:12px;
-  }
-  .burn-day-row.today-row{border:2px solid #0ea5e9;}
-  .burn-day-num{
-    min-width:36px;height:36px;border-radius:10px;
-    background:#1e293b;display:flex;align-items:center;justify-content:center;
-    font-weight:900;font-size:14px;color:#38bdf8;
-  }
-  .burn-day-num.today-num{
-    background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;
-  }
-  .burn-day-label{flex:1;font-weight:700;font-size:14px;}
-  .burn-day-sub{font-size:11px;opacity:.6;margin-top:2px;}
-  .burn-day-inp{
-    width:90px;text-align:center;padding:8px 6px;border-radius:10px;
-    background:#0f172a;color:#fff;border:1px solid #334155;
-    font-size:15px;font-weight:900;outline:none;
-  }
-  .burn-day-inp:focus{border-color:#0ea5e9;}
-  .burn-day-done{
-    width:32px;height:32px;border-radius:9px;border:0;
-    background:#22c55e;color:#fff;font-size:16px;cursor:default;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .burn-day-done.empty{background:#1e293b;color:#64748b;}
-  .burn-summary-grid{
-    display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;
-  }
-  .burn-stat{
-    background:#0b1220;border-radius:14px;padding:12px;
-    display:flex;flex-direction:column;gap:4px;
-  }
-  .burn-stat-val{font-size:22px;font-weight:900;color:#38bdf8;}
-  .burn-stat-lbl{font-size:11px;opacity:.7;}
-  .burn-stat.green .burn-stat-val{color:#22c55e;}
-  .burn-stat.red-s .burn-stat-val{color:#ef4444;}
-  .burn-tomorrow-box{
-    background:#0b1220;border-radius:14px;padding:14px;
-    display:flex;justify-content:space-between;align-items:center;
+  .burn-hero-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
     margin-bottom:14px;
   }
-  .burn-tomorrow-lbl{font-size:13px;opacity:.8;}
-  .burn-tomorrow-val{font-size:20px;font-weight:900;color:#f97316;}
+  .burn-hero-title{
+    font-size:11px; font-weight:800; letter-spacing:.1em;
+    text-transform:uppercase; color:#38bdf8; opacity:.8;
+  }
+  .burn-hero-week-badge{
+    font-size:10px; padding:3px 10px; border-radius:20px;
+    background:rgba(14,165,233,.15); color:#38bdf8; font-weight:700;
+  }
+  /* ring */
+  .burn-ring-wrap{
+    display:flex; justify-content:center; align-items:center;
+    flex-direction:column; margin-bottom:14px;
+  }
+  .burn-ring-svg{ width:140px; height:140px; }
+  .burn-ring-center{
+    position:absolute; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+  }
+  .burn-ring-pct{
+    font-size:28px; font-weight:900; color:#fff; line-height:1;
+  }
+  .burn-ring-sub{
+    font-size:10px; opacity:.55; margin-top:2px; font-weight:600;
+  }
+  .burn-ring-container{
+    position:relative; display:inline-flex;
+    align-items:center; justify-content:center;
+  }
+  /* stat row under ring */
+  .burn-stat-row{
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    gap:8px; margin-bottom:0;
+  }
+  .burn-mini-stat{
+    background:rgba(255,255,255,.04); border-radius:12px;
+    padding:10px 8px; text-align:center;
+  }
+  .burn-mini-val{
+    font-size:15px; font-weight:900; color:#38bdf8;
+    white-space:nowrap;
+  }
+  .burn-mini-val.green{ color:#22c55e; }
+  .burn-mini-val.orange{ color:#f97316; }
+  .burn-mini-val.red{ color:#ef4444; }
+  .burn-mini-lbl{
+    font-size:9.5px; opacity:.5; margin-top:3px;
+    font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+  }
+
+  /* ── Required per day banner ── */
+  .burn-required-banner{
+    background:linear-gradient(135deg,rgba(249,115,22,.12),rgba(249,115,22,.06));
+    border:1.5px solid rgba(249,115,22,.25); border-radius:16px;
+    padding:13px 16px; margin-bottom:14px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .burn-req-left{ display:flex; flex-direction:column; gap:3px; }
+  .burn-req-label{ font-size:12px; opacity:.7; font-weight:600; }
+  .burn-req-days{ font-size:10px; opacity:.45; }
+  .burn-req-val{
+    font-size:24px; font-weight:900; color:#f97316;
+    white-space:nowrap;
+  }
+  .burn-req-val.done-color{ color:#22c55e; font-size:18px; }
+
+  /* ── Day rows ── */
+  .burn-days-list{
+    display:flex; flex-direction:column; gap:8px; margin-bottom:14px;
+  }
+  .burn-day-row{
+    background:#0b1220; border-radius:14px;
+    padding:11px 14px; display:flex; align-items:center; gap:12px;
+    border:1.5px solid transparent; transition:border-color .2s;
+    position:relative; overflow:hidden;
+  }
+  .burn-day-row.today-row{
+    border-color:#0ea5e9;
+    background:linear-gradient(90deg,#071a2e,#0b1a32);
+  }
+  .burn-day-row.done-row{ border-color:rgba(34,197,94,.3); }
+  /* cumulative fill bar behind row */
+  .burn-day-fill{
+    position:absolute; left:0; top:0; bottom:0;
+    background:rgba(14,165,233,.06); pointer-events:none;
+    transition:width .5s cubic-bezier(.4,0,.2,1);
+  }
+  .burn-day-row.done-row .burn-day-fill{
+    background:rgba(34,197,94,.07);
+  }
+  .burn-day-num{
+    min-width:36px; height:36px; border-radius:10px;
+    background:#1e293b; display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:14px; color:#38bdf8;
+    flex-shrink:0; position:relative; z-index:1;
+  }
+  .burn-day-num.today-num{
+    background:linear-gradient(135deg,#0ea5e9,#2563eb); color:#fff;
+  }
+  .burn-day-num.done-num{ background:#052e16; color:#22c55e; }
+  .burn-day-info{ flex:1; position:relative; z-index:1; min-width:0; }
+  .burn-day-label{ font-weight:700; font-size:13px; }
+  .burn-day-sub{
+    font-size:10px; opacity:.5; margin-top:2px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .burn-day-cumul{
+    font-size:10px; color:#38bdf8; font-weight:700; opacity:.8;
+  }
+  .burn-day-right{
+    display:flex; align-items:center; gap:8px;
+    position:relative; z-index:1; flex-shrink:0;
+  }
+  .burn-day-inp{
+    width:82px; text-align:center; padding:7px 6px; border-radius:10px;
+    background:#0f172a; color:#fff; border:1.5px solid #334155;
+    font-size:15px; font-weight:900; outline:none;
+    transition:border-color .15s;
+  }
+  .burn-day-inp:focus{ border-color:#0ea5e9; }
+  .burn-day-done{
+    width:30px; height:30px; border-radius:9px; border:0;
+    background:#22c55e; color:#fff; font-size:14px;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .2s; flex-shrink:0;
+  }
+  .burn-day-done.empty{ background:#1e293b; color:#475569; }
 
   /* workouts compact */
   .day-card{background:#0b1220;border-radius:14px;padding:12px;margin-bottom:12px}
@@ -672,41 +758,62 @@
 <!-- DAILY BURN -->
 <div class="page" id="pWeek">
 
-  <div class="burn-header-box">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div style="font-weight:900;font-size:16px;color:#38bdf8">&#x1F525; Daily Burn</div>
-      <div style="font-size:12px;opacity:.7" id="weeklyTargetLabel">Target: -- kcal</div>
+  <!-- Hero ring -->
+  <div class="burn-hero">
+    <div class="burn-hero-top">
+      <div class="burn-hero-title">🔥 Daily Burn</div>
+      <div class="burn-hero-week-badge" id="weeklyTargetLabel">Target: -- kcal</div>
     </div>
-    <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:2px">
-      <span id="wkBurnedLabel" style="color:#22c55e">Burned: --</span>
-      <span id="wkProgressPct" style="opacity:.7">0%</span>
+    <div class="burn-ring-wrap">
+      <div class="burn-ring-container">
+        <svg class="burn-ring-svg" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#0e2a3a" stroke-width="10"/>
+          <circle id="burnRingTrack" cx="60" cy="60" r="50" fill="none"
+            stroke="url(#burnGrad)" stroke-width="10"
+            stroke-dasharray="314.16" stroke-dashoffset="314.16"
+            stroke-linecap="round" transform="rotate(-90 60 60)"/>
+          <defs>
+            <linearGradient id="burnGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#0ea5e9"/>
+              <stop offset="100%" stop-color="#22c55e"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="burn-ring-center">
+          <div class="burn-ring-pct" id="burnRingPct">0%</div>
+          <div class="burn-ring-sub">of weekly goal</div>
+        </div>
+      </div>
     </div>
-    <div class="burn-weekly-bar-wrap">
-      <div class="burn-weekly-bar-fill" id="wkBar" style="width:0%"></div>
+    <div class="burn-stat-row">
+      <div class="burn-mini-stat">
+        <div class="burn-mini-val green" id="wkBurned">--</div>
+        <div class="burn-mini-lbl">Burned</div>
+      </div>
+      <div class="burn-mini-stat">
+        <div class="burn-mini-val red" id="wkRemaining">--</div>
+        <div class="burn-mini-lbl">Remaining</div>
+      </div>
+      <div class="burn-mini-stat">
+        <div class="burn-mini-val orange" id="wkDailyAvg">--</div>
+        <div class="burn-mini-lbl">Daily Avg</div>
+      </div>
     </div>
-    <div class="small danger" id="wkWarn" style="margin-top:4px"></div>
   </div>
 
-  <div class="burn-summary-grid">
-    <div class="burn-stat green">
-      <div class="burn-stat-val" id="wkBurned">--</div>
-      <div class="burn-stat-lbl">Total Burned (kcal)</div>
+  <!-- Required per remaining day -->
+  <div class="burn-required-banner">
+    <div class="burn-req-left">
+      <div class="burn-req-label">Required per remaining day</div>
+      <div class="burn-req-days" id="wkPerDay"></div>
     </div>
-    <div class="burn-stat red-s">
-      <div class="burn-stat-val" id="wkRemaining">--</div>
-      <div class="burn-stat-lbl">Remaining (kcal)</div>
-    </div>
+    <div class="burn-req-val" id="wkTomorrow">-- kcal</div>
   </div>
 
-  <div class="burn-tomorrow-box">
-    <div>
-      <div class="burn-tomorrow-lbl">Required per remaining day</div>
-      <div class="burn-tomorrow-lbl" id="wkPerDay" style="font-size:11px;opacity:.6"></div>
-    </div>
-    <div class="burn-tomorrow-val" id="wkTomorrow">-- kcal</div>
-  </div>
-
+  <!-- Day rows -->
   <div class="burn-days-list" id="daysGrid"></div>
+
+  <div class="small danger" id="wkWarn" style="margin:0 0 10px;text-align:center"></div>
 
   <select id="todayIndex" style="display:none">
     <option value="1">1</option><option value="2">2</option><option value="3">3</option>
@@ -1663,6 +1770,8 @@ function calcAndSave(){
 $("calcBtn").addEventListener("click", calcAndSave);
 
 /* ========= Daily Burn (redesigned) ========= */
+const DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
 function getAutoTodayIndex(){
   const saved=pget("today_index");
   if(saved) return parseInt(saved,10);
@@ -1677,53 +1786,61 @@ function buildWeekInputs(){
   const todayIdx=getAutoTodayIndex();
   $("todayIndex").value=todayIdx;
   for(let d=1; d<=7; d++){
-    const isToday=d===todayIdx;
-    const isPast=d<todayIdx;
-    const row=document.createElement("div");
-    row.className="burn-day-row"+(isToday?" today-row":"");
-    row.id=`dayRow_${d}`;
-    const num=document.createElement("div");
-    num.className="burn-day-num"+(isToday?" today-num":"");
-    num.textContent=d;
-    const labelWrap=document.createElement("div");
-    labelWrap.style.flex="1";
-    const dayName=document.createElement("div");
-    dayName.className="burn-day-label";
-    dayName.textContent=`Day ${d}`;
-    const daySub=document.createElement("div");
-    daySub.className="burn-day-sub";
-    daySub.id=`daySub_${d}`;
-    daySub.textContent=isToday?"Today":(isPast?"Past":"Upcoming");
-    labelWrap.appendChild(dayName);
-    labelWrap.appendChild(daySub);
-    const inp=document.createElement("input");
+    const isToday = d===todayIdx;
+    const row = document.createElement("div");
+    row.className = "burn-day-row" + (isToday?" today-row":"");
+    row.id = `dayRow_${d}`;
+
+    /* background fill bar (cumulative progress) */
+    const fill = document.createElement("div");
+    fill.className = "burn-day-fill";
+    fill.id = `dayFill_${d}`;
+    row.appendChild(fill);
+
+    /* day number badge */
+    const num = document.createElement("div");
+    num.className = "burn-day-num" + (isToday?" today-num":"");
+    num.id = `dayNum_${d}`;
+    num.textContent = d;
+
+    /* info */
+    const info = document.createElement("div");
+    info.className = "burn-day-info";
+    const lbl = document.createElement("div");
+    lbl.className = "burn-day-label";
+    lbl.textContent = `Day ${d}`;
+    const sub = document.createElement("div");
+    sub.className = "burn-day-sub";
+    sub.id = `daySub_${d}`;
+    const cumul = document.createElement("span");
+    cumul.className = "burn-day-cumul";
+    cumul.id = `dayCumul_${d}`;
+    sub.appendChild(document.createTextNode(isToday?"Today":(d<todayIdx?"Past":"Upcoming")));
+    sub.appendChild(cumul);
+    info.appendChild(lbl);
+    info.appendChild(sub);
+
+    /* right: input + check */
+    const right = document.createElement("div");
+    right.className = "burn-day-right";
+    const inp = document.createElement("input");
     inp.type="number"; inp.min="0"; inp.step="10";
     inp.id=`day_${d}`; inp.placeholder="0";
     inp.className="burn-day-inp";
     inp.addEventListener("input",()=>{
       pset(`day_${d}`,inp.value||"");
       recalcWeek();
-      updateDoneIcon(d);
     });
-    const done=document.createElement("div");
+    const done = document.createElement("div");
     done.id=`dayDone_${d}`;
     done.className="burn-day-done empty";
     done.textContent="✓";
-    row.appendChild(num);
-    row.appendChild(labelWrap);
-    row.appendChild(inp);
-    row.appendChild(done);
+    right.append(inp, done);
+
+    row.append(num, info, right);
     grid.appendChild(row);
   }
   grid.dataset.built="1";
-}
-
-function updateDoneIcon(d){
-  const inp=$(`day_${d}`);
-  const done=$(`dayDone_${d}`);
-  if(!inp||!done) return;
-  const val=parseFloat(inp.value||"0");
-  done.classList.toggle("empty",!(val>0));
 }
 
 function loadWeekInputs(){
@@ -1731,9 +1848,13 @@ function loadWeekInputs(){
   for(let d=1; d<=7; d++){
     const v=pget(`day_${d}`)||"";
     const el=$(`day_${d}`); if(el) el.value=v;
-    updateDoneIcon(d);
+    /* update status label */
     const sub=$(`daySub_${d}`);
-    if(sub) sub.textContent=(d===todayIdx)?"Today":(d<todayIdx?"Past":"Upcoming");
+    if(sub){
+      const txt = d===todayIdx?"Today":(d<todayIdx?"Past":"Upcoming");
+      const cumul = sub.querySelector(`#dayCumul_${d}`);
+      sub.childNodes[0].textContent = txt;
+    }
     const row=$(`dayRow_${d}`);
     if(row){
       row.classList.toggle("today-row",d===todayIdx);
@@ -1748,51 +1869,120 @@ function getWeeklyTarget(){
   const n=parseFloat(v||"0");
   return isFinite(n)?n:0;
 }
-
 function syncWeeklyTarget(){
   const t=getWeeklyTarget();
-  $("weeklyTargetLabel").textContent=t>0?`Target: ${Math.round(t)} kcal`:`Target: -- kcal`;
+  $("weeklyTargetLabel").textContent=t>0?`Target: ${Math.round(t).toLocaleString()} kcal`:`Target: -- kcal`;
 }
 
 function recalcWeek(){
-  const target=getWeeklyTarget();
-  const todayIdx=getAutoTodayIndex();
+  const target    = getWeeklyTarget();
+  const todayIdx  = getAutoTodayIndex();
+  const CIRC      = 314.16;  /* 2π × r=50 */
+
+  /* collect per-day values */
+  const vals = [];
+  for(let d=1; d<=7; d++){
+    const raw = parseFloat(($(`day_${d}`)?.value||"").trim());
+    vals.push(isFinite(raw)&&raw>0 ? raw : 0);
+  }
+
+  const burned    = vals.reduce((a,b)=>a+b, 0);
+  const daysLogged= vals.filter(v=>v>0).length;
+  const avgPerDay = daysLogged>0 ? Math.round(burned/daysLogged) : 0;
+
   if(target<=0){
     $("wkWarn").textContent="⚠ Use Calculator first to set your burn target.";
     $("wkBurned").textContent="--";
     $("wkRemaining").textContent="--";
-    $("wkPerDay").textContent="";
+    $("wkDailyAvg").textContent="--";
     $("wkTomorrow").textContent="-- kcal";
-    $("wkBar").style.width="0%";
-    $("wkProgressPct").textContent="0%";
-    $("wkBurnedLabel").textContent="Burned: --";
+    $("wkPerDay").textContent="";
+    $("burnRingPct").textContent="0%";
+    $("burnRingTrack").style.strokeDashoffset=CIRC;
+    /* clear all rows */
+    for(let d=1;d<=7;d++) updateDayRow(d, 0, 0, target, todayIdx);
     return;
-  } else {
-    $("wkWarn").textContent="";
   }
-  let burned=0;
-  for(let d=1; d<=7; d++){
-    const val=parseFloat(($(`day_${d}`).value||"").trim());
-    if(isFinite(val)&&val>0) burned+=val;
-  }
-  const remaining=Math.max(0,target-burned);
-  const remDays=Math.max(0,7-todayIdx);
-  const perDay=remDays>0?Math.round(remaining/remDays):0;
-  const pct=Math.min(100,Math.round((burned/target)*100));
-  $("wkBurned").textContent=Math.round(burned).toLocaleString();
-  $("wkRemaining").textContent=Math.round(remaining).toLocaleString();
-  $("wkBurnedLabel").textContent=`Burned: ${Math.round(burned).toLocaleString()} kcal`;
-  $("wkProgressPct").textContent=`${pct}%`;
-  $("wkBar").style.width=`${pct}%`;
-  if(remDays>0){
-    $("wkTomorrow").textContent=`${perDay.toLocaleString()} kcal`;
-    $("wkPerDay").textContent=`for remaining ${remDays} day(s)`;
-  } else if(burned>=target){
-    $("wkTomorrow").textContent="Goal met!";
-    $("wkPerDay").textContent="Week complete";
+  $("wkWarn").textContent="";
+
+  const remaining  = Math.max(0, target - burned);
+  const remDays    = Math.max(0, 7 - todayIdx);   /* days after today */
+  const perDay     = remDays>0 ? Math.ceil(remaining/remDays) : 0;
+  const pct        = Math.min(100, Math.round((burned/target)*100));
+
+  /* ring */
+  const offset = CIRC - CIRC*(pct/100);
+  $("burnRingTrack").style.strokeDashoffset = offset;
+  $("burnRingPct").textContent = `${pct}%`;
+
+  /* stats */
+  $("wkBurned").textContent    = Math.round(burned).toLocaleString();
+  $("wkRemaining").textContent = Math.round(remaining).toLocaleString();
+  $("wkDailyAvg").textContent  = avgPerDay>0 ? avgPerDay.toLocaleString() : "--";
+
+  /* required banner */
+  const goalMet = burned >= target;
+  const reqEl = $("wkTomorrow");
+  const perEl = $("wkPerDay");
+  if(goalMet){
+    reqEl.textContent="🎉 Goal Met!";
+    reqEl.className="burn-req-val done-color";
+    perEl.textContent="Weekly target achieved";
+  } else if(remDays===0){
+    reqEl.textContent=`${Math.round(remaining).toLocaleString()} kcal`;
+    reqEl.className="burn-req-val";
+    perEl.textContent="Last day — finish strong!";
   } else {
-    $("wkTomorrow").textContent=`${Math.round(remaining).toLocaleString()} kcal`;
-    $("wkPerDay").textContent="Last day - finish strong!";
+    reqEl.textContent=`${perDay.toLocaleString()} kcal`;
+    reqEl.className="burn-req-val";
+    perEl.textContent=`across ${remDays} remaining day${remDays>1?"s":""}`;
+  }
+
+  /* cumulative fills per day */
+  let cumul=0;
+  for(let d=1;d<=7;d++){
+    cumul+=vals[d-1];
+    updateDayRow(d, vals[d-1], cumul, target, todayIdx);
+  }
+}
+
+function updateDayRow(d, dayVal, cumulVal, target, todayIdx){
+  const row   = $(`dayRow_${d}`);
+  const done  = $(`dayDone_${d}`);
+  const fill  = $(`dayFill_${d}`);
+  const numEl = $(`dayNum_${d}`);
+  const cumulEl = $(`dayCumul_${d}`);
+  if(!row) return;
+
+  const hasBurn = dayVal > 0;
+  const isToday = d === todayIdx;
+
+  /* done icon */
+  if(done) done.classList.toggle("empty", !hasBurn);
+
+  /* row class */
+  row.classList.toggle("done-row", hasBurn && !isToday);
+
+  /* number badge */
+  if(numEl){
+    numEl.className = "burn-day-num";
+    if(isToday)       numEl.classList.add("today-num");
+    else if(hasBurn)  numEl.classList.add("done-num");
+  }
+
+  /* cumulative fill bar width */
+  if(fill && target>0){
+    const pct = Math.min(100, (cumulVal/target)*100);
+    fill.style.width = pct+"%";
+  } else if(fill){
+    fill.style.width="0%";
+  }
+
+  /* cumulative label */
+  if(cumulEl){
+    cumulEl.textContent = (target>0 && cumulVal>0)
+      ? ` · ${Math.round(cumulVal).toLocaleString()} cumul`
+      : "";
   }
 }
 
@@ -1803,11 +1993,11 @@ function resetWeek(){
   for(let d=1; d<=7; d++){
     premove(`day_${d}`);
     const el=$(`day_${d}`); if(el) el.value="";
-    updateDoneIcon(d);
   }
   premove("today_index");
   $("daysGrid").dataset.built="";
   buildWeekInputs();
+  loadWeekInputs();
   recalcWeek();
 }
 

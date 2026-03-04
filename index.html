@@ -4283,6 +4283,41 @@ function getExerciseImage(name){
   return {url:"", emoji:"\U0001F3CB\uFE0F", muscle:""};
 }
 
+/* ── Exercise image lightbox ── */
+function openExLightbox(name, exImg){
+  /* remove any existing lightbox */
+  var oldLb=document.getElementById('woExLightbox');
+  if(oldLb) oldLb.remove();
+
+  var lb=document.createElement('div');
+  lb.id='woExLightbox';
+  lb.className='wo-ex-lightbox';
+  lb.setAttribute('role','dialog');
+  lb.setAttribute('aria-modal','true');
+
+  var inner='';
+  if(exImg && exImg.url){
+    inner+='<img class="wo-ex-lightbox-img" src="'+exImg.url+'" alt="'+(name||'')+'" onerror="this.style.display=\'none\';document.getElementById(\'woExLb_emoji\').style.display=\'block\'">';
+    inner+='<div class="wo-ex-lightbox-noimg" id="woExLb_emoji" style="display:none">'+(exImg.emoji||'\uD83C\uDFCB\uFE0F')+'</div>';
+  } else {
+    inner+='<div class="wo-ex-lightbox-noimg">'+((exImg&&exImg.emoji)||'\uD83C\uDFCB\uFE0F')+'</div>';
+  }
+  inner+='<div class="wo-ex-lightbox-name">'+(name||'Exercise')+'</div>';
+  if(exImg && exImg.muscle){
+    inner+='<div class="wo-ex-lightbox-meta">\uD83C\uDFAF '+exImg.muscle+'</div>';
+  }
+  inner+='<button class="wo-ex-lightbox-close" onclick="document.getElementById(\'woExLightbox\').remove()">\u2715 Close</button>';
+
+  lb.innerHTML=inner;
+  /* close on backdrop click */
+  lb.addEventListener('click', function(e){ if(e.target===lb) lb.remove(); });
+  /* close on Escape key */
+  function escHandler(e){ if(e.key==='Escape'){ lb.remove(); document.removeEventListener('keydown',escHandler); } }
+  document.addEventListener('keydown', escHandler);
+
+  document.body.appendChild(lb);
+}
+
 function renderWorkouts(){
   const wrap=$("workContainer");
   wrap.innerHTML="";

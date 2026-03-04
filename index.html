@@ -1496,6 +1496,20 @@ function renderCalcResults(){
   }
 
   $("outCalories").textContent = `Daily Calories: ${r.calories} kcal`;
+
+  /* show TDEE and daily adjustment if available */
+  const tdeeVal  = Number(r.tdee || 0);
+  const deltaVal = Number(r.dailyDelta || 0);
+  const goalVal  = r.goal || "";
+  let burnLine = "";
+  if(tdeeVal && deltaVal){
+    const sign  = goalVal === "bulk" ? "+" : "−";
+    const label = goalVal === "bulk" ? "فائض" : (goalVal === "cut" ? "عجز" : "");
+    if(label)
+      burnLine = `<div class="small" style="margin-top:4px;opacity:.7">TDEE: ${tdeeVal} kcal &nbsp;|&nbsp; ${label} يومي: ${sign}${deltaVal} kcal</div>`;
+  }
+  $("outCalories").innerHTML = `Daily Calories: <b>${r.calories}</b> kcal${burnLine}`;
+
   $("outMacros").innerHTML = `Protein: ${r.protein} g<br>Carbs: ${r.carbs} g<br>Fat: ${r.fat} g`;
 
   const meals = Number(r.meals || 1);
@@ -1554,19 +1568,31 @@ function calcAndSave(){
   let activityMult = 1.2 + (activityDays - 1)*0.1;
   if(activityMult>1.9) activityMult=1.9;
 
-  let calories = bmr * activityMult;
-  if(goal==="cut") calories -= 500;
-  if(goal==="bulk") calories += 500;
+  const tdee = bmr * activityMult;
 
-  const protein = weight * proteinFactor;
-  const fat = weight * 0.8;
-  const carbs = (calories - (protein*4 + fat*9))/4;
+  /* daily caloric adjustment driven by weeklyGoal:
+   *  cut      → deficit  = weeklyGoalKg × 7700 ÷ 7
+   *  bulk     → surplus  = weeklyGoalKg × 7700 ÷ 7
+   *  maintain → no change
+   * Protein & fat stay fixed; carbs absorb the entire deficit/surplus. */
+  const dailyDelta = Math.round((weeklyGoalKg * 7700) / 7);
+  let calories = tdee;
+  if(goal==="cut")  calories = tdee - dailyDelta;
+  if(goal==="bulk") calories = tdee + dailyDelta;
+
+  /* floor at BMR to avoid dangerously low intake */
+  if(calories < bmr) calories = bmr;
+
+  const protein = weight * proteinFactor;        /* g — fixed by weight */
+  const fat     = weight * 0.8;                  /* g — fixed by weight */
+  const carbs   = (calories - (protein*4 + fat*9)) / 4;  /* g — absorbs deficit */
 
   const proteinMeal = Math.round(protein/meals);
   const carbsMeal = Math.round(carbs/meals);
   const fatMeal = Math.round(fat/meals);
 
   const res={
+    goal,
     calories: Math.round(calories),
     protein: Math.round(protein),
     carbs: Math.round(carbs),
@@ -1582,8 +1608,10 @@ function calcAndSave(){
     carbFoodMealG: Math.max(0, Math.round(carbsMeal / (cDensity/100))),
     fatFoodMealG: Math.max(0, Math.round(fatMeal / (fDensity/100))),
 
+    tdee:        Math.round(tdee),
+    dailyDelta,                       /* kcal added or removed per day */
     weeklyTarget: Math.round(weeklyGoalKg * 7700),
-    dailyBurn: Math.round((weeklyGoalKg * 7700)/7)
+    dailyBurn: dailyDelta             /* alias used in burn-target display */
   };
 
   saveCalcInputs();

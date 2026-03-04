@@ -1495,21 +1495,28 @@ function renderCalcResults(){
     return;
   }
 
-  $("outCalories").textContent = `Daily Calories: ${r.calories} kcal`;
+  /* ── عرض السعرات والعجز ── */
+  const tdeeVal   = Number(r.tdee   || 0);
+  const goalVal   = r.goal || "";
+  const foodDef   = Number(r.foodDeficit        || 0);
+  const extraBurn = Number(r.extraBurnNeeded     || 0);
+  const totalDef  = Number(r.totalDailyDeficit   || r.dailyDelta || 0);
 
-  /* show TDEE and daily adjustment if available */
-  const tdeeVal  = Number(r.tdee || 0);
-  const deltaVal = Number(r.dailyDelta || 0);
-  const goalVal  = r.goal || "";
-  let burnLine = "";
-  if(tdeeVal && deltaVal){
-    const sign  = goalVal === "bulk" ? "+" : "−";
-    const label = goalVal === "bulk" ? "فائض" : (goalVal === "cut" ? "عجز" : "");
-    if(label)
-      burnLine = `<div class="small" style="margin-top:4px;opacity:.7">TDEE: ${tdeeVal} kcal &nbsp;|&nbsp; ${label} يومي: ${sign}${deltaVal} kcal</div>`;
+  let infoLines = "";
+  if(tdeeVal){
+    infoLines += `<div class="small" style="margin-top:5px;opacity:.75">TDEE: ${tdeeVal} kcal/day</div>`;
   }
-  $("outCalories").innerHTML = `Daily Calories: <b>${r.calories}</b> kcal${burnLine}`;
+  if(goalVal === "cut" && totalDef){
+    infoLines += `<div class="small" style="margin-top:3px;color:#f97316">عجز غذائي: −${foodDef} kcal/day</div>`;
+    if(extraBurn > 0){
+      infoLines += `<div class="small" style="margin-top:3px;color:#ef4444;font-weight:700">⚠ نشاط بدني إضافي مطلوب: ${extraBurn} kcal/day<br><span style="opacity:.75;font-weight:400">(الغذاء وحده لا يكفي لتحقيق الهدف الأسبوعي بأمان)</span></div>`;
+    }
+  }
+  if(goalVal === "bulk" && totalDef){
+    infoLines += `<div class="small" style="margin-top:3px;color:#22c55e">فائض: +${totalDef} kcal/day</div>`;
+  }
 
+  $("outCalories").innerHTML = `Daily Calories: <b>${r.calories}</b> kcal${infoLines}`;
   $("outMacros").innerHTML = `Protein: ${r.protein} g<br>Carbs: ${r.carbs} g<br>Fat: ${r.fat} g`;
 
   const meals = Number(r.meals || 1);
@@ -1536,7 +1543,14 @@ function renderCalcResults(){
     `Fat weight / meal (scale): ${fFood} g<br>`+
     `<div class="small">Density set per-meal in Macros page.</div>`;
 
-  $("outBurn").textContent = `Daily Burn Target: ${r.dailyBurn} kcal`;
+  const extraBurnDisplay = Number(r.extraBurnNeeded || 0);
+  let burnText = `Daily Burn Target: ${r.dailyBurn} kcal`;
+  if(extraBurnDisplay > 0){
+    burnText += ` &nbsp;<span style="color:#ef4444;font-weight:700">+ ${extraBurnDisplay} kcal نشاط بدني إضافي</span>`;
+    $("outBurn").innerHTML = burnText;
+  } else {
+    $("outBurn").textContent = burnText;
+  }
 }
 function renderSubscriberCalcView(){
   const r=loadCalcResults();
@@ -1570,22 +1584,52 @@ function calcAndSave(){
 
   const tdee = bmr * activityMult;
 
-  /* daily caloric adjustment driven by weeklyGoal:
-   *  cut      → deficit  = weeklyGoalKg × 7700 ÷ 7
-   *  bulk     → surplus  = weeklyGoalKg × 7700 ÷ 7
-   *  maintain → no change
-   * Protein & fat stay fixed; carbs absorb the entire deficit/surplus. */
-  const dailyDelta = Math.round((weeklyGoalKg * 7700) / 7);
-  let calories = tdee;
-  if(goal==="cut")  calories = tdee - dailyDelta;
-  if(goal==="bulk") calories = tdee + dailyDelta;
+  /*
+   * ── الحساب العلمي لخسارة / زيادة الوزن ──────────────────────────────
+   *
+   * 1 kg دهون ≈ 7700 kcal
+   * العجز/الفائض اليومي = weeklyGoalKg × 7700 ÷ 7
+   *
+   * الحد الأدنى المطلق للسعرات (للسلامة):
+   *   ذكر: 1500 kcal/day  |  أنثى: 1200 kcal/day
+   *
+   * منهجية التوزيع:
+   *   1. احسب السعرات المستهدفة = TDEE − عجز
+   *   2. إذا نزلت تحت الحد الأدنى → ثبّت عند الحد الأدنى
+   *      والفرق = نشاط بدني مطلوب
+   *   3. البروتين ثابت (يُرفع قليلاً عند الـ cut لحماية العضلة)
+   *   4. الدهون: 0.7 g/kg (cut) / 0.8 g/kg (maintain/bulk)
+   *   5. الكارب يمتص كل الفرق المتبقي، بحد أدنى 80g/يوم
+   *      → كلما زاد الهدف الأسبوعي كلما انخفض الكارب
+   * ──────────────────────────────────────────────────────────────────── */
 
-  /* floor at BMR to avoid dangerously low intake */
-  if(calories < bmr) calories = bmr;
+  const totalDailyDeficit = Math.round((weeklyGoalKg * 7700) / 7);
+  const minSafeCalories   = gender === "male" ? 1500 : 1200;
 
-  const protein = weight * proteinFactor;        /* g — fixed by weight */
-  const fat     = weight * 0.8;                  /* g — fixed by weight */
-  const carbs   = (calories - (protein*4 + fat*9)) / 4;  /* g — absorbs deficit */
+  let targetCalories  = tdee;
+  let extraBurnNeeded = 0;
+
+  if(goal === "cut"){
+    targetCalories = tdee - totalDailyDeficit;
+    if(targetCalories < minSafeCalories){
+      extraBurnNeeded = minSafeCalories - targetCalories;
+      targetCalories  = minSafeCalories;
+    }
+  }
+  if(goal === "bulk"){
+    targetCalories = tdee + totalDailyDeficit;
+  }
+
+  const foodDeficit = (goal === "cut") ? (tdee - targetCalories) : 0;
+
+  const protein        = weight * proteinFactor;
+  const fatFactor      = (goal === "cut") ? 0.7 : 0.8;
+  const fat            = weight * fatFactor;
+  const proteinFatKcal = protein * 4 + fat * 9;
+  const minCarbKcal    = 80 * 4;  /* 80g/day حد أدنى للكارب */
+  const carbKcal       = Math.max(minCarbKcal, targetCalories - proteinFatKcal);
+  const calories       = proteinFatKcal + carbKcal;
+  const carbs          = carbKcal / 4;
 
   const proteinMeal = Math.round(protein/meals);
   const carbsMeal = Math.round(carbs/meals);
@@ -1608,10 +1652,13 @@ function calcAndSave(){
     carbFoodMealG: Math.max(0, Math.round(carbsMeal / (cDensity/100))),
     fatFoodMealG: Math.max(0, Math.round(fatMeal / (fDensity/100))),
 
-    tdee:        Math.round(tdee),
-    dailyDelta,                       /* kcal added or removed per day */
-    weeklyTarget: Math.round(weeklyGoalKg * 7700),
-    dailyBurn: dailyDelta             /* alias used in burn-target display */
+    tdee:           Math.round(tdee),
+    totalDailyDeficit,
+    foodDeficit,
+    extraBurnNeeded,
+    dailyDelta:     totalDailyDeficit,   /* alias for display */
+    weeklyTarget:   Math.round(weeklyGoalKg * 7700),
+    dailyBurn:      totalDailyDeficit
   };
 
   saveCalcInputs();

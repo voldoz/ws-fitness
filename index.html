@@ -1775,8 +1775,7 @@ const DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 function getAutoTodayIndex(){
   const saved=pget("today_index");
   if(saved) return parseInt(saved,10);
-  const wd=new Date().getDay();
-  return wd===0 ? 7 : wd;
+  return 1; /* يبدأ من اليوم 1 دائماً — مستقل عن تاريخ الجهاز */
 }
 
 function buildWeekInputs(){

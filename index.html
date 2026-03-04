@@ -183,6 +183,199 @@
   }
   .burn-day-done.empty{ background:#1e293b; color:#475569; }
 
+
+  /* ╔══════════════════════════════════════════════════╗
+     ║           PROFILE PAGE  STYLES                   ║
+     ╚══════════════════════════════════════════════════╝ */
+  @keyframes pf-rise{ from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+  @keyframes pf-pop { 0%{transform:scale(.88)} 60%{transform:scale(1.06)} 100%{transform:scale(1)} }
+  @keyframes pf-spin{ from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+  .pf-page{ animation:pf-rise .38s cubic-bezier(.22,1,.36,1) both; }
+
+  /* ── Hero card ── */
+  .pf-hero{
+    position:relative; overflow:hidden;
+    border-radius:26px; padding:28px 22px 22px;
+    background:linear-gradient(145deg,#0a1628 0%,#0e1e38 50%,#0b1525 100%);
+    border:1.5px solid rgba(56,189,248,.13);
+    box-shadow:0 12px 40px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05);
+    margin-bottom:14px; text-align:center;
+  }
+  .pf-hero-glow{
+    position:absolute; top:-40px; left:50%; transform:translateX(-50%);
+    width:260px; height:260px; border-radius:50%;
+    background:radial-gradient(circle,rgba(56,189,248,.09) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  /* ── Avatar ── */
+  .pf-avatar-wrap{
+    position:relative; display:inline-block; margin-bottom:14px;
+  }
+  .pf-avatar{
+    width:96px; height:96px; border-radius:50%;
+    background:linear-gradient(135deg,#0f2744,#1a3a5c);
+    border:3px solid rgba(56,189,248,.35);
+    box-shadow:0 0 0 5px rgba(56,189,248,.08), 0 8px 30px rgba(0,0,0,.5);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden; cursor:pointer; transition:all .25s;
+    position:relative;
+  }
+  .pf-avatar:hover{ border-color:rgba(56,189,248,.7); transform:scale(1.04); }
+  .pf-avatar img{
+    width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;
+  }
+  .pf-avatar-initials{
+    font-size:32px; font-weight:900; letter-spacing:-.5px;
+    background:linear-gradient(135deg,#38bdf8,#818cf8);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    pointer-events:none; user-select:none;
+  }
+  .pf-avatar-overlay{
+    position:absolute; inset:0; border-radius:50%;
+    background:rgba(0,0,0,.52); opacity:0;
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity .22s;
+  }
+  .pf-avatar:hover .pf-avatar-overlay{ opacity:1; }
+  .pf-avatar-overlay svg{ width:22px; height:22px; }
+  .pf-cam-badge{
+    position:absolute; bottom:2px; right:2px;
+    width:26px; height:26px; border-radius:50%;
+    background:linear-gradient(135deg,#38bdf8,#818cf8);
+    border:2px solid #0a1628;
+    display:flex; align-items:center; justify-content:center;
+    pointer-events:none;
+  }
+  .pf-cam-badge svg{ width:13px; height:13px; }
+  /* ── Name + role ── */
+  .pf-display-name{
+    font-size:20px; font-weight:900; color:#e2e8f0;
+    letter-spacing:-.3px; margin-bottom:4px;
+  }
+  .pf-role-badge{
+    display:inline-block; padding:3px 12px; border-radius:20px;
+    font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+    margin-bottom:16px;
+  }
+  .pf-role-badge.admin  { background:rgba(239,68,68,.15);  color:#f87171; border:1px solid rgba(239,68,68,.2); }
+  .pf-role-badge.coach  { background:rgba(249,115,22,.15); color:#fb923c; border:1px solid rgba(249,115,22,.2); }
+  .pf-role-badge.subscriber{ background:rgba(34,197,94,.12); color:#4ade80; border:1px solid rgba(34,197,94,.2); }
+  .pf-role-badge.user   { background:rgba(56,189,248,.12); color:#38bdf8; border:1px solid rgba(56,189,248,.2); }
+  /* ── Stats row ── */
+  .pf-stats{
+    display:flex; gap:8px; justify-content:center; flex-wrap:wrap;
+  }
+  .pf-stat{
+    background:rgba(255,255,255,.04); border-radius:14px;
+    padding:10px 18px; min-width:80px; text-align:center;
+    border:1px solid rgba(255,255,255,.07);
+  }
+  .pf-stat-val{ font-size:17px; font-weight:900; color:#38bdf8; }
+  .pf-stat-lbl{ font-size:9.5px; opacity:.45; font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin-top:2px; }
+
+  /* ── Section card ── */
+  .pf-card{
+    background:linear-gradient(145deg,#0d1829,#111e30);
+    border-radius:20px; padding:18px; margin-bottom:12px;
+    border:1.5px solid rgba(255,255,255,.06);
+    animation:pf-rise .38s cubic-bezier(.22,1,.36,1) both;
+  }
+  .pf-card:nth-child(2){ animation-delay:.05s; }
+  .pf-card:nth-child(3){ animation-delay:.1s; }
+  .pf-card:nth-child(4){ animation-delay:.15s; }
+  .pf-card-title{
+    display:flex; align-items:center; gap:9px;
+    font-size:13px; font-weight:800; color:#94a3b8;
+    text-transform:uppercase; letter-spacing:.07em;
+    margin-bottom:14px; padding-bottom:10px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .pf-card-title svg{ flex-shrink:0; }
+  /* ── Name edit row ── */
+  .pf-name-row{
+    display:flex; gap:8px; align-items:center;
+  }
+  .pf-name-inp{
+    flex:1; background:#0f172a; color:#e2e8f0;
+    border:1.5px solid rgba(255,255,255,.08); border-radius:12px;
+    padding:10px 14px; font-size:15px; font-weight:700; outline:none;
+    transition:border-color .18s;
+  }
+  .pf-name-inp:focus{ border-color:rgba(56,189,248,.5); }
+  .pf-save-btn{
+    padding:10px 18px; border-radius:12px; border:none; cursor:pointer;
+    background:linear-gradient(135deg,#38bdf8,#818cf8);
+    color:#fff; font-size:13px; font-weight:800;
+    transition:all .18s; white-space:nowrap; flex-shrink:0;
+    display:flex; align-items:center; gap:6px;
+  }
+  .pf-save-btn:active{ transform:scale(.95); }
+  .pf-msg{ font-size:12px; margin-top:7px; font-weight:700; min-height:16px; }
+  .pf-msg.ok{ color:#4ade80; }
+  .pf-msg.err{ color:#f87171; }
+  /* ── PIN fields ── */
+  .pf-pin-fields{ display:flex; flex-direction:column; gap:10px; }
+  .pf-pin-label{ font-size:11px; font-weight:700; color:#64748b; margin-bottom:3px; letter-spacing:.04em; }
+  .pf-pin-inp{
+    width:100%; background:#0f172a; color:#e2e8f0;
+    border:1.5px solid rgba(255,255,255,.08); border-radius:12px;
+    padding:11px 14px; font-size:16px; font-weight:700; outline:none;
+    letter-spacing:.3em; transition:border-color .18s; box-sizing:border-box;
+  }
+  .pf-pin-inp:focus{ border-color:rgba(56,189,248,.5); }
+  .pf-pin-btn{
+    margin-top:12px; width:100%; padding:12px; border-radius:14px; border:none;
+    cursor:pointer; background:linear-gradient(135deg,#38bdf8,#818cf8);
+    color:#fff; font-size:14px; font-weight:900; letter-spacing:.02em;
+    transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .pf-pin-btn:active{ transform:scale(.97); }
+  /* ── Subscription card ── */
+  .pf-sub-active{ color:#4ade80; }
+  .pf-sub-expired{ color:#f87171; }
+  .pf-sub-row{
+    display:flex; gap:10px; margin-bottom:12px;
+  }
+  .pf-sub-pill{
+    flex:1; background:rgba(255,255,255,.04); border-radius:14px;
+    padding:12px; text-align:center; border:1px solid rgba(255,255,255,.07);
+  }
+  .pf-sub-pill-val{ font-size:18px; font-weight:900; }
+  .pf-sub-pill-lbl{ font-size:9.5px; opacity:.45; font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin-top:2px; }
+  .pf-sub-dates{ display:flex; flex-direction:column; gap:6px; }
+  .pf-sub-date-row{
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:12px; color:#64748b; padding:8px 12px; border-radius:10px;
+    background:rgba(255,255,255,.03);
+  }
+  .pf-sub-date-row span:last-child{ color:#94a3b8; font-weight:700; }
+  /* ── Managed select ── */
+  .pf-managed-sel{
+    width:100%; background:#0f172a; color:#e2e8f0;
+    border:1.5px solid rgba(255,255,255,.08); border-radius:12px;
+    padding:10px 14px; font-size:14px; outline:none; margin-bottom:10px;
+    transition:border-color .18s;
+  }
+  .pf-managed-sel:focus{ border-color:rgba(56,189,248,.5); }
+  .pf-set-btn{
+    width:100%; padding:11px; border-radius:12px; border:none; cursor:pointer;
+    background:rgba(56,189,248,.12); color:#38bdf8;
+    border:1.5px solid rgba(56,189,248,.2);
+    font-size:13px; font-weight:800; transition:all .18s;
+  }
+  .pf-set-btn:active{ transform:scale(.97); }
+  /* ── Logout button ── */
+  .pf-logout{
+    width:100%; padding:13px; border-radius:16px; border:none; cursor:pointer;
+    background:rgba(239,68,68,.1); color:#f87171;
+    border:1.5px solid rgba(239,68,68,.2);
+    font-size:14px; font-weight:900; margin-top:4px;
+    transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .pf-logout:hover{ background:rgba(239,68,68,.18); }
+  .pf-logout:active{ transform:scale(.97); }
+
   /* ===== Workout Page ===== */
   @keyframes wo-fadeIn{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
   @keyframes wo-slideDown{ from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:none} }
@@ -1846,43 +2039,89 @@
 
 <!-- PROFILE -->
 <div class="page" id="pProfile">
-  <div class="box">
-    <div style="font-weight:900;color:#38bdf8">Profile</div>
+<div class="pf-page">
 
-    <div id="managedBox" class="hidden">
-      <label>Managed Profile</label>
-      <select id="managedSel"></select>
-      <button class="mini" onclick="setManaged()">Set Managed</button>
-      <div class="small ok" id="managedMsg"></div>
-    </div>
-
-    <!-- Subscription info (subscribers only) -->
-    <div id="subInfoBox" class="results" style="display:none;">
-      <div class="subRow">
-        <div class="subPill">
-          <span class="dot" id="subDot"></span>
-          <span id="subStatusText">Status: --</span>
-        </div>
-        <div class="subPill">
-          <span id="subDaysText">Days Remaining: --</span>
-        </div>
+  <!-- Hero card -->
+  <div class="pf-hero">
+    <div class="pf-hero-glow"></div>
+    <!-- Avatar -->
+    <div class="pf-avatar-wrap">
+      <div class="pf-avatar" id="pfAvatar" onclick="pfPickAvatar()">
+        <img id="pfAvatarImg" src="" alt="" style="display:none">
+        <div class="pf-avatar-initials" id="pfAvatarInitials">?</div>
+        <div class="pf-avatar-overlay"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke="white" stroke-width="1.8"/><circle cx="12" cy="13" r="4" stroke="white" stroke-width="1.8"/></svg></div>
       </div>
-
-      <div class="countBox">
-        <div class="countBig" id="subCountBig">--</div>
-        <div class="countSmall" id="subCountSmall">--</div>
-      </div>
-
-      <hr style="border:0;border-top:1px solid #334155;margin:10px 0">
-      <div id="subStart">Start Date: --</div>
-      <div id="subExpire">Expiry Date: --</div>
+      <div class="pf-cam-badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke="white" stroke-width="2"/><circle cx="12" cy="13" r="4" stroke="white" stroke-width="2"/></svg></div>
     </div>
-
-    <label>Change PIN (6 digits)</label>
-    <input id="myNewPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
-    <button class="mini" onclick="changeMyPin()">Change PIN</button>
-    <div class="small danger" id="myPinMsg"></div>
+    <input type="file" id="pfAvatarInput" accept="image/*" style="display:none" onchange="pfHandleAvatar(this)">
+    <div class="pf-display-name" id="pfDisplayName">—</div>
+    <div class="pf-role-badge" id="pfRoleBadge">—</div>
+    <div class="pf-stats" id="pfStats"></div>
   </div>
+
+  <!-- Edit Name -->
+  <div class="pf-card">
+    <div class="pf-card-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#38bdf8" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/></svg>Profile Info</div>
+    <div class="pf-pin-label">Display Name</div>
+    <div class="pf-name-row">
+      <input class="pf-name-inp" id="pfNameInp" placeholder="Your name…" maxlength="40">
+      <button class="pf-save-btn" onclick="pfSaveName()">Save</button>
+    </div>
+    <div class="pf-msg" id="pfNameMsg"></div>
+  </div>
+
+  <!-- Change PIN -->
+  <div class="pf-card">
+    <div class="pf-card-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="10" rx="2" stroke="#38bdf8" stroke-width="1.8"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="#38bdf8"/></svg>Reset PIN</div>
+    <div class="pf-pin-fields">
+      <div>
+        <div class="pf-pin-label">Current PIN</div>
+        <input class="pf-pin-inp" id="pfOldPin" type="password" inputmode="numeric" maxlength="6" placeholder="• • • • • •">
+      </div>
+      <div>
+        <div class="pf-pin-label">New PIN (6 digits)</div>
+        <input class="pf-pin-inp" id="pfNewPin" type="password" inputmode="numeric" maxlength="6" placeholder="• • • • • •">
+      </div>
+      <div>
+        <div class="pf-pin-label">Confirm New PIN</div>
+        <input class="pf-pin-inp" id="pfConfPin" type="password" inputmode="numeric" maxlength="6" placeholder="• • • • • •">
+      </div>
+    </div>
+    <button class="pf-pin-btn" onclick="pfChangePin()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="15" r="5" stroke="currentColor" stroke-width="2"/><path d="M13 10l8-8M17 6l2 2M15 4l2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Update PIN</button>
+    <div class="pf-msg" id="pfPinMsg"></div>
+  </div>
+
+  <!-- Subscription info -->
+  <div class="pf-card" id="pfSubCard" style="display:none">
+    <div class="pf-card-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="#38bdf8" stroke-width="1.8" stroke-linejoin="round"/></svg>Subscription</div>
+    <div class="pf-sub-row">
+      <div class="pf-sub-pill">
+        <div class="pf-sub-pill-val" id="pfSubStatus">—</div>
+        <div class="pf-sub-pill-lbl">Status</div>
+      </div>
+      <div class="pf-sub-pill">
+        <div class="pf-sub-pill-val" id="pfSubDays">—</div>
+        <div class="pf-sub-pill-lbl">Days Left</div>
+      </div>
+    </div>
+    <div class="pf-sub-dates">
+      <div class="pf-sub-date-row"><span>Start Date</span><span id="pfSubStart">—</span></div>
+      <div class="pf-sub-date-row"><span>Expiry Date</span><span id="pfSubExpire">—</span></div>
+    </div>
+  </div>
+
+  <!-- Managed profile (admin/coach) -->
+  <div class="pf-card" id="pfManagedCard" style="display:none">
+    <div class="pf-card-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="3" stroke="#38bdf8" stroke-width="1.8"/><path d="M3 19c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="7" r="2.5" stroke="#38bdf8" stroke-width="1.8"/><path d="M21 19c0-2.8-2-5-4.5-5" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/></svg>Manage Profile</div>
+    <select class="pf-managed-sel" id="managedSel"></select>
+    <button class="pf-set-btn" onclick="setManaged()">Set Active Profile</button>
+    <div class="pf-msg ok" id="managedMsg"></div>
+  </div>
+
+  <!-- Logout -->
+  <button class="pf-logout" onclick="logout()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Logout</button>
+
+</div>
 </div>
 
 <!-- ADMIN PANEL -->
@@ -2675,18 +2914,115 @@ function createCoach(){
 /* ========= Profile / Subscription ========= */
 function renderProfile(){
   const a=me(); if(!a){ showLogin(); return; }
-  $("managedMsg").textContent="";
-  $("myPinMsg").textContent="";
 
-  const allowManaged = isAdmin() || isCoach();
-  $("managedBox").classList.toggle("hidden", !allowManaged);
+  /* ── avatar ── */
+  const saved=localStorage.getItem('pf_avatar:'+a.id)||'';
+  const img=$("pfAvatarImg"); const ini=$("pfAvatarInitials");
+  if(saved){ img.src=saved; img.style.display='block'; ini.style.display='none'; }
+  else { img.style.display='none'; ini.style.display=''; ini.textContent=pfInitials(a.name); }
+
+  /* ── name ── */
+  $("pfDisplayName").textContent = a.name||'—';
+  $("pfNameInp").value = a.name||'';
+
+  /* ── role badge ── */
+  const rb=$("pfRoleBadge");
+  const roleLabel={admin:'Admin',coach:'Coach',subscriber:'Subscriber',user:'Member'};
+  rb.textContent = roleLabel[a.role]||a.role;
+  rb.className = 'pf-role-badge '+(a.role||'user');
+
+  /* ── stats ── */
+  const stats=$("pfStats");
+  const wo=loadWorkouts?loadWorkouts():{};
+  let totalEx=0; (Object.values(wo)||[]).forEach(exs=>{ if(Array.isArray(exs)) totalEx+=exs.length; });
+  const plans=[{val:totalEx,lbl:'Exercises'}];
+  if(isAdmin()) plans.push({val:(loadAccounts().length),lbl:'Accounts'});
+  stats.innerHTML=plans.map(p=>`<div class="pf-stat"><div class="pf-stat-val">${p.val}</div><div class="pf-stat-lbl">${p.lbl}</div></div>`).join('');
+
+  /* ── managed ── */
+  const allowManaged=isAdmin()||isCoach();
+  const mc=$("pfManagedCard");
+  if(mc) mc.style.display=allowManaged?'':'none';
   if(allowManaged) fillManagedSelect();
+  if(isSub()||isUser()){ if(getManagedId()!==a.id) setManagedId(a.id); }
 
-  if(isSub() || isUser()){
-    if(getManagedId()!==a.id) setManagedId(a.id);
+  /* ── subscription ── */
+  pfRenderSub();
+
+  /* ── clear msgs ── */
+  $("pfNameMsg").textContent=''; $("pfPinMsg").textContent='';
+  $("pfOldPin").value=''; $("pfNewPin").value=''; $("pfConfPin").value='';
+}
+
+function pfInitials(name){
+  if(!name) return '?';
+  return name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2);
+}
+function pfPickAvatar(){ $("pfAvatarInput").click(); }
+function pfHandleAvatar(input){
+  const file=input.files&&input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const a=me(); if(!a) return;
+    localStorage.setItem('pf_avatar:'+a.id, e.target.result);
+    renderProfile();
+  };
+  reader.readAsDataURL(file);
+}
+function pfSaveName(){
+  const a=me(); if(!a) return;
+  const name=$("pfNameInp").value.trim();
+  if(!name){ pfMsg('pfNameMsg','Name cannot be empty','err'); return; }
+  const acc=loadAccounts();
+  const i=acc.findIndex(x=>x.id===a.id);
+  if(i===-1) return;
+  acc[i].name=name; saveAccounts(acc);
+  hydrateHeader();
+  renderProfile();
+  pfMsg('pfNameMsg','Name updated','ok');
+}
+function pfChangePin(){
+  const a=me(); if(!a) return;
+  const oldPin=$("pfOldPin").value.trim();
+  const newPin=$("pfNewPin").value.trim();
+  const conf=$("pfConfPin").value.trim();
+  if(!PIN_RE.test(oldPin)){ pfMsg('pfPinMsg','Current PIN must be 6 digits','err'); return; }
+  if(!PIN_RE.test(newPin)){ pfMsg('pfPinMsg','New PIN must be 6 digits','err'); return; }
+  if(newPin!==conf){ pfMsg('pfPinMsg','PINs do not match','err'); return; }
+  const acc=loadAccounts();
+  const i=acc.findIndex(x=>x.id===a.id);
+  if(hashPin(oldPin)!==acc[i].pinHash){ pfMsg('pfPinMsg','Current PIN is incorrect','err'); return; }
+  acc[i].pinHash=hashPin(newPin); saveAccounts(acc);
+  $("pfOldPin").value=''; $("pfNewPin").value=''; $("pfConfPin").value='';
+  pfMsg('pfPinMsg','PIN updated successfully','ok');
+}
+function pfMsg(id,txt,cls){
+  const el=$(id); if(!el) return;
+  el.textContent=txt; el.className='pf-msg '+cls;
+  setTimeout(()=>{ if(el.textContent===txt) el.textContent=''; },3500);
+}
+function pfRenderSub(){
+  const card=$("pfSubCard"); if(!card) return;
+  const target=findAccById(getManagedId());
+  if(!target||target.role!=='subscriber'){ card.style.display='none'; return; }
+  card.style.display='';
+  const now=nowMs();
+  const expMs=Number(target.subExpiresAt||0);
+  const startMs=Number(target.subStartAt||0);
+  const expired=isExpiredSubscriber(target);
+  const diffDays=expMs?Math.ceil((expMs-now)/DAY_MS):0;
+  const daysLeft=Math.max(0,diffDays);
+  const daysAgo=expMs?Math.ceil((now-expMs)/DAY_MS):0;
+  const statusEl=$("pfSubStatus"); const daysEl=$("pfSubDays");
+  if(!expired){
+    statusEl.textContent='Active'; statusEl.className='pf-sub-pill-val pf-sub-active';
+    daysEl.textContent=daysLeft; daysEl.className='pf-sub-pill-val pf-sub-active';
+  } else {
+    statusEl.textContent='Expired'; statusEl.className='pf-sub-pill-val pf-sub-expired';
+    daysEl.textContent='-'+Math.max(0,daysAgo); daysEl.className='pf-sub-pill-val pf-sub-expired';
   }
-
-  renderSubscriptionInfo();
+  $("pfSubStart").textContent=fmtDate(startMs);
+  $("pfSubExpire").textContent=fmtDate(expMs);
 }
 function fillManagedSelect(){
   const sel=$("managedSel"); sel.innerHTML="";

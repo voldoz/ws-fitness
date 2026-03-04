@@ -377,6 +377,257 @@
   /* Reset wrap */
   .wo-reset-wrap{ margin-top:14px; text-align:center; }
 
+  /* ===== Plan Selector ===== */
+  .wo-plan-bar{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    margin-bottom:14px;
+    animation:wo-fadeIn .35s ease .05s both;
+  }
+  .wo-plan-btn{
+    border-radius:18px; padding:14px 12px;
+    border:1.5px solid rgba(255,255,255,.08);
+    background:linear-gradient(145deg,#0d1829,#111e30);
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    cursor:pointer; text-align:center;
+    transition:all .22s; -webkit-tap-highlight-color:transparent;
+  }
+  .wo-plan-btn:hover{ border-color:rgba(56,189,248,.3); background:linear-gradient(145deg,#0f1e35,#13243d); }
+  .wo-plan-btn:active{ transform:scale(.97); }
+  .wo-plan-btn.active{
+    border-color:rgba(56,189,248,.5);
+    background:linear-gradient(145deg,rgba(56,189,248,.08),rgba(129,140,248,.06));
+    box-shadow:0 4px 20px rgba(56,189,248,.1);
+  }
+  .wo-plan-btn-icon{ font-size:28px; }
+  .wo-plan-btn-title{ font-size:13px; font-weight:900; color:#e2e8f0; }
+  .wo-plan-btn-sub{ font-size:10px; color:#64748b; font-weight:600; }
+
+  /* ===== Preset Plans Panel ===== */
+  .wo-presets-panel{
+    margin-bottom:14px;
+    animation:wo-fadeIn .3s ease both;
+  }
+  .wo-section-label{
+    font-size:10px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.1em; opacity:.4; margin-bottom:10px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .wo-section-label::after{ content:''; flex:1; height:1px; background:rgba(255,255,255,.08); }
+
+  .wo-preset-grid{
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .wo-preset-card{
+    border-radius:18px; overflow:hidden;
+    border:1.5px solid rgba(255,255,255,.07);
+    background:linear-gradient(145deg,#0d1829,#111e30);
+    cursor:pointer; transition:all .22s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wo-preset-card:hover{ border-color:rgba(56,189,248,.25); box-shadow:0 4px 20px rgba(56,189,248,.06); }
+  .wo-preset-card.selected{
+    border-color:rgba(56,189,248,.5);
+    background:linear-gradient(145deg,rgba(56,189,248,.06),rgba(129,140,248,.04));
+    box-shadow:0 6px 24px rgba(56,189,248,.1);
+  }
+  .wo-preset-head{
+    display:flex; align-items:center; gap:12px; padding:14px 16px;
+  }
+  .wo-preset-emoji{ font-size:28px; flex-shrink:0; }
+  .wo-preset-info{ flex:1; min-width:0; }
+  .wo-preset-name{ font-size:15px; font-weight:900; color:#e2e8f0; }
+  .wo-preset-desc{ font-size:11px; color:#64748b; margin-top:2px; font-weight:600; }
+  .wo-preset-tags{ display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+  .wo-preset-tag{
+    font-size:10px; font-weight:700; padding:2px 8px; border-radius:8px;
+    background:rgba(56,189,248,.1); color:#38bdf8; border:1px solid rgba(56,189,248,.2);
+  }
+  .wo-preset-tag.purple{ background:rgba(129,140,248,.1); color:#818cf8; border-color:rgba(129,140,248,.2); }
+  .wo-preset-tag.green { background:rgba(74,222,128,.1);  color:#4ade80; border-color:rgba(74,222,128,.2); }
+  .wo-preset-tag.amber { background:rgba(251,191,36,.1);  color:#fbbf24; border-color:rgba(251,191,36,.2); }
+  .wo-preset-right{ flex-shrink:0; display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
+  .wo-preset-days-badge{
+    font-size:11px; font-weight:800; padding:4px 10px; border-radius:10px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); color:#94a3b8;
+  }
+  .wo-preset-card.selected .wo-preset-days-badge{
+    background:rgba(56,189,248,.15); border-color:rgba(56,189,248,.3); color:#38bdf8;
+  }
+  .wo-preset-check{
+    width:22px; height:22px; border-radius:8px;
+    background:transparent; border:1.5px solid rgba(255,255,255,.15);
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; transition:all .2s;
+  }
+  .wo-preset-card.selected .wo-preset-check{
+    background:linear-gradient(135deg,#38bdf8,#818cf8);
+    border-color:transparent; color:#fff;
+  }
+  /* preview rows */
+  .wo-preset-preview{
+    max-height:0; overflow:hidden;
+    transition:max-height .35s cubic-bezier(.4,0,.2,1);
+    border-top:0px solid transparent;
+  }
+  .wo-preset-card.selected .wo-preset-preview{
+    max-height:600px;
+    border-top:1px solid rgba(56,189,248,.12);
+  }
+  .wo-preset-preview-inner{ padding:10px 16px 14px; display:flex; flex-direction:column; gap:6px; }
+  .wo-preview-day{
+    display:flex; gap:8px; align-items:flex-start;
+  }
+  .wo-preview-day-lbl{
+    font-size:10px; font-weight:800; color:#38bdf8; min-width:32px;
+    padding-top:2px;
+  }
+  .wo-preview-exs{ display:flex; flex-wrap:wrap; gap:4px; }
+  .wo-preview-ex{
+    font-size:10px; font-weight:700; padding:3px 8px; border-radius:8px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.07); color:#94a3b8;
+  }
+  .wo-preview-rest{ font-size:10px; color:#334155; font-weight:700; padding-top:2px; }
+
+  /* Apply button */
+  .wo-apply-wrap{ margin-top:12px; }
+  .wo-apply-btn{
+    width:100%; padding:13px; border-radius:16px; border:none; cursor:pointer;
+    background:linear-gradient(135deg,#38bdf8,#818cf8);
+    color:#fff; font-size:14px; font-weight:900; letter-spacing:.02em;
+    transition:opacity .2s, transform .15s;
+  }
+  .wo-apply-btn:active{ transform:scale(.98); opacity:.9; }
+  .wo-apply-btn:disabled{ opacity:.35; cursor:default; }
+
+  /* ===== Custom Builder ===== */
+  .wo-custom-panel{
+    margin-bottom:14px;
+    animation:wo-fadeIn .3s ease both;
+  }
+
+  /* active plan banner */
+  .wo-active-plan{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px; border-radius:14px; margin-bottom:12px;
+    background:linear-gradient(135deg,rgba(56,189,248,.08),rgba(129,140,248,.06));
+    border:1.5px solid rgba(56,189,248,.2);
+  }
+  .wo-active-plan-icon{ font-size:20px; flex-shrink:0; }
+  .wo-active-plan-text{ flex:1; min-width:0; }
+  .wo-active-plan-label{ font-size:10px; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:.08em; }
+  .wo-active-plan-name{ font-size:13px; font-weight:900; color:#e2e8f0; margin-top:2px; }
+
+  /* custom builder day cards */
+  .wo-custom-days{ display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .wo-cday-card{
+    background:linear-gradient(145deg,#0d1829,#111e30);
+    border-radius:18px;
+    border:1.5px solid rgba(255,255,255,.07);
+    overflow:hidden; transition:border-color .2s;
+  }
+  .wo-cday-card.has-ex{ border-color:rgba(56,189,248,.2); }
+  .wo-cday-head{
+    display:flex; align-items:center; gap:10px;
+    padding:12px 14px; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wo-cday-badge{
+    width:36px; height:36px; border-radius:10px; flex-shrink:0;
+    background:linear-gradient(135deg,#1e3a5f,#1e3060);
+    border:1px solid rgba(56,189,248,.15);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-size:9px; font-weight:900; color:#64748b; letter-spacing:.04em;
+  }
+  .wo-cday-badge.active-day{ background:linear-gradient(135deg,rgba(56,189,248,.18),rgba(129,140,248,.12)); color:#38bdf8; border-color:rgba(56,189,248,.35); }
+  .wo-cday-info{ flex:1; min-width:0; }
+  .wo-cday-name{ font-size:14px; font-weight:900; color:#e2e8f0; }
+  .wo-cday-meta{ font-size:11px; color:#64748b; font-weight:600; margin-top:2px; }
+  .wo-cday-chev{ font-size:11px; color:#475569; transition:transform .25s; flex-shrink:0; }
+  .wo-cday-card.open .wo-cday-chev{ transform:rotate(180deg); }
+
+  /* quick-fill dropdown row */
+  .wo-cday-body{ overflow:hidden; max-height:0; transition:max-height .35s cubic-bezier(.4,0,.2,1); }
+  .wo-cday-card.open .wo-cday-body{ max-height:800px; }
+  .wo-cday-inner{ padding:0 14px 14px; display:flex; flex-direction:column; gap:8px; }
+
+  .wo-qfill-row{
+    display:flex; gap:8px; align-items:center;
+    background:rgba(255,255,255,.03); border-radius:12px; padding:8px 10px;
+    border:1px solid rgba(255,255,255,.05);
+  }
+  .wo-qfill-lbl{ font-size:11px; font-weight:700; color:#64748b; flex-shrink:0; white-space:nowrap; }
+  .wo-qfill-sel{
+    flex:1; background:rgba(10,18,32,.9);
+    border:1.5px solid rgba(255,255,255,.08);
+    border-radius:9px; padding:5px 8px;
+    color:#e2e8f0; font-size:11px; font-weight:700;
+    outline:none; cursor:pointer; transition:border-color .2s;
+  }
+  .wo-qfill-sel:focus{ border-color:rgba(56,189,248,.4); }
+  .wo-qfill-btn{
+    padding:5px 12px; border-radius:9px; border:none; cursor:pointer;
+    background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(129,140,248,.1));
+    color:#38bdf8; font-size:11px; font-weight:800;
+    border:1px solid rgba(56,189,248,.2);
+    transition:all .18s; white-space:nowrap;
+  }
+  .wo-qfill-btn:active{ transform:scale(.95); }
+
+  /* custom exercise rows */
+  .wo-cex-list{ display:flex; flex-direction:column; gap:6px; }
+  .wo-cex-row{
+    display:flex; align-items:center; gap:8px;
+    background:rgba(255,255,255,.03); border-radius:11px; padding:8px 10px;
+    border:1px solid rgba(255,255,255,.05);
+  }
+  .wo-cex-num{
+    width:22px; height:22px; border-radius:7px; flex-shrink:0;
+    background:rgba(129,140,248,.12); border:1px solid rgba(129,140,248,.2);
+    color:#818cf8; font-size:10px; font-weight:900;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .wo-cex-inp{
+    flex:1; background:transparent; border:none; outline:none;
+    color:#e2e8f0; font-size:12px; font-weight:700;
+    padding:0; min-width:0;
+  }
+  .wo-cex-inp::placeholder{ color:#334155; }
+  .wo-cex-sets{
+    display:flex; align-items:center; gap:4px; flex-shrink:0;
+  }
+  .wo-cex-set-btn{
+    width:22px; height:22px; border-radius:7px; border:none; cursor:pointer;
+    background:rgba(255,255,255,.07); color:#94a3b8; font-size:13px; font-weight:900;
+    display:flex; align-items:center; justify-content:center; transition:all .15s;
+  }
+  .wo-cex-set-btn:active{ background:rgba(56,189,248,.2); color:#38bdf8; }
+  .wo-cex-set-val{ font-size:11px; font-weight:800; color:#94a3b8; min-width:22px; text-align:center; }
+  .wo-cex-set-lbl{ font-size:9px; color:#475569; font-weight:700; }
+  .wo-cex-del{
+    width:24px; height:24px; border-radius:8px; border:none; cursor:pointer; flex-shrink:0;
+    background:rgba(248,113,113,.08); color:#f87171;
+    font-size:12px; display:flex; align-items:center; justify-content:center;
+    transition:all .15s;
+  }
+  .wo-cex-del:active{ background:rgba(248,113,113,.2); }
+
+  .wo-cday-add-btn{
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    padding:8px; border-radius:11px; border:1.5px dashed rgba(56,189,248,.2);
+    color:#38bdf8; font-size:11px; font-weight:800; cursor:pointer;
+    background:transparent; transition:all .18s; width:100%;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wo-cday-add-btn:hover{ background:rgba(56,189,248,.05); border-color:rgba(56,189,248,.35); }
+
+  .wo-custom-save-btn{
+    width:100%; padding:13px; border-radius:16px; border:none; cursor:pointer;
+    background:linear-gradient(135deg,#4ade80,#16a34a);
+    color:#fff; font-size:14px; font-weight:900;
+    transition:opacity .2s, transform .15s;
+  }
+  .wo-custom-save-btn:active{ transform:scale(.98); opacity:.9; }
+
   /* ===== Weight Page ===== */
   @keyframes wt-fadeIn{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
 
@@ -1735,7 +1986,43 @@
     <!-- Summary pills -->
     <div class="wo-summary" id="woSummary"></div>
 
-    <!-- Day cards -->
+    <!-- Plan mode selector -->
+    <div id="woActivePlanStrip"></div>
+    <div class="wo-plan-bar" id="woPlanBar">
+      <div class="wo-plan-btn" id="woPlanBtnPreset" onclick="showWorkPlan('preset')">
+        <div class="wo-plan-btn-icon">📋</div>
+        <div class="wo-plan-btn-title">Ready-Made Plans</div>
+        <div class="wo-plan-btn-sub">Pick a preset schedule</div>
+      </div>
+      <div class="wo-plan-btn" id="woPlanBtnCustom" onclick="showWorkPlan('custom')">
+        <div class="wo-plan-btn-icon">✏️</div>
+        <div class="wo-plan-btn-title">Custom Plan</div>
+        <div class="wo-plan-btn-sub">Build your own schedule</div>
+      </div>
+    </div>
+
+    <!-- Preset plans panel -->
+    <div class="wo-presets-panel" id="woPresetsPanel" style="display:none">
+      <div class="wo-section-label">📋 Choose a Plan</div>
+      <div class="wo-preset-grid" id="woPresetGrid"></div>
+      <div class="wo-apply-wrap">
+        <button class="wo-apply-btn" id="woApplyBtn" onclick="applySelectedPreset()" disabled>
+          ⚡ Apply Plan
+        </button>
+      </div>
+    </div>
+
+    <!-- Custom builder panel -->
+    <div class="wo-custom-panel" id="woCustomPanel" style="display:none">
+      <div class="wo-section-label">✏️ Build Your Plan</div>
+      <!-- active plan banner (injected by JS) -->
+      <div id="woActivePlanBanner"></div>
+      <div class="wo-custom-days" id="woCustomDays"></div>
+      <button class="wo-custom-save-btn" onclick="saveCustomPlan()">✅ Save Plan</button>
+    </div>
+
+    <!-- Day cards (current plan) -->
+    <div class="wo-section-label" id="woLogLabel" style="margin-top:4px">🗓 This Week's Plan</div>
     <div id="workContainer"></div>
 
     <!-- Reset -->
@@ -3103,6 +3390,545 @@ function resetWeek(){
 
 /* ========= Workouts ========= */
 const weekDays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const weekDayShort = {Sunday:"Sun",Monday:"Mon",Tuesday:"Tue",Wednesday:"Wed",Thursday:"Thu",Friday:"Fri",Saturday:"Sat"};
+
+/* ═══════════════════════════════════════════════════════
+   PRESET PLANS DATABASE
+   Each plan: { id, emoji, name, desc, tags, days:{day:[exercises]} }
+   exercise: { name, sets, maxWeight }
+   ═══════════════════════════════════════════════════════ */
+const PRESET_PLANS = [
+  {
+    id:"ppl3",
+    emoji:"🔱",
+    name:"Push / Pull / Legs — 3 Days",
+    desc:"Classic PPL split, perfect for beginners to intermediate",
+    tags:[{t:"3 Days",c:""},{t:"Beginner",c:"green"},{t:"Full Body",c:""}],
+    days:{
+      Monday:[
+        {name:"Bench Press",sets:4,maxWeight:0},
+        {name:"Overhead Press",sets:3,maxWeight:0},
+        {name:"Lateral Raises",sets:3,maxWeight:0},
+        {name:"Tricep Pushdowns",sets:3,maxWeight:0},
+      ],
+      Wednesday:[
+        {name:"Barbell Row",sets:4,maxWeight:0},
+        {name:"Pull-Ups",sets:3,maxWeight:0},
+        {name:"Face Pulls",sets:3,maxWeight:0},
+        {name:"Barbell Curl",sets:3,maxWeight:0},
+      ],
+      Friday:[
+        {name:"Squat",sets:4,maxWeight:0},
+        {name:"Romanian Deadlift",sets:3,maxWeight:0},
+        {name:"Leg Press",sets:3,maxWeight:0},
+        {name:"Calf Raises",sets:4,maxWeight:0},
+      ],
+      Sunday:[],Tuesday:[],Thursday:[],Saturday:[],
+    }
+  },
+  {
+    id:"ppl6",
+    emoji:"🚀",
+    name:"Push / Pull / Legs — 6 Days",
+    desc:"High frequency PPL for intermediate lifters, each split twice/week",
+    tags:[{t:"6 Days",c:""},{t:"Intermediate",c:"amber"},{t:"High Volume",c:"purple"}],
+    days:{
+      Monday:[
+        {name:"Bench Press",sets:4,maxWeight:0},
+        {name:"Incline Dumbbell Press",sets:3,maxWeight:0},
+        {name:"Cable Flyes",sets:3,maxWeight:0},
+        {name:"Overhead Press",sets:3,maxWeight:0},
+        {name:"Lateral Raises",sets:4,maxWeight:0},
+        {name:"Tricep Pushdowns",sets:3,maxWeight:0},
+      ],
+      Tuesday:[
+        {name:"Deadlift",sets:4,maxWeight:0},
+        {name:"Barbell Row",sets:4,maxWeight:0},
+        {name:"Lat Pulldown",sets:3,maxWeight:0},
+        {name:"Seated Row",sets:3,maxWeight:0},
+        {name:"Face Pulls",sets:3,maxWeight:0},
+        {name:"Barbell Curl",sets:3,maxWeight:0},
+      ],
+      Wednesday:[
+        {name:"Squat",sets:4,maxWeight:0},
+        {name:"Romanian Deadlift",sets:3,maxWeight:0},
+        {name:"Leg Press",sets:3,maxWeight:0},
+        {name:"Leg Curl",sets:3,maxWeight:0},
+        {name:"Calf Raises",sets:4,maxWeight:0},
+      ],
+      Thursday:[
+        {name:"Overhead Press",sets:4,maxWeight:0},
+        {name:"Dumbbell Shoulder Press",sets:3,maxWeight:0},
+        {name:"Lateral Raises",sets:4,maxWeight:0},
+        {name:"Close-Grip Bench",sets:3,maxWeight:0},
+        {name:"Skull Crushers",sets:3,maxWeight:0},
+      ],
+      Friday:[
+        {name:"Pull-Ups",sets:4,maxWeight:0},
+        {name:"T-Bar Row",sets:4,maxWeight:0},
+        {name:"Cable Row",sets:3,maxWeight:0},
+        {name:"Rear Delt Flyes",sets:3,maxWeight:0},
+        {name:"Hammer Curl",sets:3,maxWeight:0},
+      ],
+      Saturday:[
+        {name:"Front Squat",sets:4,maxWeight:0},
+        {name:"Hack Squat",sets:3,maxWeight:0},
+        {name:"Walking Lunges",sets:3,maxWeight:0},
+        {name:"Seated Leg Curl",sets:3,maxWeight:0},
+        {name:"Standing Calf Raises",sets:4,maxWeight:0},
+      ],
+      Sunday:[],
+    }
+  },
+  {
+    id:"upper_lower",
+    emoji:"⚡",
+    name:"Upper / Lower — 4 Days",
+    desc:"Balanced strength & hypertrophy split, 2 upper + 2 lower per week",
+    tags:[{t:"4 Days",c:""},{t:"Intermediate",c:"amber"},{t:"Strength",c:"purple"}],
+    days:{
+      Monday:[
+        {name:"Bench Press",sets:4,maxWeight:0},
+        {name:"Barbell Row",sets:4,maxWeight:0},
+        {name:"Overhead Press",sets:3,maxWeight:0},
+        {name:"Pull-Ups",sets:3,maxWeight:0},
+        {name:"Barbell Curl",sets:3,maxWeight:0},
+        {name:"Tricep Dips",sets:3,maxWeight:0},
+      ],
+      Tuesday:[
+        {name:"Squat",sets:4,maxWeight:0},
+        {name:"Romanian Deadlift",sets:4,maxWeight:0},
+        {name:"Leg Press",sets:3,maxWeight:0},
+        {name:"Leg Curl",sets:3,maxWeight:0},
+        {name:"Calf Raises",sets:4,maxWeight:0},
+      ],
+      Thursday:[
+        {name:"Incline Bench Press",sets:4,maxWeight:0},
+        {name:"Seated Cable Row",sets:4,maxWeight:0},
+        {name:"Lateral Raises",sets:4,maxWeight:0},
+        {name:"Lat Pulldown",sets:3,maxWeight:0},
+        {name:"Hammer Curl",sets:3,maxWeight:0},
+        {name:"Overhead Tricep Extension",sets:3,maxWeight:0},
+      ],
+      Friday:[
+        {name:"Deadlift",sets:4,maxWeight:0},
+        {name:"Hack Squat",sets:3,maxWeight:0},
+        {name:"Walking Lunges",sets:3,maxWeight:0},
+        {name:"Leg Extension",sets:3,maxWeight:0},
+        {name:"Standing Calf Raises",sets:4,maxWeight:0},
+      ],
+      Sunday:[],Wednesday:[],Saturday:[],
+    }
+  },
+  {
+    id:"fullbody3",
+    emoji:"💥",
+    name:"Full Body — 3 Days",
+    desc:"Compound-focused full body, ideal for beginners or busy schedules",
+    tags:[{t:"3 Days",c:""},{t:"Beginner",c:"green"},{t:"Compound",c:""}],
+    days:{
+      Monday:[
+        {name:"Squat",sets:3,maxWeight:0},
+        {name:"Bench Press",sets:3,maxWeight:0},
+        {name:"Barbell Row",sets:3,maxWeight:0},
+        {name:"Overhead Press",sets:3,maxWeight:0},
+        {name:"Plank",sets:3,maxWeight:0},
+      ],
+      Wednesday:[
+        {name:"Deadlift",sets:3,maxWeight:0},
+        {name:"Incline Dumbbell Press",sets:3,maxWeight:0},
+        {name:"Pull-Ups",sets:3,maxWeight:0},
+        {name:"Lateral Raises",sets:3,maxWeight:0},
+        {name:"Hanging Leg Raises",sets:3,maxWeight:0},
+      ],
+      Friday:[
+        {name:"Front Squat",sets:3,maxWeight:0},
+        {name:"Dumbbell Bench Press",sets:3,maxWeight:0},
+        {name:"T-Bar Row",sets:3,maxWeight:0},
+        {name:"Arnold Press",sets:3,maxWeight:0},
+        {name:"Cable Crunches",sets:3,maxWeight:0},
+      ],
+      Sunday:[],Tuesday:[],Thursday:[],Saturday:[],
+    }
+  },
+  {
+    id:"bro5",
+    emoji:"💪",
+    name:"Bro Split — 5 Days",
+    desc:"Classic bodybuilder split — one muscle group per day",
+    tags:[{t:"5 Days",c:""},{t:"Hypertrophy",c:"purple"},{t:"Isolation",c:"amber"}],
+    days:{
+      Monday:[
+        {name:"Barbell Bench Press",sets:4,maxWeight:0},
+        {name:"Incline Dumbbell Press",sets:4,maxWeight:0},
+        {name:"Cable Flyes",sets:3,maxWeight:0},
+        {name:"Pec Deck Machine",sets:3,maxWeight:0},
+        {name:"Dips",sets:3,maxWeight:0},
+      ],
+      Tuesday:[
+        {name:"Barbell Row",sets:4,maxWeight:0},
+        {name:"Deadlift",sets:4,maxWeight:0},
+        {name:"Lat Pulldown",sets:3,maxWeight:0},
+        {name:"Seated Cable Row",sets:3,maxWeight:0},
+        {name:"Shrugs",sets:3,maxWeight:0},
+      ],
+      Wednesday:[
+        {name:"Barbell Curl",sets:4,maxWeight:0},
+        {name:"Incline Dumbbell Curl",sets:3,maxWeight:0},
+        {name:"Hammer Curl",sets:3,maxWeight:0},
+        {name:"Skull Crushers",sets:4,maxWeight:0},
+        {name:"Overhead Tricep Extension",sets:3,maxWeight:0},
+        {name:"Tricep Pushdowns",sets:3,maxWeight:0},
+      ],
+      Thursday:[
+        {name:"Barbell Squat",sets:4,maxWeight:0},
+        {name:"Romanian Deadlift",sets:3,maxWeight:0},
+        {name:"Leg Press",sets:3,maxWeight:0},
+        {name:"Leg Curl",sets:3,maxWeight:0},
+        {name:"Leg Extension",sets:3,maxWeight:0},
+        {name:"Calf Raises",sets:4,maxWeight:0},
+      ],
+      Friday:[
+        {name:"Overhead Press",sets:4,maxWeight:0},
+        {name:"Dumbbell Shoulder Press",sets:3,maxWeight:0},
+        {name:"Lateral Raises",sets:4,maxWeight:0},
+        {name:"Front Raises",sets:3,maxWeight:0},
+        {name:"Rear Delt Flyes",sets:3,maxWeight:0},
+        {name:"Face Pulls",sets:3,maxWeight:0},
+      ],
+      Sunday:[],Saturday:[],
+    }
+  }
+];
+
+/* muscle group options for custom builder */
+const MUSCLE_GROUPS = [
+  "Rest","Chest","Back","Shoulders","Arms (Biceps + Triceps)",
+  "Legs","Push (Chest + Shoulders + Triceps)","Pull (Back + Biceps)",
+  "Upper Body","Full Body","Core & Abs","Cardio"
+];
+
+/* exercises per muscle group */
+const GROUP_EXERCISES = {
+  "Chest":[{name:"Bench Press",sets:4},{name:"Incline Dumbbell Press",sets:3},{name:"Cable Flyes",sets:3},{name:"Pec Deck",sets:3},{name:"Dips",sets:3}],
+  "Back":[{name:"Barbell Row",sets:4},{name:"Deadlift",sets:4},{name:"Lat Pulldown",sets:3},{name:"Seated Cable Row",sets:3},{name:"Face Pulls",sets:3}],
+  "Shoulders":[{name:"Overhead Press",sets:4},{name:"Dumbbell Shoulder Press",sets:3},{name:"Lateral Raises",sets:4},{name:"Front Raises",sets:3},{name:"Rear Delt Flyes",sets:3}],
+  "Arms (Biceps + Triceps)":[{name:"Barbell Curl",sets:4},{name:"Hammer Curl",sets:3},{name:"Skull Crushers",sets:4},{name:"Tricep Pushdowns",sets:3},{name:"Overhead Tricep Extension",sets:3}],
+  "Legs":[{name:"Barbell Squat",sets:4},{name:"Romanian Deadlift",sets:3},{name:"Leg Press",sets:3},{name:"Leg Curl",sets:3},{name:"Calf Raises",sets:4}],
+  "Push (Chest + Shoulders + Triceps)":[{name:"Bench Press",sets:4},{name:"Overhead Press",sets:3},{name:"Lateral Raises",sets:3},{name:"Tricep Pushdowns",sets:3},{name:"Cable Flyes",sets:3}],
+  "Pull (Back + Biceps)":[{name:"Barbell Row",sets:4},{name:"Pull-Ups",sets:3},{name:"Lat Pulldown",sets:3},{name:"Barbell Curl",sets:3},{name:"Hammer Curl",sets:3}],
+  "Upper Body":[{name:"Bench Press",sets:3},{name:"Barbell Row",sets:3},{name:"Overhead Press",sets:3},{name:"Pull-Ups",sets:3},{name:"Barbell Curl",sets:3}],
+  "Full Body":[{name:"Squat",sets:3},{name:"Bench Press",sets:3},{name:"Barbell Row",sets:3},{name:"Overhead Press",sets:3},{name:"Plank",sets:3}],
+  "Core & Abs":[{name:"Plank",sets:3},{name:"Cable Crunches",sets:3},{name:"Hanging Leg Raises",sets:3},{name:"Russian Twists",sets:3}],
+  "Cardio":[{name:"Treadmill Run",sets:1},{name:"Jump Rope",sets:3},{name:"Cycling",sets:1}],
+  "Rest":[],
+};
+
+/* ── plan mode state ── */
+let _workMode = ""; /* "preset" | "custom" | "" */
+let _selectedPresetId = "";
+
+function showWorkPlan(mode){
+  if(!canEditEverything()) return;
+  _workMode = (_workMode===mode) ? "" : mode;
+  /* update button states */
+  $("woPlanBtnPreset").classList.toggle("active", _workMode==="preset");
+  $("woPlanBtnCustom").classList.toggle("active",  _workMode==="custom");
+  /* show/hide panels */
+  $("woPresetsPanel").style.display = (_workMode==="preset") ? "" : "none";
+  $("woCustomPanel").style.display  = (_workMode==="custom") ? "" : "none";
+  if(_workMode==="preset") renderPresetGrid();
+  if(_workMode==="custom") renderCustomBuilder();
+}
+
+function renderPresetGrid(){
+  const grid=$("woPresetGrid"); grid.innerHTML="";
+  const activePlanId = pget("activePlanId")||"";
+  PRESET_PLANS.forEach(plan=>{
+    const card=document.createElement("div");
+    card.className="wo-preset-card"+(_selectedPresetId===plan.id?" selected":"");
+    card.onclick=()=>selectPreset(plan.id);
+
+    /* head */
+    const head=document.createElement("div"); head.className="wo-preset-head";
+    const emoji=document.createElement("div"); emoji.className="wo-preset-emoji"; emoji.textContent=plan.emoji;
+    const info=document.createElement("div"); info.className="wo-preset-info";
+    const nm=document.createElement("div"); nm.className="wo-preset-name"; nm.textContent=plan.name;
+    const desc=document.createElement("div"); desc.className="wo-preset-desc"; desc.textContent=plan.desc;
+    const tags=document.createElement("div"); tags.className="wo-preset-tags";
+    /* add "Active" tag if this plan is currently applied */
+    if(plan.id===activePlanId){
+      const at=document.createElement("span"); at.className="wo-preset-tag green"; at.textContent="✓ Active"; tags.appendChild(at);
+    }
+    plan.tags.forEach(t=>{ const tg=document.createElement("span"); tg.className="wo-preset-tag"+(t.c?" "+t.c:""); tg.textContent=t.t; tags.appendChild(tg); });
+    info.appendChild(nm); info.appendChild(desc); info.appendChild(tags);
+    /* right: days badge + check */
+    const right=document.createElement("div"); right.className="wo-preset-right";
+    const activeDays=Object.values(plan.days).filter(d=>d.length>0).length;
+    const dayBadge=document.createElement("div"); dayBadge.className="wo-preset-days-badge"; dayBadge.textContent=`${activeDays}d/wk`;
+    const check=document.createElement("div"); check.className="wo-preset-check"; check.textContent=_selectedPresetId===plan.id?"✓":"";
+    right.appendChild(dayBadge); right.appendChild(check);
+    head.appendChild(emoji); head.appendChild(info); head.appendChild(right);
+    card.appendChild(head);
+
+    /* preview (shown when selected) */
+    const preview=document.createElement("div"); preview.className="wo-preset-preview";
+    const pi=document.createElement("div"); pi.className="wo-preset-preview-inner";
+    weekDays.forEach(day=>{
+      const exs=plan.days[day]||[];
+      const row=document.createElement("div"); row.className="wo-preview-day";
+      const dl=document.createElement("div"); dl.className="wo-preview-day-lbl"; dl.textContent=weekDayShort[day];
+      const exWrap=document.createElement("div"); exWrap.className="wo-preview-exs";
+      if(exs.length===0){
+        const rest=document.createElement("span"); rest.className="wo-preview-rest"; rest.textContent="Rest";
+        exWrap.appendChild(rest);
+      } else {
+        exs.forEach(e=>{ const chip=document.createElement("span"); chip.className="wo-preview-ex"; chip.textContent=e.name; exWrap.appendChild(chip); });
+      }
+      row.appendChild(dl); row.appendChild(exWrap);
+      pi.appendChild(row);
+    });
+    preview.appendChild(pi); card.appendChild(preview);
+    grid.appendChild(card);
+  });
+}
+
+function selectPreset(id){
+  _selectedPresetId = (_selectedPresetId===id) ? "" : id;
+  $("woApplyBtn").disabled = !_selectedPresetId;
+  renderPresetGrid();
+}
+
+function applySelectedPreset(){
+  if(!_selectedPresetId || !canEditEverything()) return;
+  const plan=PRESET_PLANS.find(p=>p.id===_selectedPresetId);
+  if(!plan) return;
+  if(!confirm(`Apply "${plan.name}"? This will replace your current workout schedule.`)) return;
+  /* preserve existing maxWeight values for matching exercise names */
+  const existing=loadWorkouts();
+  const d=defaultWorkouts();
+  weekDays.forEach(day=>{
+    d[day]=(plan.days[day]||[]).map(e=>{
+      const prev=(existing[day]||[]).find(x=>x.name===e.name);
+      return {name:e.name, sets:e.sets, maxWeight: prev?prev.maxWeight:0};
+    });
+  });
+  saveWorkouts(d);
+  /* save active plan info */
+  pset("activePlanId", plan.id);
+  pset("activePlanName", plan.name);
+  pset("activePlanEmoji", plan.emoji);
+  /* close panel */
+  _workMode=""; _selectedPresetId="";
+  $("woPlanBtnPreset").classList.remove("active");
+  $("woPresetsPanel").style.display="none";
+  $("woApplyBtn").disabled=true;
+  renderWorkouts();
+  renderActivePlanStrip();
+}
+
+/* ── Active plan strip (shown above plan buttons) ── */
+function renderActivePlanStrip(){
+  const strip=$("woActivePlanStrip"); if(!strip) return;
+  const planId=pget("activePlanId");
+  if(!planId || !canEditEverything()){ strip.innerHTML=""; return; }
+  const planName=pget("activePlanName")||"Custom Plan";
+  const planEmoji=pget("activePlanEmoji")||"📋";
+  strip.innerHTML=`
+    <div class="wo-active-plan">
+      <div class="wo-active-plan-icon">${planEmoji}</div>
+      <div class="wo-active-plan-text">
+        <div class="wo-active-plan-label">Active Plan</div>
+        <div class="wo-active-plan-name">${planName}</div>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════
+   CUSTOM BUILDER — full per-day exercise editor
+   ══════════════════════════════════════ */
+
+/* in-memory draft for the custom builder (keyed by day) */
+let _customDraft = {};
+
+function renderCustomBuilder(){
+  /* init draft from current workouts */
+  const saved=loadWorkouts();
+  _customDraft={};
+  weekDays.forEach(day=>{
+    _customDraft[day]=(saved[day]||[]).map(e=>({name:e.name,sets:parseInt(e.sets||3,10)}));
+  });
+
+  /* active plan banner */
+  const banner=$("woActivePlanBanner"); if(banner) banner.innerHTML="";
+  const planId=pget("activePlanId");
+  if(planId){
+    const planName=pget("activePlanName")||"Unknown";
+    const planEmoji=pget("activePlanEmoji")||"📋";
+    if(banner) banner.innerHTML=`
+      <div class="wo-active-plan" style="margin-bottom:10px">
+        <div class="wo-active-plan-icon">${planEmoji}</div>
+        <div class="wo-active-plan-text">
+          <div class="wo-active-plan-label">Currently Applied</div>
+          <div class="wo-active-plan-name">${planName}</div>
+        </div>
+      </div>`;
+  }
+
+  rebuildCustomDayCards();
+}
+
+function rebuildCustomDayCards(){
+  const wrap=$("woCustomDays"); wrap.innerHTML="";
+  const DAY_NUM={Sunday:0,Monday:1,Tuesday:2,Wednesday:3,Thursday:4,Friday:5,Saturday:6};
+  const todayIdx=new Date().getDay();
+
+  weekDays.forEach(day=>{
+    const exs=_customDraft[day]||[];
+    const isToday=(DAY_NUM[day]===todayIdx);
+    const isOpen=exs.length>0; /* auto-open days that have exercises */
+
+    const card=document.createElement("div");
+    card.className="wo-cday-card"+(exs.length?" has-ex":"")+(isOpen?" open":"");
+    card.id="cday_"+day;
+
+    /* ── head ── */
+    const head=document.createElement("div"); head.className="wo-cday-head";
+    head.onclick=()=>{
+      card.classList.toggle("open");
+    };
+
+    const badge=document.createElement("div");
+    badge.className="wo-cday-badge"+(isToday?" active-day":"");
+    badge.innerHTML=`<span style="font-size:11px;font-weight:900;color:inherit">${DAY_NUM[day]+1}</span><span>${weekDayShort[day]}</span>`;
+
+    const info=document.createElement("div"); info.className="wo-cday-info";
+    const nm=document.createElement("div"); nm.className="wo-cday-name";
+    nm.textContent=day+(isToday?" 📍":"");
+    const meta=document.createElement("div"); meta.className="wo-cday-meta";
+    meta.textContent=exs.length?`${exs.length} exercise${exs.length>1?"s":""}  ·  ${exs.reduce((s,e)=>s+(e.sets||3),0)} sets`:"Rest day — tap to add exercises";
+    info.appendChild(nm); info.appendChild(meta);
+
+    const chev=document.createElement("div"); chev.className="wo-cday-chev"; chev.innerHTML="&#9660;";
+    head.appendChild(badge); head.appendChild(info); head.appendChild(chev);
+    card.appendChild(head);
+
+    /* ── body ── */
+    const body=document.createElement("div"); body.className="wo-cday-body";
+    const inner=document.createElement("div"); inner.className="wo-cday-inner";
+
+    /* quick-fill row */
+    const qRow=document.createElement("div"); qRow.className="wo-qfill-row";
+    const qLbl=document.createElement("div"); qLbl.className="wo-qfill-lbl"; qLbl.textContent="Quick fill:";
+    const qSel=document.createElement("select"); qSel.className="wo-qfill-sel";
+    MUSCLE_GROUPS.forEach(g=>{
+      const o=document.createElement("option"); o.value=g; o.textContent=g; qSel.appendChild(o);
+    });
+    const qBtn=document.createElement("button"); qBtn.className="wo-qfill-btn"; qBtn.textContent="Fill";
+    qBtn.onclick=()=>{
+      const grp=qSel.value;
+      const exList=GROUP_EXERCISES[grp]||[];
+      if(grp==="Rest"){
+        _customDraft[day]=[];
+      } else {
+        _customDraft[day]=exList.map(e=>({name:e.name,sets:e.sets}));
+      }
+      rebuildCustomDayCards();
+    };
+    qRow.appendChild(qLbl); qRow.appendChild(qSel); qRow.appendChild(qBtn);
+    inner.appendChild(qRow);
+
+    /* exercise list */
+    const exList=document.createElement("div"); exList.className="wo-cex-list";
+    exs.forEach((ex,idx)=>{
+      exList.appendChild(buildCexRow(day,idx,ex));
+    });
+    inner.appendChild(exList);
+
+    /* add exercise button */
+    const addBtn=document.createElement("button"); addBtn.className="wo-cday-add-btn";
+    addBtn.innerHTML="＋ Add Exercise";
+    addBtn.onclick=()=>{
+      _customDraft[day]=_customDraft[day]||[];
+      _customDraft[day].push({name:"",sets:3});
+      rebuildCustomDayCards();
+      /* re-open this card */
+      const c=document.getElementById("cday_"+day);
+      if(c) c.classList.add("open");
+    };
+    inner.appendChild(addBtn);
+
+    body.appendChild(inner);
+    card.appendChild(body);
+    wrap.appendChild(card);
+  });
+}
+
+function buildCexRow(day, idx, ex){
+  const row=document.createElement("div"); row.className="wo-cex-row";
+
+  const num=document.createElement("div"); num.className="wo-cex-num"; num.textContent=idx+1;
+
+  const inp=document.createElement("input"); inp.className="wo-cex-inp";
+  inp.placeholder="Exercise name…"; inp.value=ex.name||"";
+  inp.oninput=e=>{ _customDraft[day][idx].name=e.target.value; };
+
+  /* sets mini counter */
+  const setsWrap=document.createElement("div"); setsWrap.className="wo-cex-sets";
+  const sm=document.createElement("button"); sm.className="wo-cex-set-btn"; sm.textContent="−";
+  sm.onclick=()=>{
+    const cur=_customDraft[day][idx].sets||3;
+    if(cur>1){ _customDraft[day][idx].sets=cur-1; valSpan.textContent=cur-1; }
+  };
+  const valWrap=document.createElement("div"); valWrap.style.cssText="display:flex;flex-direction:column;align-items:center";
+  const valSpan=document.createElement("span"); valSpan.className="wo-cex-set-val"; valSpan.textContent=ex.sets||3;
+  const valLbl=document.createElement("span"); valLbl.className="wo-cex-set-lbl"; valLbl.textContent="sets";
+  valWrap.appendChild(valSpan); valWrap.appendChild(valLbl);
+  const sp=document.createElement("button"); sp.className="wo-cex-set-btn"; sp.textContent="+";
+  sp.onclick=()=>{
+    const cur=_customDraft[day][idx].sets||3;
+    _customDraft[day][idx].sets=cur+1; valSpan.textContent=cur+1;
+  };
+  setsWrap.appendChild(sm); setsWrap.appendChild(valWrap); setsWrap.appendChild(sp);
+
+  /* delete */
+  const del=document.createElement("button"); del.className="wo-cex-del"; del.innerHTML="✕";
+  del.onclick=()=>{
+    _customDraft[day].splice(idx,1);
+    rebuildCustomDayCards();
+    const c=document.getElementById("cday_"+day);
+    if(c) c.classList.add("open");
+  };
+
+  row.appendChild(num); row.appendChild(inp); row.appendChild(setsWrap); row.appendChild(del);
+  return row;
+}
+
+function saveCustomPlan(){
+  if(!canEditEverything()) return;
+  const existing=loadWorkouts();
+  const d=defaultWorkouts();
+  weekDays.forEach(day=>{
+    d[day]=(_customDraft[day]||[])
+      .filter(e=>e.name&&e.name.trim())
+      .map(e=>{
+        /* preserve existing maxWeight */
+        const prev=(existing[day]||[]).find(x=>x.name===e.name);
+        return {name:e.name.trim(), sets:e.sets||3, maxWeight:prev?prev.maxWeight:0};
+      });
+  });
+  saveWorkouts(d);
+  /* mark as custom plan */
+  pset("activePlanId","custom");
+  pset("activePlanName","My Custom Plan");
+  pset("activePlanEmoji","✏️");
+  _workMode="";
+  $("woPlanBtnCustom").classList.remove("active");
+  $("woCustomPanel").style.display="none";
+  renderWorkouts();
+  renderActivePlanStrip();
+}
+
 function defaultWorkouts(){ const o={}; weekDays.forEach(d=>o[d]=[]); return o; }
 function loadWorkouts(){
   const raw=pget("workouts");
@@ -3308,7 +4134,14 @@ function renderWorkouts(){
     wrap.appendChild(card);
   });
 }
-function applyWorkButtons(){ $("workResetBtn").classList.toggle("hidden", !canEditEverything()); }
+function applyWorkButtons(){
+  const isAdmin=canEditEverything();
+  $("workResetBtn").classList.toggle("hidden", !isAdmin);
+  /* show plan selector buttons only for admin/owner */
+  const planBar=$("woPlanBar");
+  if(planBar) planBar.style.display = isAdmin ? "" : "none";
+  renderActivePlanStrip();
+}
 function resetWorkouts(){
   if(!canEditEverything()) return;
   if(!confirm("Reset workouts?")) return;

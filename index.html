@@ -3134,27 +3134,30 @@ function renderWeightRows(){
     fileInp.type="file"; fileInp.accept="image/*"; fileInp.multiple=true;
     fileInp.className="wt-file-input"; fileInp.id=`wtFile_${i}`;
     fileInp.addEventListener("change",function(){
-      if(!this.files.length) return;
-      let loaded=0;
-      const total=this.files.length;
-      Array.from(this.files).forEach(file=>{
+      const files=Array.from(this.files);
+      this.value=""; /* reset immediately so same file can be re-selected */
+      if(!files.length) return;
+
+      /* Read files sequentially to avoid race-condition on localStorage array */
+      const results=[];
+      function readNext(idx){
+        if(idx>=files.length){
+          /* All files read — append to existing array in one write */
+          const existing=wGetPhotos(i);
+          wSavePhotos(i, existing.concat(results));
+          renderWeightRows();
+          calcWeightSummary();
+          setTimeout(()=>{
+            const c=document.querySelector(`[data-week="${i}"]`);
+            if(c){ const p=c.querySelector(".wt-gallery-panel"); if(p) p.classList.add("open"); }
+          },60);
+          return;
+        }
         const reader=new FileReader();
-        reader.onload=e=>{
-          wAddPhoto(i, e.target.result);
-          loaded++;
-          if(loaded===total){
-            renderWeightRows();
-            calcWeightSummary();
-            /* auto-open gallery panel */
-            setTimeout(()=>{
-              const c=document.querySelector(`[data-week="${i}"]`);
-              if(c){ const p=c.querySelector(".wt-gallery-panel"); if(p) p.classList.add("open"); }
-            },60);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-      this.value=""; /* reset so same file can be re-selected */
+        reader.onload=e=>{ results.push(e.target.result); readNext(idx+1); };
+        reader.readAsDataURL(files[idx]);
+      }
+      readNext(0);
     });
 
     right.appendChild(trend);

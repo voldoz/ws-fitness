@@ -2196,21 +2196,22 @@ function renderMacrosPage(){
 
   const mealFoods = getMealFoods();
 
-  /* helper: scale grams of food needed for targetG of macro */
-  function scaleW(targetG, food, kcalBudget){
-    const byMacro = Math.max(0, Math.round(targetG / (food.density/100)));
-    const byCal   = Math.max(0, Math.round(kcalBudget / food.kcalPer100 * 100));
-    return Math.min(byMacro, byCal);
+  /* helper: scale grams of food needed for targetG of macro
+   * Weight is always driven by the macro target only.
+   * (calorie-cap removed: real protein foods like beef/salmon have
+   *  mixed macros and a per-slot kcal cap produced wrong low values) */
+  function scaleW(targetG, food){
+    return Math.max(0, Math.round(targetG / (food.density / 100)));
   }
 
   for(let m=1; m<=meals; m++){
     const isDone = checked.map(Number).includes(m);
     const mSlots = mealFoods[m] || {};
 
-    /* kcal budgets */
-    const pKcalBudget = pMeal * 4;
-    const cKcalBudget = cMeal * 4;
-    const fKcalBudget = fMeal * 9;
+    /* kcal budgets (kept for badge display, not used for weight cap) */
+    const pKcalBudget = kcalMeal;
+    const cKcalBudget = kcalMeal;
+    const fKcalBudget = kcalMeal;
 
     /* selected food objects */
     const selFoodP = FOOD_TYPES.p.find(x=>x.key===mSlots.p);
@@ -2219,13 +2220,13 @@ function renderMacrosPage(){
 
     /* scale weights */
     const pScaleM = selFoodP
-      ? scaleW(pMeal, selFoodP, pKcalBudget)
+      ? scaleW(pMeal, selFoodP)
       : Math.max(0, Math.round(pMeal / (getMealDensity(m,"p")/100)));
     const cScaleM = selFoodC
-      ? scaleW(cMeal, selFoodC, cKcalBudget)
+      ? scaleW(cMeal, selFoodC)
       : Math.max(0, Math.round(cMeal / (getMealDensity(m,"c")/100)));
     const fScaleM = selFoodF
-      ? scaleW(fMeal, selFoodF, fKcalBudget)
+      ? scaleW(fMeal, selFoodF)
       : Math.max(0, Math.round(fMeal / (getMealDensity(m,"f")/100)));
 
     /* card */
@@ -2256,11 +2257,11 @@ function renderMacrosPage(){
       `<span class="mac-chip f">⚖ <b>${fScaleM}g</b><span class="scale"> → ${fMeal}g F</span></span>`;
 
     /* accordion builder — wraps trigger+body in one element */
-    function buildAcc(slot, icon, title, targetG, kcalBudget){
+    function buildAcc(slot, icon, title, targetG){
       const accId   = `acc-${m}-${slot}`;
       const selKey  = mSlots[slot];
       const selFood = FOOD_TYPES[slot].find(x=>x.key===selKey);
-      const wSel    = selFood ? scaleW(targetG, selFood, kcalBudget) : null;
+      const wSel    = selFood ? scaleW(targetG, selFood) : null;
       const badge   = selFood ? selFood.label+" · ⚖"+wSel+"g" : "اختر";
 
       const wrap = document.createElement("div");
@@ -2301,7 +2302,7 @@ function renderMacrosPage(){
         row.className = "mac-food-select-row";
         foods.forEach(food=>{
           const isActive = selKey === food.key;
-          const wg = scaleW(targetG, food, kcalBudget);
+          const wg = scaleW(targetG, food);
           const btn = document.createElement("button");
           btn.className = "mac-food-btn slot-"+slot + (isActive ? " active" : "");
           btn.dataset.meal = m;
@@ -2322,9 +2323,9 @@ function renderMacrosPage(){
       return wrap;
     }
 
-    const pAcc = buildAcc("p","🥩","بروتين",    pMeal, pKcalBudget);
-    const cAcc = buildAcc("c","🍚","كارب",      cMeal, cKcalBudget);
-    const fAcc = buildAcc("f","🫒","دهون صحية", fMeal, fKcalBudget);
+    const pAcc = buildAcc("p","🥩","بروتين",    pMeal);
+    const cAcc = buildAcc("c","🍚","كارب",      cMeal);
+    const fAcc = buildAcc("f","🫒","دهون صحية", fMeal);
     card.append(top, chips, pAcc, cAcc, fAcc);
     box.appendChild(card);
   }

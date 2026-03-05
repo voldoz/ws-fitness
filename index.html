@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>WS Fitness</title>
-<!-- APP_VERSION: 2026-03-05-r4 -->
+<!-- APP_VERSION: 2026-03-05-r5 -->
 <style>
   body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff}
   h1{margin:0 0 12px;text-align:center;color:#38bdf8}
@@ -2496,6 +2496,7 @@
     font-size:12px; font-weight:700; color:#94a3b8;
     background:rgba(255,255,255,.05); border-radius:8px;
     padding:4px 8px; display:inline-block;
+    white-space:pre-wrap; word-break:break-word; max-width:100%;
   }
   .supp-del-dose-btn{
     width:26px; height:26px; border-radius:8px; border:none; cursor:pointer;
@@ -2507,8 +2508,11 @@
 
   /* add dose form */
   .supp-add-dose-form{
-    display:flex; gap:7px; align-items:flex-end;
-    margin-top:6px; flex-wrap:wrap;
+    display:flex; flex-direction:column; gap:7px;
+    margin-top:6px;
+  }
+  .supp-dose-top-row{
+    display:flex; gap:7px; align-items:center;
   }
   .supp-input{
     flex:1; min-width:60px; padding:8px 10px;
@@ -2518,6 +2522,11 @@
     transition:border-color .18s;
   }
   .supp-input:focus{ border-color:rgba(232,121,249,.4); }
+  .supp-note-area{
+    width:100%; box-sizing:border-box;
+    resize:vertical; min-height:72px;
+    line-height:1.5; font-family:inherit;
+  }
   .supp-select{
     padding:8px 10px;
     background:rgba(6,12,24,.7); color:#e2e8f0;
@@ -8417,18 +8426,18 @@ function _cpRenderSuppList(subId){
         <!-- Add dose form -->
         <div style="font-size:10px;font-weight:800;color:#3d5068;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Add Dose</div>
         <div class="supp-add-dose-form">
-          <input  id="suppQty_${s.id}"
-                  class="supp-input"
-                  type="number" min="1" max="10" placeholder="1–10"
-                  style="max-width:72px"
-                  onkeydown="if(event.key==='Enter')_cpAddDose('${subId}','${s.id}')">
-          <input  id="suppTiming_${s.id}"
-                  class="supp-input"
-                  type="text" placeholder="Note (optional)…"
-                  maxlength="80"
-                  style="flex:1"
-                  onkeydown="if(event.key==='Enter')_cpAddDose('${subId}','${s.id}')">
-          <button class="supp-save-dose-btn" onclick="_cpAddDose('${subId}','${s.id}')">+ Add</button>
+          <div class="supp-dose-top-row">
+            <input  id="suppQty_${s.id}"
+                    class="supp-input"
+                    type="number" min="1" max="10" placeholder="1–10"
+                    style="max-width:72px;flex-shrink:0">
+            <button class="supp-save-dose-btn" onclick="_cpAddDose('${subId}','${s.id}')">+ Add</button>
+          </div>
+          <textarea id="suppTiming_${s.id}"
+                    class="supp-input supp-note-area"
+                    placeholder="Note (optional)…"
+                    maxlength="300"
+                    rows="3"></textarea>
         </div>
 
         <!-- Rename / Delete -->
@@ -8726,7 +8735,7 @@ function _stopChatPoll(){
 
 /* ── Auto-update: detect new version on GitHub Pages and reload ── */
 (function(){
-  const CURRENT_VERSION="2026-03-05-r4";
+  const CURRENT_VERSION="2026-03-05-r5";
   const VERSION_RE=/APP_VERSION:\s*([\w\-]+)/;
 
   function checkForUpdate(){

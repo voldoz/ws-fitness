@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>WS Fitness</title>
-<!-- APP_VERSION: 2026-03-05-r8 -->
+<!-- APP_VERSION: 2026-03-05-r9 -->
 <style>
   body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff}
   h1{margin:0 0 12px;text-align:center;color:#38bdf8}
@@ -38,6 +38,7 @@
   button.red{background:#ef4444 !important}
   .page{display:none}
   .page.active{display:block}
+  #pLogin.active{display:flex}
   .hidden{display:none!important}
   .results{background:#0b1220;border-radius:14px;padding:12px;margin-top:10px}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
@@ -45,6 +46,231 @@
   .seg{display:flex;gap:10px;margin:10px 0 14px}
   .seg button{flex:1;border:0;border-radius:12px;padding:12px;font-weight:900;cursor:pointer;background:#0b1220;color:#fff}
   .seg button.active{background:linear-gradient(90deg,#0ea5e9,#2563eb)}
+
+  /* ══════════════════════════════════════════
+     LOGIN PAGE — Premium Design
+  ══════════════════════════════════════════ */
+  @keyframes ln-float{
+    0%,100%{transform:translateY(0) rotate(-2deg);}
+    50%{transform:translateY(-8px) rotate(2deg);}
+  }
+  @keyframes ln-glow{
+    0%,100%{opacity:.5;transform:scale(1);}
+    50%{opacity:.85;transform:scale(1.12);}
+  }
+  @keyframes ln-rise{
+    from{opacity:0;transform:translateY(22px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  @keyframes ln-tab-pop{
+    0%{transform:scale(.92);}60%{transform:scale(1.04);}100%{transform:scale(1);}
+  }
+
+  #pLogin{
+    min-height:100vh;
+    display:none;
+    flex-direction:column;
+    padding:0;
+    background:linear-gradient(160deg,#060d1a 0%,#0a1628 50%,#0d1f3c 100%);
+    position:relative; overflow:hidden;
+  }
+  #pLogin.active{ display:flex; }
+
+  /* Ambient orbs */
+  .ln-orb{
+    position:absolute; border-radius:50%; pointer-events:none;
+  }
+  .ln-orb-1{
+    width:320px; height:320px;
+    top:-80px; right:-80px;
+    background:radial-gradient(circle,rgba(14,165,233,.13) 0%,transparent 70%);
+    animation:ln-glow 6s ease-in-out infinite;
+  }
+  .ln-orb-2{
+    width:240px; height:240px;
+    bottom:-60px; left:-60px;
+    background:radial-gradient(circle,rgba(99,102,241,.1) 0%,transparent 70%);
+    animation:ln-glow 8s ease-in-out infinite reverse;
+  }
+  .ln-orb-3{
+    width:160px; height:160px;
+    top:40%; left:50%; transform:translate(-50%,-50%);
+    background:radial-gradient(circle,rgba(245,158,11,.05) 0%,transparent 70%);
+    animation:ln-glow 5s ease-in-out infinite 1s;
+  }
+
+  /* Hero */
+  .ln-hero{
+    display:flex; flex-direction:column; align-items:center;
+    padding:48px 20px 28px;
+    position:relative; z-index:1;
+    animation:ln-rise .5s cubic-bezier(.22,1,.36,1) both;
+  }
+  .ln-logo{
+    width:72px; height:72px; border-radius:24px;
+    background:linear-gradient(145deg,#0ea5e9,#2563eb);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 32px rgba(14,165,233,.4), 0 0 0 1px rgba(14,165,233,.2);
+    margin-bottom:18px;
+    animation:ln-float 4s ease-in-out infinite;
+  }
+  .ln-app-name{
+    font-size:26px; font-weight:900; letter-spacing:-.5px;
+    background:linear-gradient(135deg,#f1f5f9,#94a3b8);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text; margin-bottom:6px;
+  }
+  .ln-app-tagline{
+    font-size:13px; font-weight:600; color:#475569;
+    letter-spacing:.02em;
+  }
+
+  /* Card wrapper */
+  .ln-card{
+    flex:1; margin:0 16px 32px;
+    background:linear-gradient(165deg,rgba(9,22,42,.92),rgba(13,30,56,.92));
+    border:1.5px solid rgba(255,255,255,.08);
+    border-radius:28px; padding:24px 20px 28px;
+    backdrop-filter:blur(20px);
+    position:relative; z-index:1; overflow:hidden;
+    animation:ln-rise .5s cubic-bezier(.22,1,.36,1) .08s both;
+  }
+  .ln-card::before{
+    content:''; position:absolute; inset:0; border-radius:28px;
+    background:linear-gradient(145deg,rgba(255,255,255,.03) 0%,transparent 55%);
+    pointer-events:none;
+  }
+
+  /* Tab switcher */
+  .ln-tabs{
+    display:grid; grid-template-columns:1fr 1fr 1fr 1fr;
+    gap:5px; margin-bottom:22px;
+    background:rgba(6,12,24,.7);
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:16px; padding:5px;
+  }
+  .ln-tab{
+    border:none; border-radius:12px; padding:9px 4px;
+    font-size:10px; font-weight:900; cursor:pointer;
+    color:#475569; background:transparent;
+    transition:all .22s cubic-bezier(.22,1,.36,1);
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    line-height:1.2; white-space:nowrap;
+  }
+  .ln-tab svg{ flex-shrink:0; }
+  .ln-tab.active{
+    background:linear-gradient(135deg,#0ea5e9,#2563eb);
+    color:#fff;
+    box-shadow:0 4px 14px rgba(14,165,233,.4);
+    animation:ln-tab-pop .3s cubic-bezier(.22,1,.36,1);
+  }
+
+  /* Section title inside card */
+  .ln-section-title{
+    display:flex; align-items:center; gap:9px;
+    font-size:16px; font-weight:900; color:#f1f5f9;
+    margin-bottom:6px; letter-spacing:-.2px;
+  }
+  .ln-section-title-icon{
+    width:32px; height:32px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .ln-section-desc{
+    font-size:12px; font-weight:600; color:#475569;
+    margin-bottom:18px; line-height:1.5;
+    padding:10px 12px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:12px;
+  }
+
+  /* Form fields */
+  .ln-field{ margin-bottom:14px; }
+  .ln-label{
+    display:block; font-size:10px; font-weight:900; color:#475569;
+    text-transform:uppercase; letter-spacing:.08em; margin-bottom:7px;
+  }
+  .ln-input{
+    width:100%; box-sizing:border-box;
+    padding:13px 16px;
+    background:rgba(6,12,24,.85); color:#e2e8f0;
+    border:1.5px solid rgba(255,255,255,.09); border-radius:14px;
+    font-size:14px; font-weight:700; outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .ln-input::placeholder{ color:#334155; }
+  .ln-input:focus{
+    border-color:rgba(14,165,233,.5);
+    box-shadow:0 0 0 3px rgba(14,165,233,.1);
+  }
+  .ln-input-wrap{ position:relative; }
+  .ln-input-wrap .ln-input{ padding-right:44px; }
+  .ln-code-status{
+    position:absolute; right:14px; top:50%; transform:translateY(-50%);
+    font-size:12px; font-weight:900;
+  }
+
+  /* Primary button */
+  .ln-btn{
+    width:100%; margin-top:6px; padding:15px;
+    border:none; border-radius:16px;
+    font-size:15px; font-weight:900; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:all .22s cubic-bezier(.22,1,.36,1);
+    position:relative; overflow:hidden;
+  }
+  .ln-btn::after{
+    content:''; position:absolute; inset:0;
+    background:rgba(255,255,255,0); transition:background .2s;
+  }
+  .ln-btn:hover::after{ background:rgba(255,255,255,.07); }
+  .ln-btn:active{ transform:scale(.97); }
+  .ln-btn-login{
+    background:linear-gradient(135deg,#0ea5e9,#2563eb);
+    color:#fff; box-shadow:0 6px 24px rgba(14,165,233,.4);
+  }
+  .ln-btn-login:hover{ box-shadow:0 8px 32px rgba(14,165,233,.55); }
+  .ln-btn-create{
+    background:linear-gradient(135deg,#10b981,#0ea5e9);
+    color:#fff; box-shadow:0 6px 24px rgba(16,185,129,.35);
+  }
+  .ln-btn-sub{
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    color:#fff; box-shadow:0 6px 24px rgba(99,102,241,.35);
+  }
+  .ln-btn-coach{
+    background:linear-gradient(135deg,#f59e0b,#f97316);
+    color:#0f172a; box-shadow:0 6px 24px rgba(245,158,11,.35);
+  }
+
+  /* Error / success message */
+  .ln-msg{
+    font-size:12px; font-weight:800; min-height:18px;
+    margin-top:12px; text-align:center;
+    padding:8px 12px; border-radius:10px;
+  }
+  .ln-msg:empty{ padding:0; }
+  .ln-msg.err{
+    color:#fca5a5;
+    background:rgba(239,68,68,.1);
+    border:1px solid rgba(239,68,68,.2);
+  }
+  .ln-msg.ok{
+    color:#6ee7b7;
+    background:rgba(52,211,153,.1);
+    border:1px solid rgba(52,211,153,.2);
+  }
+
+  /* Code input special style */
+  .ln-code-input{
+    letter-spacing:6px; text-transform:uppercase;
+    font-size:18px; text-align:center; font-weight:900;
+  }
+  .ln-code-hint{
+    font-size:11px; font-weight:600; color:#334155;
+    text-align:center; margin-top:7px;
+  }
 
   /* ===== Daily Burn redesign ===== */
 
@@ -3349,85 +3575,161 @@
 
 <!-- LOGIN -->
 <div class="page active" id="pLogin">
-  <div class="box">
-    <div style="font-weight:900;color:#38bdf8">Login</div>
+
+  <!-- Ambient orbs -->
+  <div class="ln-orb ln-orb-1"></div>
+  <div class="ln-orb ln-orb-2"></div>
+  <div class="ln-orb ln-orb-3"></div>
+
+  <!-- Hero -->
+  <div class="ln-hero">
+    <div class="ln-logo">
+      <svg viewBox="0 0 24 24" fill="none" width="36" height="36">
+        <path d="M6 4v16M18 4v16M3 9h18M3 15h18" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="ln-app-name">WS Fitness</div>
+    <div class="ln-app-tagline">Your personal fitness companion</div>
   </div>
 
-  <div class="seg">
-    <button id="segLogin" class="active" onclick="switchAuth('login')">Login</button>
-    <button id="segCreateIndependent" onclick="switchAuth('independent')">Create Account</button>
-    <button id="segCreateAccount" onclick="switchAuth('account')">Create Subscriber</button>
-    <button id="segCreateCoach" onclick="switchAuth('coach')">Create Coach</button>
-  </div>
+  <!-- Card -->
+  <div class="ln-card">
 
-  <div id="authLogin">
-    <label>Name</label>
-    <input id="loginName" placeholder="name" autocapitalize="none" autocomplete="username"/>
-
-    <label>PIN (6 digits)</label>
-    <input id="loginPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" autocomplete="current-password"/>
-
-    <button class="primary" onclick="login()">Login</button>
-    <div class="small danger" id="loginMsg"></div>
-  </div>
-
-  <div id="authIndependent" class="hidden">
-    <div class="box">
-      <div style="font-weight:900;color:#38bdf8">Create Account</div>
-    </div>
-    <div style="font-size:12px;color:#64748b;margin-bottom:10px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.15);border-radius:10px;padding:10px 12px">
-      Independent account — full control over your own data. No coach required.
-    </div>
-    <label>Name</label>
-    <input id="indName" placeholder="name" autocapitalize="none"/>
-
-    <label>PIN (6 digits)</label>
-    <input id="indPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
-
-    <button class="primary" onclick="createIndependentAccount()">Create Account</button>
-    <div class="small danger" id="indMsg"></div>
-  </div>
-
-  <div id="authAccount" class="hidden">
-    <div class="box">
-      <div style="font-weight:900;color:#38bdf8">Create Subscriber</div>
+    <!-- Tab switcher -->
+    <div class="ln-tabs">
+      <button class="ln-tab active" id="segLogin" onclick="switchAuth('login')">
+        <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Login
+      </button>
+      <button class="ln-tab" id="segCreateIndependent" onclick="switchAuth('independent')">
+        <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Account
+      </button>
+      <button class="ln-tab" id="segCreateAccount" onclick="switchAuth('account')">
+        <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Sub
+      </button>
+      <button class="ln-tab" id="segCreateCoach" onclick="switchAuth('coach')">
+        <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        Coach
+      </button>
     </div>
 
-    <label>Name</label>
-    <input id="accName" placeholder="name" autocapitalize="none"/>
+    <!-- LOGIN -->
+    <div id="authLogin">
+      <div class="ln-section-title">
+        <div class="ln-section-title-icon" style="background:rgba(14,165,233,.15)">
+          <svg viewBox="0 0 24 24" fill="none" width="17" height="17"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        Welcome back
+      </div>
+      <div class="ln-section-desc">Enter your name and 6-digit PIN to sign in.</div>
 
-    <label>PIN (6 digits)</label>
-    <input id="accPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+      <div class="ln-field">
+        <label class="ln-label">Username</label>
+        <input class="ln-input" id="loginName" placeholder="your name…" autocapitalize="none" autocomplete="username"/>
+      </div>
+      <div class="ln-field">
+        <label class="ln-label">PIN (6 digits)</label>
+        <input class="ln-input" id="loginPin" type="password" inputmode="numeric" maxlength="6" placeholder="• • • • • •" autocomplete="current-password"/>
+      </div>
 
-    <label>Coach Invite Code</label>
-    <div style="position:relative">
-      <input id="accCode" placeholder="6-character code from your coach" autocapitalize="none" autocomplete="off"
-             style="letter-spacing:3px;text-transform:uppercase" maxlength="6"
-             oninput="this.value=this.value.toUpperCase()"/>
-      <div id="accCodeStatus" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:800"></div>
+      <button class="ln-btn ln-btn-login" onclick="login()">
+        <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Sign In
+      </button>
+      <div class="ln-msg" id="loginMsg"></div>
     </div>
-    <div style="font-size:11px;color:#64748b;margin-top:-6px;margin-bottom:4px">
-      Ask your coach for an invite code to link your account automatically.
+
+    <!-- CREATE INDEPENDENT ACCOUNT -->
+    <div id="authIndependent" class="hidden">
+      <div class="ln-section-title">
+        <div class="ln-section-title-icon" style="background:rgba(16,185,129,.15)">
+          <svg viewBox="0 0 24 24" fill="none" width="17" height="17"><circle cx="12" cy="8" r="4" stroke="#10b981" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#10b981" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        Create Account
+      </div>
+      <div class="ln-section-desc">Independent account — full control over your own data. No coach required.</div>
+
+      <div class="ln-field">
+        <label class="ln-label">Username</label>
+        <input class="ln-input" id="indName" placeholder="choose a name…" autocapitalize="none"/>
+      </div>
+      <div class="ln-field">
+        <label class="ln-label">PIN (6 digits)</label>
+        <input class="ln-input" id="indPin" type="password" inputmode="numeric" maxlength="6" placeholder="• • • • • •"/>
+      </div>
+
+      <button class="ln-btn ln-btn-create" onclick="createIndependentAccount()">
+        <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 8v6M16 11h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Create Account
+      </button>
+      <div class="ln-msg" id="indMsg"></div>
     </div>
 
-    <button class="primary" onclick="createSubscriberAccount()">Join & Create Account</button>
-    <div class="small danger" id="accMsg"></div>
-  </div>
+    <!-- CREATE SUBSCRIBER -->
+    <div id="authAccount" class="hidden">
+      <div class="ln-section-title">
+        <div class="ln-section-title-icon" style="background:rgba(99,102,241,.15)">
+          <svg viewBox="0 0 24 24" fill="none" width="17" height="17"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#6366f1" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="#6366f1" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="#6366f1" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        Join as Subscriber
+      </div>
+      <div class="ln-section-desc">Get a 6-character invite code from your coach to link your account.</div>
 
-  <div id="authCoach" class="hidden">
-    <div class="box">
-      <div style="font-weight:900;color:#38bdf8">Create Coach</div>
+      <div class="ln-field">
+        <label class="ln-label">Username</label>
+        <input class="ln-input" id="accName" placeholder="choose a name…" autocapitalize="none"/>
+      </div>
+      <div class="ln-field">
+        <label class="ln-label">PIN (6 digits)</label>
+        <input class="ln-input" id="accPin" type="password" inputmode="numeric" maxlength="6" placeholder="• • • • • •"/>
+      </div>
+      <div class="ln-field">
+        <label class="ln-label">Coach Invite Code</label>
+        <div class="ln-input-wrap">
+          <input class="ln-input ln-code-input" id="accCode" placeholder="ABC123"
+                 autocapitalize="none" autocomplete="off" maxlength="6"
+                 oninput="this.value=this.value.toUpperCase()"/>
+          <div class="ln-code-status" id="accCodeStatus"></div>
+        </div>
+        <div class="ln-code-hint">Ask your coach for their invite code</div>
+      </div>
+
+      <button class="ln-btn ln-btn-sub" onclick="createSubscriberAccount()">
+        <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M19 8v6M16 11h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Join & Create Account
+      </button>
+      <div class="ln-msg" id="accMsg"></div>
     </div>
 
-    <label>Name</label>
-    <input id="coachName" placeholder="name" autocapitalize="none"/>
+    <!-- CREATE COACH -->
+    <div id="authCoach" class="hidden">
+      <div class="ln-section-title">
+        <div class="ln-section-title-icon" style="background:rgba(245,158,11,.15)">
+          <svg viewBox="0 0 24 24" fill="none" width="17" height="17"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round"/></svg>
+        </div>
+        Register as Coach
+      </div>
+      <div class="ln-section-desc">Create a coach account to manage subscribers, programs and more.</div>
 
-    <label>PIN (6 digits)</label>
-    <input id="coachPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+      <div class="ln-field">
+        <label class="ln-label">Username</label>
+        <input class="ln-input" id="coachName" placeholder="choose a name…" autocapitalize="none"/>
+      </div>
+      <div class="ln-field">
+        <label class="ln-label">PIN (6 digits)</label>
+        <input class="ln-input" id="coachPin" type="password" inputmode="numeric" maxlength="6" placeholder="• • • • • •"/>
+      </div>
 
-    <button class="primary" onclick="createCoach()">Create Coach</button>
-    <div class="small danger" id="coachMsg"></div>
-  </div>
+      <button class="ln-btn ln-btn-coach" onclick="createCoach()">
+        <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        Create Coach Account
+      </button>
+      <div class="ln-msg" id="coachMsg"></div>
+    </div>
+
+  </div><!-- /ln-card -->
 </div>
 
 <!-- PROFILE -->
@@ -4460,10 +4762,10 @@ function switchAuth(mode){
   $("authAccount").classList.toggle("hidden", mode!=="account");
   $("authCoach").classList.toggle("hidden", mode!=="coach");
 
-  $("loginMsg").textContent="";
-  $("accMsg").textContent="";
-  $("coachMsg").textContent="";
-  if($("indMsg")) $("indMsg").textContent="";
+  _lnMsg("loginMsg","");
+  _lnMsg("accMsg","");
+  _lnMsg("coachMsg","");
+  _lnMsg("indMsg","");
 }
 function hydrateHeader(){
   const a=me();
@@ -4663,12 +4965,18 @@ function renderCoachIconGrid(){
 }
 
 
+function _lnMsg(id, text, type='err'){
+  const el=$(id); if(!el) return;
+  el.textContent=text;
+  el.className='ln-msg'+(text ? ' '+type : '');
+}
+
 function login(){
-  $("loginMsg").textContent="";
+  _lnMsg("loginMsg","");
   const name=($("loginName").value||"").trim().toLowerCase();
   const pin=($("loginPin").value||"").trim();
-  if(!name){ $("loginMsg").textContent="Enter Name."; return; }
-  if(!PIN_RE.test(pin)){ $("loginMsg").textContent="PIN must be 6 digits."; return; }
+  if(!name){ _lnMsg("loginMsg","Enter your name."); return; }
+  if(!PIN_RE.test(pin)){ _lnMsg("loginMsg","PIN must be 6 digits."); return; }
 
   let a = null;
   if(name === "admin"){
@@ -4677,11 +4985,11 @@ function login(){
     a = findAccByName(name);
   }
 
-  if(!a){ $("loginMsg").textContent="Account not found."; return; }
-  if(hashPin(pin) !== String(a.pinHash||"")){ $("loginMsg").textContent="Wrong PIN."; return; }
+  if(!a){ _lnMsg("loginMsg","Account not found."); return; }
+  if(hashPin(pin) !== String(a.pinHash||"")){ _lnMsg("loginMsg","Wrong PIN."); return; }
 
   if(a.role==="subscriber" && isExpiredSubscriber(a)){
-    $("loginMsg").textContent="Subscription expired.";
+    _lnMsg("loginMsg","Subscription expired.");
     return;
   }
 
@@ -4776,14 +5084,14 @@ function validateInviteCode(code){
 }
 
 function createIndependentAccount(){
-  if($("indMsg")) $("indMsg").textContent="";
+  _lnMsg("indMsg","");
   const name=($("indName")?.value||"").trim().toLowerCase();
   const pin=($("indPin")?.value||"").trim();
 
-  if(!NAME_RE.test(name)||name.includes(" ")){ if($("indMsg")) $("indMsg").textContent="Invalid name (3-20 letters/numbers/_)."; return; }
-  if(name==="admin"){ if($("indMsg")) $("indMsg").textContent="Name reserved."; return; }
-  if(findAccByName(name)){ if($("indMsg")) $("indMsg").textContent="Name already used."; return; }
-  if(!PIN_RE.test(pin)){ if($("indMsg")) $("indMsg").textContent="PIN must be 6 digits."; return; }
+  if(!NAME_RE.test(name)||name.includes(" ")){ _lnMsg("indMsg","Invalid name (3-20 letters/numbers/_)."); return; }
+  if(name==="admin"){ _lnMsg("indMsg","Name reserved."); return; }
+  if(findAccByName(name)){ _lnMsg("indMsg","Name already used."); return; }
+  if(!PIN_RE.test(pin)){ _lnMsg("indMsg","PIN must be 6 digits."); return; }
 
   const acc=loadAccounts();
   acc.push({id:uid(), role:"user", name, pinHash:hashPin(pin)});
@@ -4791,7 +5099,7 @@ function createIndependentAccount(){
 
   if($("indName")) $("indName").value="";
   if($("indPin"))  $("indPin").value="";
-  if($("indMsg"))  $("indMsg").innerHTML=`<span class="ok">✅ Account created. Login now.</span>`;
+  _lnMsg("indMsg","✅ Account created! Signing in…","ok");
   setTimeout(()=>switchAuth("login"), 1400);
 }
 
@@ -4800,20 +5108,20 @@ function createUserAccount(){
   createSubscriberAccount();
 }
 function createSubscriberAccount(){
-  $("accMsg").textContent="";
+  _lnMsg("accMsg","");
   const name=($("accName").value||"").trim().toLowerCase();
   const pin=($("accPin").value||"").trim();
   const code=($("accCode")?.value||"").trim().toUpperCase();
 
-  if(!NAME_RE.test(name) || name.includes(" ")){ $("accMsg").textContent="Invalid name (3-20 letters/numbers/_)."; return; }
-  if(name==="admin"){ $("accMsg").textContent="Name reserved."; return; }
-  if(findAccByName(name)){ $("accMsg").textContent="Name already used."; return; }
-  if(!PIN_RE.test(pin)){ $("accMsg").textContent="PIN must be 6 digits."; return; }
-  if(!code){ $("accMsg").textContent="Enter the invite code from your coach."; return; }
-  if(code.length!==6){ $("accMsg").textContent="Code must be 6 characters."; return; }
+  if(!NAME_RE.test(name) || name.includes(" ")){ _lnMsg("accMsg","Invalid name (3-20 letters/numbers/_)."); return; }
+  if(name==="admin"){ _lnMsg("accMsg","Name reserved."); return; }
+  if(findAccByName(name)){ _lnMsg("accMsg","Name already used."); return; }
+  if(!PIN_RE.test(pin)){ _lnMsg("accMsg","PIN must be 6 digits."); return; }
+  if(!code){ _lnMsg("accMsg","Enter the invite code from your coach."); return; }
+  if(code.length!==6){ _lnMsg("accMsg","Code must be 6 characters."); return; }
 
   const validated=validateInviteCode(code);
-  if(!validated){ $("accMsg").textContent="Invalid or expired code."; return; }
+  if(!validated){ _lnMsg("accMsg","Invalid or expired code."); return; }
 
   /* mark code as used */
   const {coachId, codeObj, idx, allCodes}=validated;
@@ -4831,25 +5139,25 @@ function createSubscriberAccount(){
   saveAccounts(acc);
 
   $("accName").value=""; $("accPin").value=""; if($("accCode")) $("accCode").value="";
-  $("accMsg").innerHTML=`<span class="ok">✅ Account created & linked to coach <b>${validated.coach.name}</b>. Login now.</span>`;
+  _lnMsg("accMsg",`✅ Linked to coach ${validated.coach.name}. Signing in…`,"ok");
   switchAuth("login");
 }
 function createCoach(){
-  $("coachMsg").textContent="";
+  _lnMsg("coachMsg","");
   const name=($("coachName").value||"").trim().toLowerCase();
   const pin=($("coachPin").value||"").trim();
 
-  if(!NAME_RE.test(name) || name.includes(" ")){ $("coachMsg").textContent="Invalid name (3-20 letters/numbers/_)."; return; }
-  if(name==="admin"){ $("coachMsg").textContent="Name reserved."; return; }
-  if(findAccByName(name)){ $("coachMsg").textContent="Name already used."; return; }
-  if(!PIN_RE.test(pin)){ $("coachMsg").textContent="PIN must be 6 digits."; return; }
+  if(!NAME_RE.test(name) || name.includes(" ")){ _lnMsg("coachMsg","Invalid name (3-20 letters/numbers/_)."); return; }
+  if(name==="admin"){ _lnMsg("coachMsg","Name reserved."); return; }
+  if(findAccByName(name)){ _lnMsg("coachMsg","Name already used."); return; }
+  if(!PIN_RE.test(pin)){ _lnMsg("coachMsg","PIN must be 6 digits."); return; }
 
   const acc=loadAccounts();
   acc.push({id:uid(), role:"coach", name, pinHash: hashPin(pin)});
   saveAccounts(acc);
 
   $("coachName").value=""; $("coachPin").value="";
-  $("coachMsg").innerHTML=`<span class="ok">✅ Coach created. Login now.</span>`;
+  _lnMsg("coachMsg","✅ Coach account created! Signing in…","ok");
   switchAuth("login");
 }
 
@@ -8651,7 +8959,7 @@ function resetWeight(){
       clearSession();
       localStorage.removeItem("ws_managed_id");
       showLogin();
-      $("loginMsg").textContent="Subscription expired.";
+      _lnMsg("loginMsg","Subscription expired.");
       return;
     }
     setManagedId(a.id);

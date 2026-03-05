@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>WS Fitness</title>
 <style>
   body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff}
@@ -3473,46 +3476,9 @@ function pfRenderSub(){
   $("pfSubStart").textContent=fmtDate(startMs);
   $("pfSubExpire").textContent=fmtDate(expMs);
 }
-function fillManagedSelect(){
-  const sel=$("managedSel"); sel.innerHTML="";
-  const all=loadAccounts().filter(x=>x.role!=="admin");
-  let list=[];
-  if(isAdmin()) list=all;
-  else if(isCoach()){
-    const a=me();
-    list=[a, ...all.filter(x=>x.role==="subscriber" && x.coachId===a.id)];
-  }
-  list.forEach(x=>{
-    const opt=document.createElement("option");
-    opt.value=x.id;
-    opt.textContent=`${x.name} (${x.role})`;
-    sel.appendChild(opt);
-  });
-  if(getManagedId()) sel.value=getManagedId();
-  else if(list[0]) { setManagedId(list[0].id); sel.value=list[0].id; }
-}
-function setManaged(){
-  const id=$("managedSel").value;
-  const target=findAccById(id);
-  const a=me();
-  if(!a || !target) return;
-
-  if(isAdmin()){
-    setManagedId(id);
-    $("managedMsg").textContent=`✅ Managing: ${target.name}`;
-    hydrateHeader();
-    renderSubscriptionInfo();
-    return;
-  }
-  if(isCoach()){
-    if(target.id===a.id || (target.role==="subscriber" && target.coachId===a.id)){
-      setManagedId(id);
-      $("managedMsg").textContent=`✅ Managing: ${target.name}`;
-      hydrateHeader();
-      renderSubscriptionInfo();
-    } else $("managedMsg").textContent="Not allowed.";
-  }
-}
+/* fillManagedSelect / setManaged – card removed, kept as no-op to avoid JS errors */
+function fillManagedSelect(){ /* managed card removed */ }
+function setManaged(){ /* managed card removed */ }
 function renderSubscriptionInfo(){
   const box = $("subInfoBox");
   const target = findAccById(getManagedId());

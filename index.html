@@ -2380,7 +2380,7 @@
 <div class="tabs" id="tabs" style="display:none;">
   <button class="tab active" id="tProfile" onclick="go('profile')">Profile</button>
   <button class="tab hidden" id="tAdmin" onclick="go('admin')">Admin</button>
-  <button class="tab hidden" id="tCoachPanel" onclick="go('coachpanel')">Coach</button>
+  <button class="tab hidden" id="tCoachPanel" onclick="go('coachpanel')">Subscribers</button>
   <button class="tab" id="tCalc" onclick="go('calc')">Calculator</button>
   <button class="tab" id="tWork" onclick="go('work')">Workouts</button>
   <button class="tab" id="tWeek" onclick="go('week')">Daily Burn</button>
@@ -2396,6 +2396,7 @@
 
   <div class="seg">
     <button id="segLogin" class="active" onclick="switchAuth('login')">Login</button>
+    <button id="segCreateIndependent" onclick="switchAuth('independent')">Create Account</button>
     <button id="segCreateAccount" onclick="switchAuth('account')">Create Subscriber</button>
     <button id="segCreateCoach" onclick="switchAuth('coach')">Create Coach</button>
   </div>
@@ -2409,6 +2410,23 @@
 
     <button class="primary" onclick="login()">Login</button>
     <div class="small danger" id="loginMsg"></div>
+  </div>
+
+  <div id="authIndependent" class="hidden">
+    <div class="box">
+      <div style="font-weight:900;color:#38bdf8">Create Account</div>
+    </div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:10px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.15);border-radius:10px;padding:10px 12px">
+      Independent account — full control over your own data. No coach required.
+    </div>
+    <label>Name</label>
+    <input id="indName" placeholder="name" autocapitalize="none"/>
+
+    <label>PIN (6 digits)</label>
+    <input id="indPin" type="password" inputmode="numeric" maxlength="6" placeholder="******" />
+
+    <button class="primary" onclick="createIndependentAccount()">Create Account</button>
+    <div class="small danger" id="indMsg"></div>
   </div>
 
   <div id="authAccount" class="hidden">
@@ -3229,7 +3247,11 @@ function canEditEverything(){
   const managed=findAccById(getManagedId());
   if(!a || !managed) return false;
 
+  /* independent user manages themselves */
   if(a.role==="user") return managed.id===a.id;
+
+  /* subscriber manages their own profile */
+  if(a.role==="subscriber") return managed.id===a.id;
 
   if(a.role==="coach"){
     if(managed.id===a.id) return true;
@@ -3248,16 +3270,19 @@ function canEditMaxWeight(){ return canEditEverything() || canEditMaxWeightOnly(
 /* ========= UI ========= */
 function switchAuth(mode){
   $("segLogin").classList.toggle("active", mode==="login");
+  if($("segCreateIndependent")) $("segCreateIndependent").classList.toggle("active", mode==="independent");
   $("segCreateAccount").classList.toggle("active", mode==="account");
   $("segCreateCoach").classList.toggle("active", mode==="coach");
 
   $("authLogin").classList.toggle("hidden", mode!=="login");
+  if($("authIndependent")) $("authIndependent").classList.toggle("hidden", mode!=="independent");
   $("authAccount").classList.toggle("hidden", mode!=="account");
   $("authCoach").classList.toggle("hidden", mode!=="coach");
 
   $("loginMsg").textContent="";
   $("accMsg").textContent="";
   $("coachMsg").textContent="";
+  if($("indMsg")) $("indMsg").textContent="";
 }
 function hydrateHeader(){
   const a=me();
@@ -3414,6 +3439,26 @@ function validateInviteCode(code){
     if(idx>=0) return {coach, codeObj:arr[idx], idx, allCodes:arr, coachId:coach.id};
   }
   return null;
+}
+
+function createIndependentAccount(){
+  if($("indMsg")) $("indMsg").textContent="";
+  const name=($("indName")?.value||"").trim().toLowerCase();
+  const pin=($("indPin")?.value||"").trim();
+
+  if(!NAME_RE.test(name)||name.includes(" ")){ if($("indMsg")) $("indMsg").textContent="Invalid name (3-20 letters/numbers/_)."; return; }
+  if(name==="admin"){ if($("indMsg")) $("indMsg").textContent="Name reserved."; return; }
+  if(findAccByName(name)){ if($("indMsg")) $("indMsg").textContent="Name already used."; return; }
+  if(!PIN_RE.test(pin)){ if($("indMsg")) $("indMsg").textContent="PIN must be 6 digits."; return; }
+
+  const acc=loadAccounts();
+  acc.push({id:uid(), role:"user", name, pinHash:hashPin(pin)});
+  saveAccounts(acc);
+
+  if($("indName")) $("indName").value="";
+  if($("indPin"))  $("indPin").value="";
+  if($("indMsg"))  $("indMsg").innerHTML=`<span class="ok">✅ Account created. Login now.</span>`;
+  setTimeout(()=>switchAuth("login"), 1400);
 }
 
 function createUserAccount(){

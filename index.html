@@ -2272,15 +2272,29 @@
     from{ opacity:0; transform:scale(.88) translateY(6px); }
     to{   opacity:1; transform:scale(1) translateY(0); }
   }
+  /* coach message = blue, subscriber message = green */
+  .cp-chat-bubble.coach-msg{
+    background:linear-gradient(135deg,#0e3a5c,#1a4a72);
+    border:1px solid rgba(56,189,248,.25);
+    border-bottom-right-radius:5px;
+    align-self:flex-end; color:#e2e8f0;
+  }
+  .cp-chat-bubble.sub-msg{
+    background:linear-gradient(135deg,#0b3320,#0f4228);
+    border:1px solid rgba(74,222,128,.2);
+    border-bottom-left-radius:5px;
+    align-self:flex-start; color:#cbd5e1;
+  }
+  /* fallback for mine/theirs (subscriber profile chat) */
   .cp-chat-bubble.mine{
-    background:linear-gradient(135deg,#1e4a6e,#1a3a5c);
-    border:1px solid rgba(56,189,248,.2);
+    background:linear-gradient(135deg,#0b3320,#0f4228);
+    border:1px solid rgba(74,222,128,.2);
     border-bottom-right-radius:5px;
     align-self:flex-end; color:#e2e8f0;
   }
   .cp-chat-bubble.theirs{
-    background:linear-gradient(135deg,#0f1f35,#142236);
-    border:1px solid rgba(255,255,255,.08);
+    background:linear-gradient(135deg,#0e3a5c,#1a4a72);
+    border:1px solid rgba(56,189,248,.25);
     border-bottom-left-radius:5px;
     align-self:flex-start; color:#cbd5e1;
   }
@@ -4080,14 +4094,11 @@ function pfBuildSubNotes(notesBody, sub, coachId){
         <span class="cp-week-chevron">›</span>
       </div>
       <div class="cp-week-body">
-        ${note.coachNote?`
-          <div style="font-size:10px;font-weight:800;color:#38bdf8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">📋 Coach Notes</div>
-          <div style="background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.15);border-radius:10px;padding:10px 12px;font-size:13px;color:#cbd5e1;line-height:1.6;margin-bottom:12px">${_escHtml(note.coachNote)}</div>`
-        :''}
-        <div style="font-size:10px;font-weight:800;color:#4ade80;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">✏️ Your Notes</div>
-        <textarea class="cp-note-textarea" id="pfSubNote_${w}" placeholder="Write your feedback for this week…">${note.subNote||""}</textarea>
-        <button class="cp-note-save-btn" onclick="pfSaveSubNote(${w},'${coachId}','${sub.id}')">💾 Save</button>
-        <div class="cp-note-saved-msg" id="pfNoteSaved_${w}"></div>
+        ${note.coachNote
+          ? `<div style="font-size:10px;font-weight:800;color:#38bdf8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">📋 Coach Notes</div>
+             <div style="background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.18);border-radius:12px;padding:12px 14px;font-size:13px;color:#cbd5e1;line-height:1.7">${_escHtml(note.coachNote)}</div>`
+          : `<div style="text-align:center;padding:20px;opacity:.35;font-size:12px;font-weight:700">No notes from coach yet</div>`
+        }
       </div>`;
     notesBody.appendChild(card);
     if(w===showWeeks) card.classList.add("open");
@@ -4122,8 +4133,13 @@ function _pfRenderChatMsgs(){
       wrap.appendChild(sep);
     }
     const mine=m.sender===myId;
+    const senderAcc=findAccById(m.sender);
+    const senderRole=senderAcc?senderAcc.role:"";
+    const isCoachMsg=(senderRole==="coach"||senderRole==="admin");
+    const bubbleCls=isCoachMsg?"coach-msg":"sub-msg";
     const b=document.createElement("div");
-    b.className="cp-chat-bubble "+(mine?"mine":"theirs");
+    b.className="cp-chat-bubble "+bubbleCls+(mine?" is-mine":"");
+    b.style.alignSelf=mine?"flex-end":"flex-start";
     b.innerHTML=`${!mine?`<div class="cp-chat-sender">${_escHtml(m.senderName)}</div>`:""}
       <div>${_escHtml(m.text)}</div>
       <div class="cp-chat-time">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>`;
@@ -4676,6 +4692,8 @@ function cpDrawerOverview(){
     {tab:"calc",  icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><rect x="4" y="2" width="16" height="20" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, label:"Calc", color:"#a78bfa"},
     {tab:"week",  icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, label:"Weekly", color:"#fb923c"},
     {tab:"macros",icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, label:"Macros", color:"#f472b6"},
+    {tab:"notes", icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, label:"Notes", color:"#fbbf24"},
+    {tab:"chat",  icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="14" x2="12" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`, label:"Chat", color:"#4ade80"},
     {tab:"manage",icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, label:"Manage", color:"#94a3b8"},
   ].map(b=>`<button onclick="cpDrawerTab('${b.tab}')" style="background:linear-gradient(145deg,#09162a,#0d1e34);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;padding:14px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .22s;-webkit-tap-highlight-color:transparent;color:${b.color}" onmouseover="this.style.transform='translateY(-2px) scale(1.04)';this.style.borderColor='${b.color}40'" onmouseout="this.style.transform='';this.style.borderColor='rgba(255,255,255,.07)'">`
     +`<span style="width:40px;height:40px;border-radius:12px;background:${b.color}18;display:flex;align-items:center;justify-content:center;border:1px solid ${b.color}30">${b.icon}</span>`
@@ -4695,7 +4713,7 @@ function cpDrawerOverview(){
     </div>
 
     <!-- Quick actions grid -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 12px 4px">${quickBtns}</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 12px 4px">${quickBtns}</div>
 
     <!-- Stats row -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px 12px 4px">
@@ -7621,12 +7639,8 @@ function _cpBuildNotesUI(body, sub, coachId){
           <span>Week of ${weekStart}</span>
           <span id="noteUpd_${w}">${updLabel}</span>
         </div>
-        <div style="font-size:10px;font-weight:800;color:#38bdf8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Coach Notes</div>
-        <textarea class="cp-note-textarea" id="coachNote_${w}" placeholder="Add coach notes for this week..."
-          ${!isCoachUser?"readonly style='opacity:.6'":""}
-        >${note.coachNote||""}</textarea>
-        <div style="font-size:10px;font-weight:800;color:#4ade80;text-transform:uppercase;letter-spacing:.08em;margin:10px 0 4px">Subscriber Notes</div>
-        <textarea class="cp-note-textarea" id="subNote_${w}" placeholder="Subscriber feedback / notes...">${note.subNote||""}</textarea>
+        <div style="font-size:10px;font-weight:800;color:#38bdf8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">📋 Coach Notes</div>
+        <textarea class="cp-note-textarea" id="coachNote_${w}" placeholder="Add notes for this subscriber…">${note.coachNote||""}</textarea>
         <button class="cp-note-save-btn" onclick="cpSaveNote(${w},'${coachId}','${sub.id}')">💾 Save Notes</button>
         <div class="cp-note-saved-msg" id="noteSaved_${w}"></div>
       </div>`;
@@ -7653,8 +7667,9 @@ function cpToggleNoteCard(w){
 
 function cpSaveNote(w, coachId, subId){
   const cn=$(`coachNote_${w}`)?.value||"";
-  const sn=$(`subNote_${w}`)?.value||"";
-  _saveNote(coachId, subId, w, {coachNote:cn, subNote:sn, updatedAt:Date.now()});
+  /* preserve existing subNote, only update coachNote */
+  const existing=_loadNote(coachId,subId,w)||{coachNote:"",subNote:"",updatedAt:0};
+  _saveNote(coachId, subId, w, {coachNote:cn, subNote:existing.subNote, updatedAt:Date.now()});
   /* update preview */
   const preview=document.querySelector(`#noteCard_${w} .cp-week-preview`);
   if(preview) preview.textContent=(cn||sn).slice(0,50)||"Tap to add notes...";
@@ -7743,8 +7758,14 @@ function _renderChatMsgs(){
       wrap.appendChild(sep);
     }
     const mine=m.sender===myId;
+    /* determine role of sender for color */
+    const senderAcc=findAccById(m.sender);
+    const senderRole=senderAcc?senderAcc.role:"";
+    const isCoachMsg=(senderRole==="coach"||senderRole==="admin");
+    const bubbleCls=isCoachMsg?"coach-msg":"sub-msg";
     const bubble=document.createElement("div");
-    bubble.className="cp-chat-bubble "+(mine?"mine":"theirs");
+    bubble.className="cp-chat-bubble "+bubbleCls+(mine?" is-mine":"");
+    bubble.style.alignSelf=mine?"flex-end":"flex-start";
     bubble.innerHTML=`${!mine?`<div class="cp-chat-sender">${_escHtml(m.senderName)}</div>`:""}
       <div>${_escHtml(m.text)}</div>
       <div class="cp-chat-time">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>`;

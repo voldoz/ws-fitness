@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>WS Fitness</title>
-<!-- APP_VERSION: 2026-03-05-r5 -->
+<!-- APP_VERSION: 2026-03-05-r6 -->
 <style>
   body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff}
   h1{margin:0 0 12px;text-align:center;color:#38bdf8}
@@ -4409,19 +4409,19 @@ function pfRenderSubIconGrid(){
     {
       action:()=>subIconGo("notes"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
-      label:"Notes", color:"#fbbf24", badgeKey:"notes"
+      label:"Notes", color:"#fbbf24", badgeKey:"notes", subOnly:true
     },
     {
       action:()=>subIconGo("chat"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="14" x2="12" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
-      label:"Chat", color:"#4ade80", badgeKey:"chat"
+      label:"Chat", color:"#4ade80", badgeKey:"chat", subOnly:true
     },
     {
       action:()=>subIconGo("supp"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M9 3h6l1 4H8L9 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="4" y="7" width="16" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M9 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
       label:"Supplements", color:"#e879f9"
     },
-  ];
+  ].filter(item => !(item.subOnly && a.role==="user"));
 
   /* get unread counts for Notes and Chat */
   const sub2=findAccById(getManagedId());
@@ -8735,7 +8735,7 @@ function _stopChatPoll(){
 
 /* ── Auto-update: detect new version on GitHub Pages and reload ── */
 (function(){
-  const CURRENT_VERSION="2026-03-05-r5";
+  const CURRENT_VERSION="2026-03-05-r6";
   const VERSION_RE=/APP_VERSION:\s*([\w\-]+)/;
 
   function checkForUpdate(){

@@ -9516,35 +9516,6 @@ function _stopChatPoll(){
   if(_chatPollTimer){ clearInterval(_chatPollTimer); _chatPollTimer=null; }
 }
 
-/* ── Auto-update: detect new version on GitHub Pages and reload ── */
-(function(){
-  const CURRENT_VERSION="2026-03-05-r6";
-  const VERSION_RE=/APP_VERSION:\s*([\w\-]+)/;
-
-  function checkForUpdate(){
-    /* fetch index.html with cache-busting query param */
-    fetch(location.href.split("?")[0]+"?_cb="+Date.now(),{cache:"no-store"})
-      .then(r=>r.text())
-      .then(html=>{
-        const m=html.match(VERSION_RE);
-        if(!m) return;
-        const latest=m[1];
-        if(latest!==CURRENT_VERSION){
-          /* Show a subtle toast then reload */
-          const toast=document.createElement("div");
-          toast.style.cssText="position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#0f172a;border:1.5px solid #38bdf8;color:#e2e8f0;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:99999;text-align:center;box-shadow:0 4px 24px #0008";
-          toast.innerHTML='🔄 تحديث جديد متاح... يتم التحديث';
-          document.body.appendChild(toast);
-          setTimeout(()=>{ location.reload(true); }, 1500);
-        }
-      })
-      .catch(()=>{});
-  }
-
-  /* Check once after 3s (page already loaded), then every 5 minutes */
-  setTimeout(checkForUpdate, 3000);
-  setInterval(checkForUpdate, 5*60*1000);
-})();
 
 </script>
 </body>

@@ -333,6 +333,24 @@
   .pf-icon-btn-lbl{
     font-size:10px; font-weight:800; color:#94a3b8; letter-spacing:.02em;
   }
+  /* ── Unread notification badge (iOS-style) ── */
+  .pf-icon-btn{ position:relative; }
+  .pf-unread-badge{
+    position:absolute; top:2px; right:2px;
+    min-width:18px; height:18px;
+    background:#ef4444; color:#fff;
+    border-radius:999px; border:2px solid #060c19;
+    font-size:10px; font-weight:900; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    padding:0 4px; pointer-events:none;
+    box-shadow:0 2px 6px rgba(239,68,68,.5);
+    z-index:10;
+    animation:badge-pop .25s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes badge-pop{
+    from{ transform:scale(0); opacity:0; }
+    to{ transform:scale(1); opacity:1; }
+  }
   .pf-card:nth-child(2){ animation-delay:.05s; }
   .pf-card:nth-child(3){ animation-delay:.1s; }
   .pf-card:nth-child(4){ animation-delay:.15s; }
@@ -4055,6 +4073,53 @@ function renderProfile(){
   if($("pfNewPin")) $("pfNewPin").value='';
 }
 
+
+/* ═══════════════════════════════════════════════════════════
+   UNREAD BADGE HELPERS
+   ════════════════════════════════════════════════════════════ */
+function _chatSeenKey(coachId,subId){ return `ws_chat_seen_${coachId}_${subId}`; }
+function _notesSeenKey(coachId,subId){ return `ws_notes_seen_${coachId}_${subId}`; }
+
+/* Returns number of unread chat messages from coach/admin for subscriber */
+function _getUnreadChatCount(coachId, subId){
+  const msgs=_loadMsgs(coachId,subId);
+  const seenTs=parseInt(localStorage.getItem(_chatSeenKey(coachId,subId))||"0",10);
+  /* count msgs from coach that arrived after last seen timestamp */
+  return msgs.filter(m=>
+    (m.role==="coach"||m.role==="admin") && (m.ts||0)>seenTs
+  ).length;
+}
+
+/* Returns number of weeks that have new coach notes subscriber hasn't read */
+function _getUnreadNotesCount(coachId, subId, totalWeeks){
+  const seenTs=parseInt(localStorage.getItem(_notesSeenKey(coachId,subId))||"0",10);
+  let count=0;
+  for(let w=1;w<=totalWeeks;w++){
+    const note=_loadNote(coachId,subId,w);
+    if(note && note.coachNote && note.coachNote.trim() && (note.updatedAt||0)>seenTs){
+      count++;
+    }
+  }
+  return count;
+}
+
+/* Mark chat as read (called when subscriber opens chat) */
+function _markChatRead(coachId, subId){
+  localStorage.setItem(_chatSeenKey(coachId,subId), String(Date.now()));
+}
+
+/* Mark notes as read (called when subscriber opens notes) */
+function _markNotesRead(coachId, subId){
+  localStorage.setItem(_notesSeenKey(coachId,subId), String(Date.now()));
+}
+
+/* Calculate total weeks for a subscriber (same as cpDrawerNotes logic) */
+function _subTotalWeeks(sub){
+  const startMs=Number(sub.subStartAt||Date.now());
+  const autoWeeks=Math.max(1,Math.ceil((Date.now()-startMs)/(7*24*3600*1000))+1);
+  const extra=_cpGetExtraWeeks(sub.id);
+  return Math.min(autoWeeks+extra,104);
+}
 function pfRenderSubIconGrid(){
   const grid=$("pfSubIconGrid");
   if(!grid) return;
@@ -4097,20 +4162,39 @@ function pfRenderSubIconGrid(){
     {
       action:()=>subIconGo("notes"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
-      label:"Notes", color:"#fbbf24"
+      label:"Notes", color:"#fbbf24", badgeKey:"notes"
     },
     {
       action:()=>subIconGo("chat"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="14" x2="12" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
-      label:"Chat", color:"#4ade80"
+      label:"Chat", color:"#4ade80", badgeKey:"chat"
     },
   ];
+
+  /* get unread counts for Notes and Chat */
+  const sub2=findAccById(getManagedId());
+  const coachId2=sub2&&sub2.coachId ? sub2.coachId : null;
+  let unreadChat=0, unreadNotes=0;
+  if(coachId2 && sub2){
+    unreadChat=_getUnreadChatCount(coachId2, sub2.id);
+    const totalW=_subTotalWeeks(sub2);
+    unreadNotes=_getUnreadNotesCount(coachId2, sub2.id, totalW);
+  }
 
   inner.innerHTML="";
   items.forEach(item=>{
     const btn=document.createElement("button");
     btn.className="pf-icon-btn";
+    /* badge count for notes/chat */
+    let badgeHtml="";
+    if(item.badgeKey==="notes" && unreadNotes>0){
+      badgeHtml=`<span class="pf-unread-badge">${unreadNotes>9?"9+":unreadNotes}</span>`;
+    }
+    if(item.badgeKey==="chat" && unreadChat>0){
+      badgeHtml=`<span class="pf-unread-badge">${unreadChat>9?"9+":unreadChat}</span>`;
+    }
     btn.innerHTML=`
+      ${badgeHtml}
       <span class="pf-icon-btn-icon" style="background:${item.color}18;border-color:${item.color}30;color:${item.color}">${item.icon}</span>
       <span class="pf-icon-btn-lbl">${item.label}</span>`;
     btn.addEventListener("click", item.action);
@@ -4123,6 +4207,9 @@ function pfOpenNotesPage(){
   const a=me(); if(!a) return;
   const sub=findAccById(getManagedId()); if(!sub||!sub.coachId) return;
   const coachId=sub.coachId;
+
+  /* mark notes as read → clear badge */
+  _markNotesRead(coachId, sub.id);
 
   const old=$("pfNotesOverlay"); if(old) old.remove();
   const overlay=document.createElement("div");
@@ -4155,6 +4242,8 @@ function pfOpenNotesPage(){
 }
 function pfCloseNotesPage(){
   const overlay=$("pfNotesOverlay"); if(!overlay) return;
+  /* refresh icon grid badges after closing */
+  setTimeout(()=>pfRenderSubIconGrid(), 50);
   overlay.classList.remove("open");
   overlay.addEventListener("transitionend",()=>overlay.remove(),{once:true});
   /* reset back bar */
@@ -4166,6 +4255,8 @@ const snP=$("snProfile"); if(snP) snP.classList.add("active");
 function pfOpenChatFromProfile(){
   const a=me(); if(!a) return;
   const sub=findAccById(getManagedId()); if(!sub||!sub.coachId) return;
+  /* mark chat as read → clear badge */
+  _markChatRead(sub.coachId, sub.id);
   pfOpenChatPage(sub.coachId, sub.id);
 }
 
@@ -4447,6 +4538,8 @@ function pfOpenChatPage(coachId, subId){
 
 function pfCloseChatPage(){
   const overlay=$("pfChatOverlay"); if(!overlay) return;
+  /* refresh icon grid badges after closing */
+  setTimeout(()=>pfRenderSubIconGrid(), 50);
   overlay.classList.remove("open");
   overlay.addEventListener("transitionend",()=>overlay.remove(),{once:true});
   if(_pfChatPoll){ clearInterval(_pfChatPoll); _pfChatPoll=null; }
@@ -5429,8 +5522,13 @@ function setGoal(val){
   if(wf) wf.style.display = (val === "maintain") ? "none" : "flex";
 }
 function renderCalcMode(){
-  if(isSub()){
+  const sub=isSub();
+  /* Subscriber: hide all inputs, calc button, macro sliders */
+  if(sub){
     $("calcInputsWrap").classList.add("hidden");
+    /* also hide the macro-edit section if rendered */
+    const cmeSection=document.querySelector(".calc-macro-section");
+    if(cmeSection) cmeSection.style.display="none";
   } else {
     $("calcInputsWrap").classList.remove("hidden");
     const fields=["weight","height","age","gender","activityDays","proteinFactor","meals","weeklyGoal"];
@@ -5557,7 +5655,7 @@ function renderCalcResults(){
   if(goalVal==="bulk"&&totalDef) metaHtml+=`<span class="calc-meta-pill bulk">Surplus: +${totalDef} kcal</span>`;
 
   const isManual = !!r._manualMacros;
-  const canEdit  = canEditEverything();
+  const canEdit  = canEditEverything() && !isSub(); /* subscriber: always read-only */
 
   box.innerHTML = `
     <div class="calc-results-card">

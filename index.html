@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>WS Fitness</title>
-<!-- APP_VERSION: 2026-03-05-r3 -->
+<!-- APP_VERSION: 2026-03-05-r4 -->
 <style>
   body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff}
   h1{margin:0 0 12px;text-align:center;color:#38bdf8}
@@ -4548,7 +4548,6 @@ function pfCloseSuppPage(){
 /* Read-only view of supplements for subscribers */
 function _pfRenderSubSuppList(body, subId){
   const supps=_loadSupps(subId);
-  const timingLabels={"صباحاً":"🌅 صباحاً","مساءاً":"🌙 مساءاً","بعد الوجبة":"🍽️ بعد الوجبة"};
 
   if(!supps.length){
     body.innerHTML=`
@@ -4562,7 +4561,7 @@ function _pfRenderSubSuppList(body, subId){
   body.innerHTML="";
   supps.forEach(s=>{
     const summary=s.doses.length
-      ? s.doses.map(d=>`${d.qty}x ${timingLabels[d.timing]||d.timing}`).join(" · ")
+      ? s.doses.map(d=>d.timing ? `${d.qty}x — ${d.timing}` : `${d.qty}x`).join(" · ")
       : "No doses yet";
 
     const card=document.createElement("div");
@@ -4576,10 +4575,10 @@ function _pfRenderSubSuppList(body, subId){
               <div class="supp-dose-label">Quantity</div>
               <div class="supp-dose-val">${d.qty}</div>
             </div>
-            <div>
-              <div class="supp-dose-label">Timing</div>
-              <div class="supp-dose-time">${timingLabels[d.timing]||d.timing}</div>
-            </div>
+            ${d.timing ? `<div>
+              <div class="supp-dose-label">Note</div>
+              <div class="supp-dose-time">${_escHtml(d.timing)}</div>
+            </div>` : ''}
           </div>`).join("")
       : `<div style="opacity:.35;font-size:12px;padding:8px 4px;font-weight:700">No doses added yet</div>`;
 
@@ -8378,9 +8377,8 @@ function _cpRenderSuppList(subId){
 
   list.innerHTML="";
   supps.forEach((s,idx)=>{
-    const timingLabels={"صباحاً":"🌅 صباحاً","مساءاً":"🌙 مساءاً","بعد الوجبة":"🍽️ بعد الوجبة"};
     const summary=s.doses.length
-      ? s.doses.map(d=>`${d.qty}x ${timingLabels[d.timing]||d.timing}`).join(" · ")
+      ? s.doses.map(d=>d.timing ? `${d.qty}x — ${d.timing}` : `${d.qty}x`).join(" · ")
       : "No doses yet";
 
     const card=document.createElement("div");
@@ -8395,8 +8393,8 @@ function _cpRenderSuppList(subId){
               <div class="supp-dose-val">${d.qty}</div>
             </div>
             <div>
-              <div class="supp-dose-label">Timing</div>
-              <div class="supp-dose-time">${timingLabels[d.timing]||d.timing}</div>
+              <div class="supp-dose-label">Note</div>
+              <div class="supp-dose-time">${_escHtml(d.timing||'')}</div>
             </div>
             <button class="supp-del-dose-btn" title="Remove dose"
               onclick="_cpDelDose('${subId}','${s.id}',${di})" >✕</button>
@@ -8422,13 +8420,14 @@ function _cpRenderSuppList(subId){
           <input  id="suppQty_${s.id}"
                   class="supp-input"
                   type="number" min="1" max="10" placeholder="1–10"
-                  style="max-width:80px"
+                  style="max-width:72px"
                   onkeydown="if(event.key==='Enter')_cpAddDose('${subId}','${s.id}')">
-          <select id="suppTiming_${s.id}" class="supp-select">
-            <option value="صباحاً">🌅 صباحاً</option>
-            <option value="مساءاً">🌙 مساءاً</option>
-            <option value="بعد الوجبة">🍽️ بعد الوجبة</option>
-          </select>
+          <input  id="suppTiming_${s.id}"
+                  class="supp-input"
+                  type="text" placeholder="Note (optional)…"
+                  maxlength="80"
+                  style="flex:1"
+                  onkeydown="if(event.key==='Enter')_cpAddDose('${subId}','${s.id}')">
           <button class="supp-save-dose-btn" onclick="_cpAddDose('${subId}','${s.id}')">+ Add</button>
         </div>
 
@@ -8467,10 +8466,10 @@ function _cpAddSupp(subId){
 function _cpAddDose(subId, suppId){
   const qtyEl=$(`suppQty_${suppId}`);
   const timingEl=$(`suppTiming_${suppId}`);
-  if(!qtyEl||!timingEl) return;
+  if(!qtyEl) return;
   const qty=parseInt(qtyEl.value,10);
   if(!qty||qty<1||qty>10){ qtyEl.focus(); return; }
-  const timing=timingEl.value;
+  const timing=timingEl ? timingEl.value.trim() : '';
 
   const supps=_loadSupps(subId);
   const s=supps.find(x=>x.id===suppId); if(!s) return;
@@ -8727,7 +8726,7 @@ function _stopChatPoll(){
 
 /* ── Auto-update: detect new version on GitHub Pages and reload ── */
 (function(){
-  const CURRENT_VERSION="2026-03-05-r3";
+  const CURRENT_VERSION="2026-03-05-r4";
   const VERSION_RE=/APP_VERSION:\s*([\w\-]+)/;
 
   function checkForUpdate(){

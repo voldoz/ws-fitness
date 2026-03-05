@@ -3931,7 +3931,8 @@ const _subPageLabels={
   weight:"Weight Tracker",
   macros:"Macros",
   notes:"Weekly Notes",
-  chat:"Chat with Coach"
+  chat:"Chat with Coach",
+  supp:"Supplements"
 };
 const _subPageIconsSvg={
   calc:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><rect x="4" y="2" width="16" height="20" rx="2" stroke="#a78bfa" stroke-width="2"/><path d="M8 7h8M8 12h4" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/></svg>`,
@@ -3940,13 +3941,15 @@ const _subPageIconsSvg={
   weight:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M3 6h18M3 12h18M3 18h18" stroke="#34d399" stroke-width="2" stroke-linecap="round"/></svg>`,
   macros:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><circle cx="12" cy="12" r="9" stroke="#f472b6" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="#f472b6" stroke-width="2" stroke-linecap="round"/></svg>`,
   notes:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#fbbf24" stroke-width="2"/></svg>`,
-  chat:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  chat:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  supp:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 3h6l1 4H8L9 3z" stroke="#e879f9" stroke-width="2" stroke-linejoin="round"/><rect x="4" y="7" width="16" height="13" rx="2" stroke="#e879f9" stroke-width="2"/><path d="M12 11v6M9 14h6" stroke="#e879f9" stroke-width="2" stroke-linecap="round"/></svg>`
 };
 
 /* Called from subscriber icon grid */
 function subIconGo(which){
   if(which==="notes"){ pfOpenNotesPage(); return; }
   if(which==="chat"){  pfOpenChatFromProfile(); return; }
+  if(which==="supp"){  pfOpenSuppPage(); return; }
   _showSubPageBack(which);
   go(which);
 }
@@ -3962,6 +3965,7 @@ function _showSubPageBack(which){
 function subPageBack(){
   const notesOv=$("pfNotesOverlay"); if(notesOv) pfCloseNotesPage();
   const chatOv=$("pfChatOverlay");   if(chatOv)  pfCloseChatPage();
+  const suppOv=$("pfSuppOverlay");   if(suppOv)  pfCloseSuppPage();
   const bar=$("subPageBackBar"); if(bar) bar.classList.remove("visible");
   go("profile");
 }
@@ -4305,6 +4309,11 @@ function pfRenderSubIconGrid(){
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="14" x2="12" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
       label:"Chat", color:"#4ade80", badgeKey:"chat"
     },
+    {
+      action:()=>subIconGo("supp"),
+      icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M9 3h6l1 4H8L9 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="4" y="7" width="16" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M9 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+      label:"Supplements", color:"#e879f9"
+    },
   ];
 
   /* get unread counts for Notes and Chat */
@@ -4385,6 +4394,107 @@ function pfCloseNotesPage(){
   /* reset back bar */
 const snP=$("snProfile"); if(snP) snP.classList.add("active");
   const bar=$("subPageBackBar"); if(bar) bar.classList.remove("visible");
+}
+
+/* ── Supplements read-only overlay for subscriber ── */
+function pfOpenSuppPage(){
+  const a=me(); if(!a) return;
+  const sub=findAccById(getManagedId()); if(!sub) return;
+  const subId=sub.id;
+
+  const old=$("pfSuppOverlay"); if(old) old.remove();
+  const overlay=document.createElement("div");
+  overlay.id="pfSuppOverlay";
+  overlay.className="pf-chat-overlay"; /* reuse same slide-in style */
+  overlay.innerHTML=`
+    <div class="pf-chat-overlay-bar">
+      <button class="pf-chat-overlay-back" onclick="pfCloseSuppPage()">
+        <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+          <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="pf-chat-overlay-title">
+        <svg viewBox="0 0 24 24" fill="none" width="18" height="18" style="flex-shrink:0">
+          <path d="M9 3h6l1 4H8L9 3z" stroke="#e879f9" stroke-width="2" stroke-linejoin="round"/>
+          <rect x="4" y="7" width="16" height="13" rx="2" stroke="#e879f9" stroke-width="2"/>
+          <path d="M12 11v6M9 14h6" stroke="#e879f9" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Supplements
+      </div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:16px 12px 24px" id="pfSuppOverlayBody"></div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(()=>overlay.classList.add("open"));
+
+  /* build read-only supplements list */
+  _pfRenderSubSuppList($("pfSuppOverlayBody"), subId);
+}
+
+function pfCloseSuppPage(){
+  const overlay=$("pfSuppOverlay"); if(!overlay) return;
+  overlay.classList.remove("open");
+  overlay.addEventListener("transitionend",()=>overlay.remove(),{once:true});
+  const bar=$("subPageBackBar"); if(bar) bar.classList.remove("visible");
+}
+
+/* Read-only view of supplements for subscribers */
+function _pfRenderSubSuppList(body, subId){
+  const supps=_loadSupps(subId);
+  const timingLabels={"صباحاً":"🌅 صباحاً","مساءاً":"🌙 مساءاً","بعد الوجبة":"🍽️ بعد الوجبة"};
+
+  if(!supps.length){
+    body.innerHTML=`
+      <div class="supp-empty">
+        <div class="supp-empty-icon">💊</div>
+        No supplements assigned yet.
+      </div>`;
+    return;
+  }
+
+  body.innerHTML="";
+  supps.forEach(s=>{
+    const summary=s.doses.length
+      ? s.doses.map(d=>`${d.qty}x ${timingLabels[d.timing]||d.timing}`).join(" · ")
+      : "No doses yet";
+
+    const card=document.createElement("div");
+    card.className="supp-card";
+    card.id=`pfSuppCard_${s.id}`;
+
+    const dosesHtml=s.doses.length
+      ? s.doses.map(d=>`
+          <div class="supp-dose-row">
+            <div>
+              <div class="supp-dose-label">Quantity</div>
+              <div class="supp-dose-val">${d.qty}</div>
+            </div>
+            <div>
+              <div class="supp-dose-label">Timing</div>
+              <div class="supp-dose-time">${timingLabels[d.timing]||d.timing}</div>
+            </div>
+          </div>`).join("")
+      : `<div style="opacity:.35;font-size:12px;padding:8px 4px;font-weight:700">No doses added yet</div>`;
+
+    card.innerHTML=`
+      <div class="supp-card-header" onclick="_pfToggleSubSuppCard('${s.id}')">
+        <div class="supp-card-icon">💊</div>
+        <div class="supp-card-info">
+          <div class="supp-card-name">${_escHtml(s.name)}</div>
+          <div class="supp-card-summary">${_escHtml(summary)}</div>
+        </div>
+        <span class="supp-card-chevron">›</span>
+      </div>
+      <div class="supp-card-body">
+        <div class="supp-doses">${dosesHtml}</div>
+      </div>`;
+
+    body.appendChild(card);
+  });
+}
+
+function _pfToggleSubSuppCard(suppId){
+  const card=$(`pfSuppCard_${suppId}`); if(!card) return;
+  card.classList.toggle("open");
 }
 
 /* open Chat from profile icon grid */

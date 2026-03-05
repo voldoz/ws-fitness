@@ -195,37 +195,8 @@
   @keyframes pf-spin{ from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
   /* ── Subscriber top nav bar ── */
-  #subTopNav{
-    display:none; /* shown only for subscribers */
-    position:sticky; top:0; z-index:200;
-    background:rgba(6,12,25,.97);
-    border-bottom:1px solid rgba(255,255,255,.07);
-    padding:0 4px; overflow-x:auto; scrollbar-width:none;
-    flex-shrink:0; gap:0;
-    -webkit-overflow-scrolling:touch;
-    backdrop-filter:blur(14px);
-    flex-direction:row; align-items:stretch;
-  }
-  #subTopNav::-webkit-scrollbar{ display:none; }
-  .sub-nav-btn{
-    padding:11px 14px 10px; border:none; cursor:pointer;
-    background:transparent; color:#3d5068;
-    font-size:11px; font-weight:800;
-    border-bottom:2.5px solid transparent;
-    transition:all .2s; flex-shrink:0;
-    display:flex; align-items:center; gap:5px;
-    letter-spacing:.01em; white-space:nowrap;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .sub-nav-btn svg{ width:14px; height:14px; }
-  .sub-nav-btn.active{
-    color:#38bdf8; border-bottom-color:#38bdf8;
-    background:linear-gradient(180deg,rgba(56,189,248,.07),transparent);
-  }
-  .sub-nav-btn:active{ opacity:.7; }
-
-  /* ── Back bar shown inside pages ── */
-  #subBackBar{
+  /* ── Subscriber page back bar (inside pages) ── */
+  #subPageBackBar{
     display:none;
     align-items:center; gap:10px;
     padding:10px 14px 8px;
@@ -233,8 +204,9 @@
     border-bottom:1px solid rgba(255,255,255,.06);
     position:sticky; top:0; z-index:199;
     backdrop-filter:blur(14px);
+    margin-bottom:4px;
   }
-  #subBackBar.visible{ display:flex; }
+  #subPageBackBar.visible{ display:flex; }
   .sub-back-btn{
     width:34px; height:34px; border-radius:11px; border:none;
     background:rgba(255,255,255,.06); color:#94a3b8;
@@ -242,7 +214,7 @@
     cursor:pointer; flex-shrink:0; transition:background .15s;
   }
   .sub-back-btn:active{ background:rgba(255,255,255,.12); }
-  #subBackTitle{
+  #subPageBackTitle{
     font-size:14px; font-weight:900; color:#e2e8f0;
     display:flex; align-items:center; gap:7px;
   }
@@ -2810,53 +2782,25 @@
   <button class="mini" style="max-width:170px;margin:0" onclick="logout()">Logout</button>
 </div>
 
-<!-- Subscriber Top Navigation Bar -->
-<div id="subTopNav" style="display:none">
-  <button class="sub-nav-btn active" id="snProfile" onclick="subNavGo('profile')">
-    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Profile
-  </button>
-  <button class="sub-nav-btn" id="snCalc" onclick="subNavGo('calc')">
-    <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="2" width="16" height="20" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Calc
-  </button>
-  <button class="sub-nav-btn" id="snWork" onclick="subNavGo('work')">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M6 4v16M18 4v16M3 9h18M3 15h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Workouts
-  </button>
-  <button class="sub-nav-btn" id="snWeek" onclick="subNavGo('week')">
-    <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Daily Burn
-  </button>
-  <button class="sub-nav-btn" id="snWeight" onclick="subNavGo('weight')">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Weight
-  </button>
-  <button class="sub-nav-btn" id="snMacros" onclick="subNavGo('macros')">
-    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Macros
-  </button>
-  <button class="sub-nav-btn" id="snNotes" onclick="subNavGo('notes')">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Notes
-  </button>
-  <button class="sub-nav-btn" id="snChat" onclick="subNavGo('chat')">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="14" x2="12" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Chat
-  </button>
-</div>
-
-<!-- Back bar (shown when subscriber is inside a page) -->
-<div id="subBackBar">
-  <button class="sub-back-btn" onclick="subNavBack()">
+<!-- Subscriber back bar shown when inside a page -->
+<div id="subPageBackBar">
+  <button class="sub-back-btn" onclick="subPageBack()">
     <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
       <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </button>
-  <div id="subBackTitle">—</div>
+  <div id="subPageBackTitle">—</div>
 </div>
 
 <div class="tabs" id="tabs" style="display:none;">
   <button class="tab active" id="tProfile" onclick="go('profile')">Profile</button>
   <button class="tab hidden" id="tAdmin" onclick="go('admin')">Admin</button>
   <button class="tab hidden" id="tCoachPanel" onclick="go('coachpanel')">Subscribers</button>
-  <button class="tab hidden" id="tCalc" onclick="go('calc')">Calculator</button>
-  <button class="tab hidden" id="tWork" onclick="go('work')">Workouts</button>
-  <button class="tab hidden" id="tWeek" onclick="go('week')">Daily Burn</button>
-  <button class="tab hidden" id="tWeight" onclick="go('weight')">Weight</button>
-  <button class="tab hidden" id="tMacros" onclick="go('macros')">Macros</button>
+  <button class="tab" id="tCalc" onclick="go('calc')">Calculator</button>
+  <button class="tab" id="tWork" onclick="go('work')">Workouts</button>
+  <button class="tab" id="tWeek" onclick="go('week')">Daily Burn</button>
+  <button class="tab" id="tWeight" onclick="go('weight')">Weight</button>
+  <button class="tab" id="tMacros" onclick="go('macros')">Macros</button>
 </div>
 
 <!-- LOGIN -->
@@ -3007,6 +2951,16 @@
     </div>
   </div>
 
+
+
+  <!-- Subscriber Icon Grid (shown only for subscribers) -->
+  <div id="pfSubIconGrid" style="display:none">
+    <div class="pf-card-title" style="margin-bottom:14px;padding-bottom:0;border-bottom:none;font-size:11px">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#38bdf8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/></svg>
+      Quick Access
+    </div>
+    <div class="pf-icon-grid" id="pfIconGridInner"></div>
+  </div>
 
   <!-- Notes & Chat cards (visible to subscribers + coaches on their own profile) -->
   <div class="pf-card" id="pfNotesCard" style="display:none">
@@ -3792,14 +3746,17 @@ function showApp(){
   $("pLogin").classList.remove("active");
   const isMember=isSub()||isUser();
   if(isMember){
-    /* Subscriber: show top icon nav, hide old text tabs */
+    /* Subscriber: hide old text tabs, show icon grid on profile */
     $("tabs").style.display="none";
-    $("subTopNav").style.display="flex";
+    const spb=$("subPageBackBar"); if(spb) spb.classList.remove("visible");
   } else {
-    /* Coach/Admin: show old tabs, hide subscriber nav */
+    /* Coach/Admin: show normal tabs */
     $("tabs").style.display="flex";
-    $("subTopNav").style.display="none";
-    $("subBackBar").classList.remove("visible");
+    const spb=$("subPageBackBar"); if(spb) spb.classList.remove("visible");
+    /* Make sure all page tabs visible for coach/admin */
+    ["tCalc","tWork","tWeek","tWeight","tMacros"].forEach(id=>{
+      const el=$(id); if(el){ el.classList.remove("hidden"); el.style.display=""; }
+    });
   }
   $("tAdmin").classList.toggle("hidden", !isAdmin());
   $("tCoachPanel").classList.toggle("hidden", !(isCoach() || isAdmin()));
@@ -3825,9 +3782,8 @@ function go(which){
   hydrateHeader();
 }
 
-/* ── Subscriber nav ── */
-const _subNavLabels={
-  profile:"Profile",
+/* ── Subscriber page navigation ── */
+const _subPageLabels={
   calc:"Calculator",
   work:"Workouts",
   week:"Daily Burn",
@@ -3836,56 +3792,41 @@ const _subNavLabels={
   notes:"Weekly Notes",
   chat:"Chat with Coach"
 };
-const _subNavIcons={
+const _subPageIconsSvg={
   calc:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><rect x="4" y="2" width="16" height="20" rx="2" stroke="#a78bfa" stroke-width="2"/><path d="M8 7h8M8 12h4" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/></svg>`,
   work:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M6 4v16M18 4v16M3 9h18M3 15h18" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/></svg>`,
   week:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#fb923c" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/></svg>`,
   weight:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M3 6h18M3 12h18M3 18h18" stroke="#34d399" stroke-width="2" stroke-linecap="round"/></svg>`,
   macros:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><circle cx="12" cy="12" r="9" stroke="#f472b6" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="#f472b6" stroke-width="2" stroke-linecap="round"/></svg>`,
-  notes:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#fbbf24" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="16" x2="13" y2="16" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/></svg>`,
+  notes:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="#fbbf24" stroke-width="2"/></svg>`,
   chat:`<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
 };
 
-function subNavGo(which){
-  /* update active state on top nav */
-  document.querySelectorAll(".sub-nav-btn").forEach(b=>b.classList.remove("active"));
-  const btnId={profile:"snProfile",calc:"snCalc",work:"snWork",week:"snWeek",weight:"snWeight",macros:"snMacros",notes:"snNotes",chat:"snChat"};
-  const activeBtn=$(btnId[which]); if(activeBtn) activeBtn.classList.add("active");
-
-  if(which==="profile"){
-    /* back to profile — hide back bar */
-    $("subBackBar").classList.remove("visible");
-    go("profile");
-    return;
-  }
-
-  /* Notes and Chat: open full-screen overlays */
-  if(which==="notes"){ pfOpenNotesPage(); _subNavSetBack(which); return; }
-  if(which==="chat"){  pfOpenChatFromProfile(); _subNavSetBack(which); return; }
-
-  /* Regular pages: navigate + show back bar */
-  _subNavSetBack(which);
+/* Called from subscriber icon grid */
+function subIconGo(which){
+  if(which==="notes"){ pfOpenNotesPage(); return; }
+  if(which==="chat"){  pfOpenChatFromProfile(); return; }
+  _showSubPageBack(which);
   go(which);
 }
 
-function _subNavSetBack(which){
-  const bar=$("subBackBar"); if(!bar) return;
+function _showSubPageBack(which){
+  const bar=$("subPageBackBar"); if(!bar) return;
   bar.classList.add("visible");
-  const title=$("subBackTitle"); if(!title) return;
-  const icon=_subNavIcons[which]||"";
-  title.innerHTML=icon+" "+(_subNavLabels[which]||"");
+  const title=$("subPageBackTitle"); if(!title) return;
+  const icon=_subPageIconsSvg[which]||"";
+  title.innerHTML=icon+" "+(_subPageLabels[which]||"");
 }
 
-function subNavBack(){
-  /* close any overlay first */
-  const notesOv=$("pfNotesOverlay"); if(notesOv){ pfCloseNotesPage(); }
-  const chatOv=$("pfChatOverlay");   if(chatOv){ pfCloseChatPage(); }
-  /* reset active to profile */
-  document.querySelectorAll(".sub-nav-btn").forEach(b=>b.classList.remove("active"));
-  const snP=$("snProfile"); if(snP) snP.classList.add("active");
-  $("subBackBar").classList.remove("visible");
+function subPageBack(){
+  const notesOv=$("pfNotesOverlay"); if(notesOv) pfCloseNotesPage();
+  const chatOv=$("pfChatOverlay");   if(chatOv)  pfCloseChatPage();
+  const bar=$("subPageBackBar"); if(bar) bar.classList.remove("visible");
   go("profile");
 }
+
+/* keep old names as aliases in case called elsewhere */
+function subNavBack(){ subPageBack(); }
 
 /* ========= Auth ========= */
 function login(){
@@ -4128,47 +4069,47 @@ function pfRenderSubIconGrid(){
   if(!grid) return;
   const a=me(); if(!a) return;
 
-  /* only show for subscribers */
+  /* only show for subscribers/users */
   if(a.role!=="subscriber" && a.role!=="user"){
     grid.style.display="none"; return;
   }
-  grid.style.display="";
+  grid.style.display="block";
 
   const inner=$("pfIconGridInner"); if(!inner) return;
 
   const items=[
     {
-      action:()=>go("calc"),
+      action:()=>subIconGo("calc"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><rect x="4" y="2" width="16" height="20" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 12h4M8 17h4M16 17l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
       label:"Calculator", color:"#a78bfa"
     },
     {
-      action:()=>go("work"),
+      action:()=>subIconGo("work"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M6 4v16M18 4v16M3 9h18M3 15h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
       label:"Workouts", color:"#38bdf8"
     },
     {
-      action:()=>go("week"),
+      action:()=>subIconGo("week"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
       label:"Daily Burn", color:"#fb923c"
     },
     {
-      action:()=>go("weight"),
+      action:()=>subIconGo("weight"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
       label:"Weight", color:"#34d399"
     },
     {
-      action:()=>go("macros"),
+      action:()=>subIconGo("macros"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
       label:"Macros", color:"#f472b6"
     },
     {
-      action:()=>pfOpenNotesPage(),
+      action:()=>subIconGo("notes"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
       label:"Notes", color:"#fbbf24"
     },
     {
-      action:()=>pfOpenChatFromProfile(),
+      action:()=>subIconGo("chat"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="14" x2="12" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
       label:"Chat", color:"#4ade80"
     },
@@ -4226,9 +4167,8 @@ function pfCloseNotesPage(){
   overlay.classList.remove("open");
   overlay.addEventListener("transitionend",()=>overlay.remove(),{once:true});
   /* reset back bar */
-  document.querySelectorAll(".sub-nav-btn").forEach(b=>b.classList.remove("active"));
-  const snP=$("snProfile"); if(snP) snP.classList.add("active");
-  const bar=$("subBackBar"); if(bar) bar.classList.remove("visible");
+const snP=$("snProfile"); if(snP) snP.classList.add("active");
+  const bar=$("subPageBackBar"); if(bar) bar.classList.remove("visible");
 }
 
 /* open Chat from profile icon grid */
@@ -4520,9 +4460,8 @@ function pfCloseChatPage(){
   overlay.addEventListener("transitionend",()=>overlay.remove(),{once:true});
   if(_pfChatPoll){ clearInterval(_pfChatPoll); _pfChatPoll=null; }
   /* reset back bar */
-  document.querySelectorAll(".sub-nav-btn").forEach(b=>b.classList.remove("active"));
-  const snP=$("snProfile"); if(snP) snP.classList.add("active");
-  const bar=$("subBackBar"); if(bar) bar.classList.remove("visible");
+const snP=$("snProfile"); if(snP) snP.classList.add("active");
+  const bar=$("subPageBackBar"); if(bar) bar.classList.remove("visible");
   /* update entry card preview */
   pfRenderNotesChat();
 }

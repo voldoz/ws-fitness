@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>WS Fitness</title>
-<!-- APP_VERSION: 2026-03-05-r7 -->
+<!-- APP_VERSION: 2026-03-05-r8 -->
 <style>
   body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff}
   h1{margin:0 0 12px;text-align:center;color:#38bdf8}
@@ -5864,8 +5864,6 @@ function admEditDelete(){
 
 function refreshAdminCoachList(){ admRenderCoaches(); }
 function refreshAdminUsersList(){ admRenderUsers(); }
-  fillManagedSelect();
-}
 function adminResetUserPin(){
   $("aUserOpsMsg").textContent="";
   const id=$("aUserSel").value;

@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>WS Fitness</title>
-<!-- APP_VERSION: 2026-03-05-r2 -->
+<!-- APP_VERSION: 2026-03-05-r3 -->
 <style>
   body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff}
   h1{margin:0 0 12px;text-align:center;color:#38bdf8}
@@ -4500,6 +4500,9 @@ function pfOpenSuppPage(){
   const sub=findAccById(getManagedId()); if(!sub) return;
   const subId=sub.id;
 
+  /* user role = independent user, can fully edit their own supplements */
+  const canEdit = canEditEverything();
+
   const old=$("pfSuppOverlay"); if(old) old.remove();
   const overlay=document.createElement("div");
   overlay.id="pfSuppOverlay";
@@ -4520,12 +4523,19 @@ function pfOpenSuppPage(){
         Supplements
       </div>
     </div>
-    <div style="flex:1;overflow-y:auto;padding:16px 12px 24px" id="pfSuppOverlayBody"></div>`;
+    <div style="flex:1;overflow-y:auto;padding:0 0 24px" id="pfSuppOverlayBody"></div>`;
   document.body.appendChild(overlay);
   requestAnimationFrame(()=>overlay.classList.add("open"));
 
-  /* build read-only supplements list */
-  _pfRenderSubSuppList($("pfSuppOverlayBody"), subId);
+  const body=$("pfSuppOverlayBody");
+  if(canEdit){
+    /* independent user: full editable view (same as coach drawer) */
+    _cpRenderSuppPage(body, subId);
+  } else {
+    /* subscriber: read-only view */
+    body.style.padding="16px 12px 24px";
+    _pfRenderSubSuppList(body, subId);
+  }
 }
 
 function pfCloseSuppPage(){
@@ -8717,7 +8727,7 @@ function _stopChatPoll(){
 
 /* ── Auto-update: detect new version on GitHub Pages and reload ── */
 (function(){
-  const CURRENT_VERSION="2026-03-05-r2";
+  const CURRENT_VERSION="2026-03-05-r3";
   const VERSION_RE=/APP_VERSION:\s*([\w\-]+)/;
 
   function checkForUpdate(){

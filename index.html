@@ -1995,88 +1995,107 @@
     background:rgba(15,23,42,.5); border-radius:18px; margin-top:14px;
   }
 
-  /* ── Macro manual-edit panel ── */
-  .calc-edit-btn{
-    margin-left:auto; background:rgba(56,189,248,.12);
-    border:1px solid rgba(56,189,248,.25); border-radius:10px;
-    padding:4px 10px; font-size:11px; font-weight:800; color:#38bdf8;
-    cursor:pointer; display:flex; align-items:center; gap:5px;
-    transition:background .18s;
+  /* ── Inline Macro Sliders (always visible for editors) ── */
+  .calc-macro-section{
+    margin-bottom:14px;
   }
-  .calc-edit-btn:hover{ background:rgba(56,189,248,.22); }
-  .calc-edit-panel{
-    background:rgba(6,12,24,.7);
-    border:1.5px solid rgba(56,189,248,.18);
-    border-radius:18px; padding:16px;
-    margin-top:14px; display:none;
-    flex-direction:column; gap:12px;
-    animation:calc-fadeIn .25s ease;
+  .calc-macro-section-title{
+    font-size:10px; font-weight:800; color:#475569;
+    text-transform:uppercase; letter-spacing:.1em;
+    margin-bottom:10px; display:flex; align-items:center; gap:6px;
   }
-  .calc-edit-panel.open{ display:flex; }
-  .calc-edit-panel-title{
-    font-size:12px; font-weight:800; color:#64748b;
-    text-transform:uppercase; letter-spacing:.08em;
-    display:flex; align-items:center; gap:6px; margin-bottom:4px;
+  .calc-macro-section-title::after{
+    content:''; flex:1; height:1px; background:rgba(255,255,255,.07);
   }
-  .calc-edit-row{
-    display:flex; flex-direction:column; gap:4px;
+  /* Each macro row: icon+name | slider fills width | grams+kcal */
+  .cme-row{
+    display:grid;
+    grid-template-columns:90px 1fr 72px;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
   }
-  .calc-edit-label{
-    display:flex; justify-content:space-between; align-items:center;
-    font-size:12px; font-weight:700;
+  .cme-label{
+    display:flex; align-items:center; gap:6px;
+    font-size:12px; font-weight:800;
   }
-  .calc-edit-label span.pct{
+  .cme-pct{
+    font-size:11px; font-weight:900; opacity:.7; margin-left:2px;
+  }
+  .cme-slider{
+    -webkit-appearance:none; appearance:none;
+    width:100%; height:7px; border-radius:7px;
+    outline:none; cursor:pointer;
+    background:rgba(255,255,255,.09);
+  }
+  .cme-slider::-webkit-slider-thumb{
+    -webkit-appearance:none; width:22px; height:22px;
+    border-radius:50%; cursor:pointer;
+    border:2.5px solid #0b1628;
+    box-shadow:0 2px 8px rgba(0,0,0,.45);
+    transition:transform .12s;
+  }
+  .cme-slider:active::-webkit-slider-thumb{ transform:scale(1.18); }
+  .cme-slider.p{ accent-color:#38bdf8; }
+  .cme-slider.p::-webkit-slider-thumb{ background:#38bdf8; }
+  .cme-slider.c{ accent-color:#f97316; }
+  .cme-slider.c::-webkit-slider-thumb{ background:#f97316; }
+  .cme-slider.f{ accent-color:#a78bfa; }
+  .cme-slider.f::-webkit-slider-thumb{ background:#a78bfa; }
+  .cme-right{
+    text-align:right;
+  }
+  .cme-g{
     font-size:14px; font-weight:900;
   }
-  .calc-edit-label span.grams{
-    font-size:11px; color:#64748b; font-weight:700;
+  .cme-kcal{
+    font-size:10px; color:#475569; font-weight:700; margin-top:1px;
   }
-  .calc-edit-slider{
-    -webkit-appearance:none; appearance:none;
-    width:100%; height:6px; border-radius:6px;
-    outline:none; cursor:pointer;
-    background:rgba(255,255,255,.08);
-    transition:background .2s;
+  /* calories live badge */
+  .cme-kcal-live{
+    display:flex; align-items:baseline; justify-content:center;
+    gap:4px; margin-bottom:14px;
   }
-  .calc-edit-slider::-webkit-slider-thumb{
-    -webkit-appearance:none; width:20px; height:20px;
-    border-radius:50%; cursor:pointer; border:2px solid #0b1628;
-    box-shadow:0 2px 6px rgba(0,0,0,.4);
-  }
-  .calc-edit-slider.p{ accent-color:#38bdf8; }
-  .calc-edit-slider.p::-webkit-slider-thumb{ background:#38bdf8; }
-  .calc-edit-slider.c{ accent-color:#f97316; }
-  .calc-edit-slider.c::-webkit-slider-thumb{ background:#f97316; }
-  .calc-edit-slider.f{ accent-color:#a78bfa; }
-  .calc-edit-slider.f::-webkit-slider-thumb{ background:#a78bfa; }
-
-  .calc-edit-sum{
-    display:flex; justify-content:center; align-items:center;
-    font-size:13px; font-weight:800; gap:6px; padding:6px 0;
-  }
-  .calc-edit-sum .ok{ color:#4ade80; }
-  .calc-edit-sum .warn{ color:#f87171; }
-
-  .calc-edit-actions{
-    display:flex; gap:8px;
-  }
-  .calc-edit-apply{
-    flex:1; padding:10px; border-radius:12px; font-size:13px;
-    font-weight:800; cursor:pointer; border:none;
+  .cme-kcal-live-num{
+    font-size:34px; font-weight:900; line-height:1;
     background:linear-gradient(135deg,#38bdf8,#818cf8);
-    color:#0b1628; transition:opacity .18s;
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text;
+    transition:color .2s;
   }
-  .calc-edit-apply:hover{ opacity:.88; }
-  .calc-edit-reset{
-    padding:10px 16px; border-radius:12px; font-size:13px;
-    font-weight:800; cursor:pointer;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.1); color:#94a3b8;
-    transition:background .18s;
+  .cme-kcal-live-lbl{
+    font-size:12px; color:#64748b; font-weight:700;
   }
-  .calc-edit-reset:hover{ background:rgba(255,255,255,.1); }
-  .calc-edit-note{
-    font-size:10px; color:#475569; text-align:center; font-weight:600;
+  /* save indicator */
+  .cme-save-row{
+    display:flex; gap:8px; margin-top:4px;
+  }
+  .cme-save-btn{
+    flex:1; padding:11px; border-radius:13px; border:none;
+    font-size:13px; font-weight:900; cursor:pointer;
+    background:linear-gradient(135deg,#38bdf8,#818cf8);
+    color:#071224; letter-spacing:.02em;
+    transition:opacity .15s, transform .12s;
+    box-shadow:0 4px 14px rgba(56,189,248,.25);
+  }
+  .cme-save-btn:active{ transform:scale(.97); opacity:.88; }
+  .cme-reset-btn{
+    padding:11px 16px; border-radius:13px;
+    border:1px solid rgba(255,255,255,.1);
+    background:rgba(255,255,255,.05);
+    font-size:12px; font-weight:800; color:#64748b;
+    cursor:pointer; transition:background .15s;
+  }
+  .cme-reset-btn:hover{ background:rgba(255,255,255,.1); color:#94a3b8; }
+  .cme-changed-dot{
+    display:inline-block; width:7px; height:7px;
+    border-radius:50%; background:#38bdf8;
+    margin-left:5px; vertical-align:middle;
+    animation:cme-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes cme-pulse{
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:.4; transform:scale(.7); }
   }
 
 
@@ -4662,100 +4681,76 @@ function renderCalcMode(){
     $("calcBtn").style.opacity = $("calcBtn").disabled ? .75 : 1;
   }
 }
-/* ── macro edit helpers ── */
+/* ── macro inline-edit helpers ── */
 function _totKcal(r){ return Number(r.calories)||1; }
 function _pPct(r){ return Math.round((Number(r.protein||0)*4)/_totKcal(r)*100); }
 function _cPct(r){ return Math.round((Number(r.carbs||0)*4)/_totKcal(r)*100); }
 function _fPct(r){ return Math.round((Number(r.fat||0)*9)/_totKcal(r)*100); }
 
-function toggleMacroEdit(){
-  const p=$("macroEditPanel"); if(!p) return;
-  p.classList.toggle("open");
-  const btn=$("macroEditBtn"); if(btn) btn.textContent=p.classList.contains("open")?"✕ Close":"✏ Edit Macros";
-}
-
-/* called when a slider moves — clamp the other two proportionally */
-function meSlidersInput(changed, val){
+/* live update while dragging a slider */
+function cmeSlide(which, val){
   val=parseInt(val);
-  const pSlider=$("meP"), cSlider=$("meC"), fSlider=$("meF");
-  if(!pSlider||!cSlider||!fSlider) return;
-  let p=parseInt(pSlider.value), c=parseInt(cSlider.value), f=parseInt(fSlider.value);
-  if(changed==="p") p=val;
-  else if(changed==="c") c=val;
-  else f=val;
-
-  /* keep min 5 for unchanged, redistribute remainder */
-  const MIN=5;
-  if(changed!=="p"){ p=Math.max(MIN,p); }
-  if(changed!=="c"){ c=Math.max(MIN,c); }
-  if(changed!=="f"){ f=Math.max(MIN,f); }
-
-  /* update display labels */
-  pSlider.value=p; cSlider.value=c; fSlider.value=f;
-  const total=p+c+f;
-  const sumEl=$("meSumVal"); if(sumEl) sumEl.textContent=total;
-  const st=$("meSumStatus");
-  if(st){ st.className=Math.abs(total-100)<=2?"ok":"warn"; st.textContent=Math.abs(total-100)<=2?"✓":"⚠"; }
-
-  /* live gram preview */
   const r=loadCalcResults(); if(!r) return;
   const kcal=Number(r.calories)||2000;
+  /* read current slider values */
+  const ps=$("cmeP"), cs=$("cmeC"), fs=$("cmeF");
+  if(!ps||!cs||!fs) return;
+  let p=parseInt(ps.value), c=parseInt(cs.value), f=parseInt(fs.value);
+  if(which==="p") p=val;
+  else if(which==="c") c=val;
+  else f=val;
+  /* refresh display */
+  ps.value=p; cs.value=c; fs.value=f;
   const pg=Math.round(kcal*(p/100)/4);
   const cg=Math.round(kcal*(c/100)/4);
   const fg=Math.round(kcal*(f/100)/9);
-  const pEl=$("meP_pct"); if(pEl) pEl.textContent=p+"%";
-  const cEl=$("meC_pct"); if(cEl) cEl.textContent=c+"%";
-  const fEl=$("meF_pct"); if(fEl) fEl.textContent=f+"%";
-  const pgEl=$("meP_g");  if(pgEl) pgEl.textContent=pg+"g · "+Math.round(pg*4)+" kcal";
-  const cgEl=$("meC_g");  if(cgEl) cgEl.textContent=cg+"g · "+Math.round(cg*4)+" kcal";
-  const fgEl=$("meF_g");  if(fgEl) fgEl.textContent=fg+"g · "+Math.round(fg*9)+" kcal";
+  const meals=Number(r.meals||1);
+  /* update gram+kcal labels */
+  const upd=[
+    {g:pg,k:pg*4,id:"P",col:"#38bdf8"},
+    {g:cg,k:cg*4,id:"C",col:"#f97316"},
+    {g:fg,k:fg*9,id:"F",col:"#a78bfa"}
+  ];
+  upd.forEach(x=>{
+    const ge=$("cme"+x.id+"_g"); if(ge) ge.textContent=x.g+"g";
+    const ke=$("cme"+x.id+"_k"); if(ke) ke.textContent=Math.round(x.k)+" kcal";
+    const pe=$("cme"+x.id+"_pct"); if(pe) pe.textContent=(x.id==="P"?p:x.id==="C"?c:f)+"%";
+    const pm=$("cme"+x.id+"_pm"); if(pm) pm.textContent=Math.round(x.g/meals)+"g";
+  });
+  /* total check */
+  const tot=p+c+f;
+  const totEl=$("cmeTot");
+  if(totEl){ totEl.textContent=tot+"%"; totEl.style.color=Math.abs(tot-100)<=3?"#4ade80":"#f87171"; }
+  /* show save row */
+  const sr=$("cmeSaveRow"); if(sr) sr.style.opacity="1";
 }
 
-function meApply(){
+/* commit changes to storage */
+function cmeSave(){
   if(!canEditEverything()) return;
-  const r=loadCalcResults(); if(!r){ alert("Run the calculator first."); return; }
-  const p=parseInt($("meP")?.value||"0");
-  const c=parseInt($("meC")?.value||"0");
-  const f=parseInt($("meF")?.value||"0");
-  const total=p+c+f;
-  if(Math.abs(total-100)>3){ alert("Percentages must sum to ~100%. Current total: "+total+"%"); return; }
-
-  /* keep same total calories, redistribute macros */
+  const r=loadCalcResults(); if(!r) return;
+  const ps=$("cmeP"), cs=$("cmeC"), fs=$("cmeF");
+  if(!ps||!cs||!fs) return;
+  const p=parseInt(ps.value), c=parseInt(cs.value), f=parseInt(fs.value);
+  if(Math.abs(p+c+f-100)>4){ return; }
   const kcal=Number(r.calories)||2000;
+  const meals=Number(r.meals||1);
   const protein=Math.round(kcal*(p/100)/4);
   const carbs  =Math.round(kcal*(c/100)/4);
   const fat    =Math.round(kcal*(f/100)/9);
-  const meals  =Number(r.meals||1);
-
-  const updated={
-    ...r,
-    protein, carbs, fat,
+  storeCalcResults({...r, protein, carbs, fat,
     proteinMeal:Math.round(protein/meals),
-    carbsMeal:  Math.round(carbs/meals),
-    fatMeal:    Math.round(fat/meals),
-    _manualMacros:{p,c,f}   /* flag that macros were manually overridden */
-  };
-  storeCalcResults(updated);
+    carbsMeal:Math.round(carbs/meals),
+    fatMeal:Math.round(fat/meals),
+    _manualMacros:{p,c,f}});
   renderCalcResults();
-  /* re-open edit panel after re-render */
-  setTimeout(()=>{
-    const panel=$("macroEditPanel");
-    if(panel) panel.classList.add("open");
-    const btn=$("macroEditBtn");
-    if(btn) btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg> Edit Macros`;
-  }, 80);
 }
 
-function meReset(){
+/* reset to auto calculation */
+function cmeReset(){
   if(!canEditEverything()) return;
-  const r=loadCalcResults(); if(!r) return;
-  /* strip manual override and re-run formula */
-  delete r._manualMacros;
-  storeCalcResults(r);
-  /* re-trigger full calc using stored inputs */
   const inp=pget("calc_inputs"); if(!inp) return;
   const d=JSON.parse(inp);
-  /* temporarily load inputs back and run calcAndSave */
   $("weight").value=d.weight||""; $("height").value=d.height||"";
   $("age").value=d.age||""; $("gender").value=d.gender||"male";
   $("activityDays").value=d.activityDays||"3"; $("goal").value=d.goal||"cut";
@@ -4774,48 +4769,108 @@ function renderCalcResults(){
 
   const goalVal   = r.goal || "";
   const tdeeVal   = Number(r.tdee   || 0);
-  const foodDef   = Number(r.foodDeficit        || 0);
-  const extraBurn = Number(r.extraBurnNeeded     || 0);
-  const totalDef  = Number(r.totalDailyDeficit   || r.dailyDelta || 0);
+  const foodDef   = Number(r.foodDeficit    || 0);
+  const extraBurn = Number(r.extraBurnNeeded|| 0);
+  const totalDef  = Number(r.totalDailyDeficit || r.dailyDelta || 0);
   const meals     = Number(r.meals || 1);
+  const kcal      = Number(r.calories)||0;
 
-  const pMeal = Number(r.proteinMeal ?? Math.round((Number(r.protein)||0) / meals));
-  const cMeal = Number(r.carbsMeal   ?? Math.round((Number(r.carbs)||0)   / meals));
-  const fMeal = Number(r.fatMeal     ?? Math.round((Number(r.fat)||0)     / meals));
+  const pPct = _pPct(r), cPct = _cPct(r), fPct = _fPct(r);
 
-  /* meta pills under calories */
+  const pMeal = Number(r.proteinMeal ?? Math.round((Number(r.protein)||0)/meals));
+  const cMeal = Number(r.carbsMeal   ?? Math.round((Number(r.carbs)||0)/meals));
+  const fMeal = Number(r.fatMeal     ?? Math.round((Number(r.fat)||0)/meals));
+
+  /* meta pills */
   let metaHtml = `<span class="calc-meta-pill tdee">TDEE: ${tdeeVal} kcal</span>`;
-  if(goalVal === "cut" && foodDef){
-    metaHtml += `<span class="calc-meta-pill cut">Deficit: −${foodDef} kcal</span>`;
-    if(extraBurn > 0){
-      metaHtml += `<span class="calc-meta-pill warn">⚠ Extra activity: ${extraBurn} kcal</span>`;
-    }
+  if(goalVal==="cut"&&foodDef){
+    metaHtml+=`<span class="calc-meta-pill cut">Deficit: −${foodDef} kcal</span>`;
+    if(extraBurn>0) metaHtml+=`<span class="calc-meta-pill warn">⚠ +${extraBurn} kcal activity</span>`;
   }
-  if(goalVal === "bulk" && totalDef){
-    metaHtml += `<span class="calc-meta-pill bulk">Surplus: +${totalDef} kcal</span>`;
-  }
+  if(goalVal==="bulk"&&totalDef) metaHtml+=`<span class="calc-meta-pill bulk">Surplus: +${totalDef} kcal</span>`;
 
-  /* goal badge label */
-  const goalLabels = { cut:"🔥 Fat Loss", maintain:"⚖️ Maintain", bulk:"💪 Bulk" };
+  const isManual = !!r._manualMacros;
+  const canEdit  = canEditEverything();
 
   box.innerHTML = `
     <div class="calc-results-card">
-      <div class="calc-results-title" style="display:flex;align-items:center">
+      <div class="calc-results-title">
         ✅ Your Results
-        ${canEditEverything()?`<button class="calc-edit-btn" onclick="toggleMacroEdit()" id="macroEditBtn">
-          <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-          Edit Macros
-        </button>`:""}
+        ${isManual&&canEdit ? `<span style="font-size:10px;font-weight:700;color:#f97316;background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.25);border-radius:8px;padding:2px 8px;margin-left:auto">✏ Custom</span>` : ""}
       </div>
 
       <!-- Calories hero -->
       <div class="calc-kcal-hero">
-        <div class="calc-kcal-num">${Number(r.calories).toLocaleString()}</div>
+        <div class="calc-kcal-num" id="cmeKcalNum">${kcal.toLocaleString()}</div>
         <div class="calc-kcal-label">Daily Calories</div>
         <div class="calc-kcal-meta">${metaHtml}</div>
       </div>
 
-      <!-- Macros row -->
+      ${canEdit ? `
+      <!-- ═══ Inline Macro Sliders ═══ -->
+      <div class="calc-macro-section">
+        <div class="calc-macro-section-title">Macro Split — drag to adjust</div>
+
+        <!-- Protein -->
+        <div class="cme-row">
+          <div class="cme-label" style="color:#38bdf8">
+            🥩 Protein
+            <span class="cme-pct" id="cmeP_pct">${pPct}%</span>
+          </div>
+          <input type="range" class="cme-slider p" id="cmeP"
+                 min="10" max="65" step="1" value="${pPct}"
+                 oninput="cmeSlide('p',this.value)">
+          <div class="cme-right">
+            <div class="cme-g" style="color:#38bdf8" id="cmeP_g">${r.protein}g</div>
+            <div class="cme-kcal" id="cmeP_k">${Math.round(r.protein*4)} kcal</div>
+          </div>
+        </div>
+
+        <!-- Carbs -->
+        <div class="cme-row">
+          <div class="cme-label" style="color:#f97316">
+            🍚 Carbs
+            <span class="cme-pct" id="cmeC_pct">${cPct}%</span>
+          </div>
+          <input type="range" class="cme-slider c" id="cmeC"
+                 min="5" max="70" step="1" value="${cPct}"
+                 oninput="cmeSlide('c',this.value)">
+          <div class="cme-right">
+            <div class="cme-g" style="color:#f97316" id="cmeC_g">${r.carbs}g</div>
+            <div class="cme-kcal" id="cmeC_k">${Math.round(r.carbs*4)} kcal</div>
+          </div>
+        </div>
+
+        <!-- Fat -->
+        <div class="cme-row">
+          <div class="cme-label" style="color:#a78bfa">
+            🫒 Fat
+            <span class="cme-pct" id="cmeF_pct">${fPct}%</span>
+          </div>
+          <input type="range" class="cme-slider f" id="cmeF"
+                 min="5" max="50" step="1" value="${fPct}"
+                 oninput="cmeSlide('f',this.value)">
+          <div class="cme-right">
+            <div class="cme-g" style="color:#a78bfa" id="cmeF_g">${r.fat}g</div>
+            <div class="cme-kcal" id="cmeF_k">${Math.round(r.fat*9)} kcal</div>
+          </div>
+        </div>
+
+        <!-- Total % indicator -->
+        <div style="text-align:right;font-size:11px;font-weight:800;margin-top:-4px;margin-bottom:10px">
+          Total: <span id="cmeTot" style="color:#4ade80">${pPct+cPct+fPct}%</span>
+        </div>
+
+        <!-- Save / Reset row -->
+        <div class="cme-save-row" id="cmeSaveRow">
+          ${isManual?`<button class="cme-reset-btn" onclick="cmeReset()">↺ Auto</button>`:""}
+          <button class="cme-save-btn" onclick="cmeSave()">
+            ✓ Save Changes
+          </button>
+        </div>
+      </div>
+      ` : `
+      <!-- read-only macro row for subscriber -->
       <div class="calc-macro-row">
         <div class="calc-macro-box p">
           <div class="calc-macro-icon">🥩</div>
@@ -4836,6 +4891,7 @@ function renderCalcResults(){
           <div class="calc-macro-sub">g / day</div>
         </div>
       </div>
+      `}
 
       <!-- Per meal -->
       <div class="calc-meal-section">
@@ -4843,17 +4899,17 @@ function renderCalcResults(){
         <div class="calc-meal-chips">
           <div class="calc-meal-chip p">
             <div class="calc-meal-chip-icon">🥩</div>
-            <div class="calc-meal-chip-g">${pMeal}g</div>
+            <div class="calc-meal-chip-g" id="cmeP_pm">${pMeal}g</div>
             <div class="calc-meal-chip-lbl">Protein</div>
           </div>
           <div class="calc-meal-chip c">
             <div class="calc-meal-chip-icon">🍚</div>
-            <div class="calc-meal-chip-g">${cMeal}g</div>
+            <div class="calc-meal-chip-g" id="cmeC_pm">${cMeal}g</div>
             <div class="calc-meal-chip-lbl">Carbs</div>
           </div>
           <div class="calc-meal-chip f">
             <div class="calc-meal-chip-icon">🫒</div>
-            <div class="calc-meal-chip-g">${fMeal}g</div>
+            <div class="calc-meal-chip-g" id="cmeF_pm">${fMeal}g</div>
             <div class="calc-meal-chip-lbl">Fat</div>
           </div>
         </div>
@@ -4867,62 +4923,6 @@ function renderCalcResults(){
           <div class="calc-burn-val" id="outBurn">${r.dailyBurn} kcal</div>
         </div>
       </div>
-
-      <!-- Manual Macro Edit Panel -->
-      ${canEditEverything()?`
-      <div class="calc-edit-panel" id="macroEditPanel">
-        <div class="calc-edit-panel-title">
-          <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-          Manual Macro Override
-        </div>
-
-        <!-- Protein slider -->
-        <div class="calc-edit-row">
-          <div class="calc-edit-label">
-            <span style="color:#38bdf8">🥩 Protein</span>
-            <span class="pct" style="color:#38bdf8" id="meP_pct">${_pPct(r)}%</span>
-            <span class="grams" id="meP_g">${r.protein}g &middot; ${Math.round(r.protein*4)} kcal</span>
-          </div>
-          <input type="range" class="calc-edit-slider p" id="meP" min="10" max="60" step="1" value="${_pPct(r)}"
-                 oninput="meSlidersInput('p',this.value)">
-        </div>
-
-        <!-- Carbs slider -->
-        <div class="calc-edit-row">
-          <div class="calc-edit-label">
-            <span style="color:#f97316">🍚 Carbs</span>
-            <span class="pct" style="color:#f97316" id="meC_pct">${_cPct(r)}%</span>
-            <span class="grams" id="meC_g">${r.carbs}g &middot; ${Math.round(r.carbs*4)} kcal</span>
-          </div>
-          <input type="range" class="calc-edit-slider c" id="meC" min="5" max="70" step="1" value="${_cPct(r)}"
-                 oninput="meSlidersInput('c',this.value)">
-        </div>
-
-        <!-- Fat slider -->
-        <div class="calc-edit-row">
-          <div class="calc-edit-label">
-            <span style="color:#a78bfa">🫒 Fat</span>
-            <span class="pct" style="color:#a78bfa" id="meF_pct">${_fPct(r)}%</span>
-            <span class="grams" id="meF_g">${r.fat}g &middot; ${Math.round(r.fat*9)} kcal</span>
-          </div>
-          <input type="range" class="calc-edit-slider f" id="meF" min="5" max="50" step="1" value="${_fPct(r)}"
-                 oninput="meSlidersInput('f',this.value)">
-        </div>
-
-        <!-- Sum indicator -->
-        <div class="calc-edit-sum" id="meSum">
-          <span>Total: <b id="meSumVal">${_pPct(r)+_cPct(r)+_fPct(r)}</b>%</span>
-          <span id="meSumStatus" class="ok">✓</span>
-        </div>
-
-        <div class="calc-edit-note">Calories stay fixed — only the macro split changes.</div>
-
-        <div class="calc-edit-actions">
-          <button class="calc-edit-reset" onclick="meReset()">↺ Auto-Calculate</button>
-          <button class="calc-edit-apply" onclick="meApply()">✓ Apply &amp; Save</button>
-        </div>
-      </div>
-      `:""}
 
     </div>`;
 }

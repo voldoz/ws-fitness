@@ -4631,12 +4631,13 @@ function renderCoachIconGrid(){
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 3v9l5 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
       label:"Macros", color:"#f472b6"
     },
-    {
+    /* Subscribers icon — coach only, NOT admin (admin uses Admin Panel instead) */
+    ...(a.role==="coach" ? [{
       key:"coachpanel",
       action:()=>coachIconGo("coachpanel"),
       icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
       label:"Subscribers", color:"#60a5fa"
-    },
+    }] : []),
   ];
 
   /* Add Admin icon only for admin role */

@@ -2413,6 +2413,146 @@
   .cp-chat-date-sep::before{ left:0; }
   .cp-chat-date-sep::after{ right:0; }
 
+  /* ===== Supplements Page ===== */
+  .supp-page{ padding:14px 14px 80px; display:flex; flex-direction:column; gap:10px; }
+  .supp-header{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:4px;
+  }
+  .supp-title{
+    font-size:15px; font-weight:900; color:#e2e8f0;
+    display:flex; align-items:center; gap:8px;
+  }
+  .supp-add-btn{
+    display:flex; align-items:center; gap:6px;
+    padding:8px 14px; border-radius:12px; border:none; cursor:pointer;
+    background:linear-gradient(135deg,rgba(232,121,249,.18),rgba(232,121,249,.08));
+    border:1.5px solid rgba(232,121,249,.3); color:#e879f9;
+    font-size:12px; font-weight:800;
+    transition:all .2s; -webkit-tap-highlight-color:transparent;
+  }
+  .supp-add-btn:active{ opacity:.75; transform:scale(.96); }
+  .supp-empty{
+    text-align:center; padding:48px 20px;
+    color:#334155; font-size:13px; font-weight:700;
+  }
+  .supp-empty-icon{ font-size:36px; margin-bottom:10px; }
+
+  /* supplement card */
+  .supp-card{
+    background:linear-gradient(145deg,#09162a,#0d1e34);
+    border:1.5px solid rgba(255,255,255,.07);
+    border-radius:18px; overflow:hidden;
+    transition:border-color .2s;
+  }
+  .supp-card:hover{ border-color:rgba(232,121,249,.2); }
+  .supp-card-header{
+    display:flex; align-items:center; gap:10px;
+    padding:12px 14px; cursor:pointer;
+    user-select:none; -webkit-tap-highlight-color:transparent;
+  }
+  .supp-card-icon{
+    width:38px; height:38px; border-radius:12px; flex-shrink:0;
+    background:rgba(232,121,249,.1); border:1px solid rgba(232,121,249,.2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+  }
+  .supp-card-info{ flex:1; min-width:0; }
+  .supp-card-name{
+    font-size:14px; font-weight:800; color:#e2e8f0;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .supp-card-summary{
+    font-size:11px; color:#475569; font-weight:600; margin-top:2px;
+  }
+  .supp-card-chevron{
+    color:#334155; font-size:18px; flex-shrink:0;
+    transition:transform .22s;
+  }
+  .supp-card.open .supp-card-chevron{ transform:rotate(90deg); }
+  .supp-card-body{
+    display:none; padding:0 14px 14px;
+  }
+  .supp-card.open .supp-card-body{ display:block; }
+
+  /* dose rows inside card body */
+  .supp-doses{ display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
+  .supp-dose-row{
+    display:grid; grid-template-columns:1fr 1fr auto;
+    gap:8px; align-items:center;
+    background:rgba(255,255,255,.03); border-radius:10px; padding:8px 10px;
+    border:1px solid rgba(255,255,255,.05);
+  }
+  .supp-dose-label{
+    font-size:10px; font-weight:800; color:#3d5068;
+    text-transform:uppercase; letter-spacing:.06em;
+    margin-bottom:4px;
+  }
+  .supp-dose-val{
+    font-size:14px; font-weight:800; color:#e879f9;
+  }
+  .supp-dose-time{
+    font-size:12px; font-weight:700; color:#94a3b8;
+    background:rgba(255,255,255,.05); border-radius:8px;
+    padding:4px 8px; display:inline-block;
+  }
+  .supp-del-dose-btn{
+    width:26px; height:26px; border-radius:8px; border:none; cursor:pointer;
+    background:rgba(239,68,68,.1); color:#f87171;
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; transition:background .15s; flex-shrink:0;
+  }
+  .supp-del-dose-btn:active{ background:rgba(239,68,68,.25); }
+
+  /* add dose form */
+  .supp-add-dose-form{
+    display:flex; gap:7px; align-items:flex-end;
+    margin-top:6px; flex-wrap:wrap;
+  }
+  .supp-input{
+    flex:1; min-width:60px; padding:8px 10px;
+    background:rgba(6,12,24,.7); color:#e2e8f0;
+    border:1.5px solid rgba(255,255,255,.08); border-radius:10px;
+    font-size:13px; font-weight:700; outline:none;
+    transition:border-color .18s;
+  }
+  .supp-input:focus{ border-color:rgba(232,121,249,.4); }
+  .supp-select{
+    padding:8px 10px;
+    background:rgba(6,12,24,.7); color:#e2e8f0;
+    border:1.5px solid rgba(255,255,255,.08); border-radius:10px;
+    font-size:13px; font-weight:700; outline:none;
+    cursor:pointer; flex:1; min-width:110px;
+  }
+  .supp-save-dose-btn{
+    padding:8px 14px; border-radius:10px; border:none; cursor:pointer;
+    background:linear-gradient(135deg,#e879f9,#a21caf);
+    color:#fff; font-size:12px; font-weight:800;
+    transition:opacity .15s; white-space:nowrap;
+  }
+  .supp-save-dose-btn:active{ opacity:.75; }
+  .supp-card-actions{
+    display:flex; gap:8px; margin-top:10px; padding-top:10px;
+    border-top:1px solid rgba(255,255,255,.05);
+  }
+  .supp-rename-inp{
+    flex:1; padding:7px 10px;
+    background:rgba(6,12,24,.7); color:#e2e8f0;
+    border:1.5px solid rgba(255,255,255,.08); border-radius:10px;
+    font-size:13px; font-weight:700; outline:none;
+    transition:border-color .18s;
+  }
+  .supp-rename-inp:focus{ border-color:rgba(232,121,249,.4); }
+  .supp-rename-btn{
+    padding:7px 12px; border-radius:10px; border:none; cursor:pointer;
+    background:rgba(232,121,249,.15); color:#e879f9;
+    font-size:12px; font-weight:800;
+  }
+  .supp-delete-btn{
+    padding:7px 12px; border-radius:10px; border:none; cursor:pointer;
+    background:rgba(239,68,68,.1); color:#f87171;
+    font-size:12px; font-weight:800;
+  }
   /* ===== Macros Page ===== */
   @keyframes mac-fadeIn{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
   @keyframes mac-pulse{ 0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,.3)} 50%{box-shadow:0 0 0 6px rgba(56,189,248,0)} }
@@ -3105,6 +3245,7 @@
     <button class="cp-drawer-tab"        id="cpTabWeek"      onclick="cpDrawerTab('week')"     ><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Week</button>
     <button class="cp-drawer-tab"        id="cpTabMacros"    onclick="cpDrawerTab('macros')"   ><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Macros</button>
     <button class="cp-drawer-tab"        id="cpTabManage"    onclick="cpDrawerTab('manage')"   ><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Manage</button>
+    <button class="cp-drawer-tab"        id="cpTabSupp"      onclick="cpDrawerTab('supp')"     ><svg viewBox="0 0 24 24" fill="none"><path d="M9 3h6l1 4H8L9 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="4" y="7" width="16" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M9 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Supp</button>
     <button class="cp-drawer-tab"        id="cpTabNotes"    onclick="cpDrawerTab('notes')"   ><svg viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Notes</button>
     <button class="cp-drawer-tab"        id="cpTabChat"     onclick="cpDrawerTab('chat')"    ><svg viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="14" x2="12" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Chat</button>
   </div>
@@ -4911,7 +5052,7 @@ function cpCloseDrawer(){
 const _cpTabIdMap = {
   overview:"cpTabOverview", work:"cpTabWorkouts", weight:"cpTabWeight",
   calc:"cpTabCalc", week:"cpTabWeek", macros:"cpTabMacros", manage:"cpTabManage",
-  notes:"cpTabNotes", chat:"cpTabChat"
+  supp:"cpTabSupp", notes:"cpTabNotes", chat:"cpTabChat"
 };
 
 /* ═══════════════════════════════════════════════════
@@ -4996,7 +5137,7 @@ function cpDrawerTab(tab){
   const body=$("cpDrawerBody"); if(!body) return;
   body.scrollTop=0;
   /* restore any transplanted page before switching tabs */
-  if(tab==="overview"||tab==="manage"||tab==="notes"||tab==="chat") cpRestoreTransplant();
+  if(tab==="overview"||tab==="manage"||tab==="supp"||tab==="notes"||tab==="chat") cpRestoreTransplant();
   /* reset body inline styles set by chat tab */
   const _b=$("cpDrawerBody"); if(_b){ _b.style.padding=""; _b.style.display=""; _b.style.flexDirection=""; _b.style.height=""; }
   if(tab==="overview")  { cpDrawerOverview(); return; }
@@ -5007,6 +5148,7 @@ function cpDrawerTab(tab){
   if(tab==="calc")    { cpGoPage("calc");    return; }
   if(tab==="week")    { cpGoPage("week");    return; }
   if(tab==="macros")  { cpGoPage("macros");  return; }
+  if(tab==="supp")    { cpDrawerSupp();     return; }
   if(tab==="notes")   { cpDrawerNotes();    return; }
   if(tab==="chat")    { cpDrawerChat();     return; }
 }
@@ -5055,6 +5197,7 @@ function cpDrawerOverview(){
     {tab:"calc",  icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><rect x="4" y="2" width="16" height="20" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, label:"Calc", color:"#a78bfa"},
     {tab:"week",  icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, label:"Weekly", color:"#fb923c"},
     {tab:"macros",icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, label:"Macros", color:"#f472b6"},
+    {tab:"supp",  icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M9 3h6l1 4H8L9 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="4" y="7" width="16" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M9 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, label:"Supp", color:"#e879f9"},
     {tab:"notes", icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, label:"Notes", color:"#fbbf24"},
     {tab:"chat",  icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="14" x2="12" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`, label:"Chat", color:"#4ade80"},
     {tab:"manage",icon:`<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`, label:"Manage", color:"#94a3b8"},
@@ -7957,6 +8100,199 @@ function _saveNote(coachId, subId, week, obj){
 function _cpNotesExtraKey(subId){ return `ws_notes_extra_${subId}`; }
 function _cpGetExtraWeeks(subId){ return parseInt(localStorage.getItem(_cpNotesExtraKey(subId))||"0",10)||0; }
 function _cpSetExtraWeeks(subId,n){ localStorage.setItem(_cpNotesExtraKey(subId),String(n)); }
+
+/* ═══════════════════════════════════════════════════════════
+   SUPPLEMENTS  (coach writes → subscriber reads)
+   Storage key: ws_supps_{subId}
+   Each supplement: { id, name, doses:[{qty, timing}] }
+   timings: "صباحاً" | "مساءاً" | "بعد الوجبة"
+   ════════════════════════════════════════════════════════════ */
+function _suppKey(subId){ return `ws_supps_${subId}`; }
+function _loadSupps(subId){
+  try{ return JSON.parse(localStorage.getItem(_suppKey(subId))||"[]"); }catch{ return []; }
+}
+function _saveSupps(subId, arr){ localStorage.setItem(_suppKey(subId), JSON.stringify(arr)); }
+
+function cpDrawerSupp(){
+  const body=$("cpDrawerBody"); if(!body) return;
+  const sub=findAccById(_cpOpenSubId); if(!sub) return;
+  const subId=sub.id;
+
+  body.innerHTML="";
+  _cpRenderSuppPage(body, subId);
+}
+
+function _cpRenderSuppPage(body, subId){
+  const supps=_loadSupps(subId);
+  body.innerHTML=`
+    <div class="supp-page">
+      <div class="supp-header">
+        <div class="supp-title">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+            <path d="M9 3h6l1 4H8L9 3z" stroke="#e879f9" stroke-width="2" stroke-linejoin="round"/>
+            <rect x="4" y="7" width="16" height="13" rx="2" stroke="#e879f9" stroke-width="2"/>
+            <path d="M12 11v6M9 14h6" stroke="#e879f9" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Supplements
+        </div>
+        <button class="supp-add-btn" onclick="_cpAddSupp('${subId}')">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+          Add Supplement
+        </button>
+      </div>
+      <div id="suppList"></div>
+    </div>`;
+
+  _cpRenderSuppList(subId);
+}
+
+function _cpRenderSuppList(subId){
+  const list=$("suppList"); if(!list) return;
+  const supps=_loadSupps(subId);
+
+  if(!supps.length){
+    list.innerHTML=`<div class="supp-empty">
+      <div class="supp-empty-icon">💊</div>
+      No supplements added yet.<br>Tap "Add Supplement" to start.
+    </div>`;
+    return;
+  }
+
+  list.innerHTML="";
+  supps.forEach((s,idx)=>{
+    const timingLabels={"صباحاً":"🌅 صباحاً","مساءاً":"🌙 مساءاً","بعد الوجبة":"🍽️ بعد الوجبة"};
+    const summary=s.doses.length
+      ? s.doses.map(d=>`${d.qty}x ${timingLabels[d.timing]||d.timing}`).join(" · ")
+      : "No doses yet";
+
+    const card=document.createElement("div");
+    card.className="supp-card";
+    card.id=`suppCard_${s.id}`;
+
+    const dosesHtml=s.doses.length
+      ? s.doses.map((d,di)=>`
+          <div class="supp-dose-row">
+            <div>
+              <div class="supp-dose-label">Quantity</div>
+              <div class="supp-dose-val">${d.qty}</div>
+            </div>
+            <div>
+              <div class="supp-dose-label">Timing</div>
+              <div class="supp-dose-time">${timingLabels[d.timing]||d.timing}</div>
+            </div>
+            <button class="supp-del-dose-btn" title="Remove dose"
+              onclick="_cpDelDose('${subId}','${s.id}',${di})" >✕</button>
+          </div>`).join("")
+      : `<div style="opacity:.35;font-size:12px;padding:8px 4px;font-weight:700">No doses added yet</div>`;
+
+    card.innerHTML=`
+      <div class="supp-card-header" onclick="_cpToggleSuppCard('${s.id}')">
+        <div class="supp-card-icon">💊</div>
+        <div class="supp-card-info">
+          <div class="supp-card-name">${_escHtml(s.name)}</div>
+          <div class="supp-card-summary">${_escHtml(summary)}</div>
+        </div>
+        <span class="supp-card-chevron">›</span>
+      </div>
+      <div class="supp-card-body">
+        <!-- Existing doses -->
+        <div class="supp-doses">${dosesHtml}</div>
+
+        <!-- Add dose form -->
+        <div style="font-size:10px;font-weight:800;color:#3d5068;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Add Dose</div>
+        <div class="supp-add-dose-form">
+          <input  id="suppQty_${s.id}"
+                  class="supp-input"
+                  type="number" min="1" max="10" placeholder="1–10"
+                  style="max-width:80px"
+                  onkeydown="if(event.key==='Enter')_cpAddDose('${subId}','${s.id}')">
+          <select id="suppTiming_${s.id}" class="supp-select">
+            <option value="صباحاً">🌅 صباحاً</option>
+            <option value="مساءاً">🌙 مساءاً</option>
+            <option value="بعد الوجبة">🍽️ بعد الوجبة</option>
+          </select>
+          <button class="supp-save-dose-btn" onclick="_cpAddDose('${subId}','${s.id}')">+ Add</button>
+        </div>
+
+        <!-- Rename / Delete -->
+        <div class="supp-card-actions">
+          <input  id="suppRename_${s.id}"
+                  class="supp-rename-inp"
+                  type="text"
+                  value="${_escHtml(s.name)}"
+                  placeholder="Supplement name…"
+                  maxlength="60"
+                  onkeydown="if(event.key==='Enter')_cpRenameSupp('${subId}','${s.id}')">
+          <button class="supp-rename-btn" onclick="_cpRenameSupp('${subId}','${s.id}')">Rename</button>
+          <button class="supp-delete-btn" onclick="_cpDeleteSupp('${subId}','${s.id}')">Delete</button>
+        </div>
+      </div>`;
+
+    list.appendChild(card);
+  });
+}
+
+function _cpToggleSuppCard(suppId){
+  const card=$(`suppCard_${suppId}`); if(!card) return;
+  card.classList.toggle("open");
+}
+
+function _cpAddSupp(subId){
+  const name=prompt("Supplement name:");
+  if(!name||!name.trim()) return;
+  const supps=_loadSupps(subId);
+  supps.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2), name:name.trim(), doses:[]});
+  _saveSupps(subId,supps);
+  _cpRenderSuppList(subId);
+}
+
+function _cpAddDose(subId, suppId){
+  const qtyEl=$(`suppQty_${suppId}`);
+  const timingEl=$(`suppTiming_${suppId}`);
+  if(!qtyEl||!timingEl) return;
+  const qty=parseInt(qtyEl.value,10);
+  if(!qty||qty<1||qty>10){ qtyEl.focus(); return; }
+  const timing=timingEl.value;
+
+  const supps=_loadSupps(subId);
+  const s=supps.find(x=>x.id===suppId); if(!s) return;
+  s.doses.push({qty, timing});
+  _saveSupps(subId,supps);
+
+  /* re-render only the list to preserve open state */
+  const wasOpen=$(`suppCard_${suppId}`)?.classList.contains("open");
+  _cpRenderSuppList(subId);
+  if(wasOpen){ const c=$(`suppCard_${suppId}`); if(c) c.classList.add("open"); }
+}
+
+function _cpDelDose(subId, suppId, doseIdx){
+  const supps=_loadSupps(subId);
+  const s=supps.find(x=>x.id===suppId); if(!s) return;
+  s.doses.splice(doseIdx,1);
+  _saveSupps(subId,supps);
+  const wasOpen=$(`suppCard_${suppId}`)?.classList.contains("open");
+  _cpRenderSuppList(subId);
+  if(wasOpen){ const c=$(`suppCard_${suppId}`); if(c) c.classList.add("open"); }
+}
+
+function _cpRenameSupp(subId, suppId){
+  const inp=$(`suppRename_${suppId}`); if(!inp) return;
+  const name=inp.value.trim(); if(!name) return;
+  const supps=_loadSupps(subId);
+  const s=supps.find(x=>x.id===suppId); if(!s) return;
+  s.name=name;
+  _saveSupps(subId,supps);
+  const wasOpen=true; /* keep open after rename */
+  _cpRenderSuppList(subId);
+  const c=$(`suppCard_${suppId}`); if(c) c.classList.add("open");
+}
+
+function _cpDeleteSupp(subId, suppId){
+  if(!confirm("Delete this supplement?")) return;
+  const supps=_loadSupps(subId).filter(x=>x.id!==suppId);
+  _saveSupps(subId,supps);
+  _cpRenderSuppList(subId);
+}
 
 function cpDrawerNotes(){
   const body=$("cpDrawerBody"); if(!body) return;

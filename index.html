@@ -311,15 +311,10 @@
   }
 
   /* ── Subscriber icon grid ── */
-  #pfSubIconGrid{ padding:0 0 4px; }
-  .pf-icon-grid-title{
-    font-size:10px; font-weight:800; color:#3d5068;
-    text-transform:uppercase; letter-spacing:.08em;
-    padding:0 4px 10px;
-  }
+  #pfSubIconGrid{ padding:0; margin-bottom:8px; }
   .pf-icon-grid{
     display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
-    margin-bottom:12px;
+    margin-bottom:0;
   }
   .pf-icon-btn{
     background:linear-gradient(145deg,#09162a,#0d1e34);
@@ -2908,6 +2903,11 @@
     <div class="pf-stats" id="pfStats"></div>
   </div>
 
+  <!-- Subscriber Icon Grid (shown only for subscribers, right under hero) -->
+  <div id="pfSubIconGrid" style="display:none">
+    <div class="pf-icon-grid" id="pfIconGridInner" style="margin-top:4px"></div>
+  </div>
+
   <!-- Edit Name -->
   <div class="pf-card">
     <div class="pf-card-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#38bdf8" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/></svg>Profile Info</div>
@@ -2952,15 +2952,6 @@
   </div>
 
 
-
-  <!-- Subscriber Icon Grid (shown only for subscribers) -->
-  <div id="pfSubIconGrid" style="display:none">
-    <div class="pf-card-title" style="margin-bottom:14px;padding-bottom:0;border-bottom:none;font-size:11px">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#38bdf8" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/></svg>
-      Quick Access
-    </div>
-    <div class="pf-icon-grid" id="pfIconGridInner"></div>
-  </div>
 
   <!-- Notes & Chat cards (visible to subscribers + coaches on their own profile) -->
   <div class="pf-card" id="pfNotesCard" style="display:none">
@@ -3089,7 +3080,7 @@
 <div class="cp-drawer" id="cpDrawer">
   <!-- top bar -->
   <div class="cp-drawer-bar">
-    <button class="cp-drawer-back" onclick="cpCloseDrawer()"><svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="cp-drawer-back" id="cpDrawerBackBtn" onclick="cpDrawerBackOrClose()"><svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div class="cp-drawer-bar-avatar" id="cpDrBarAvatar"></div>
     <div class="cp-drawer-bar-info">
       <div class="cp-drawer-bar-name" id="cpDrBarName">—</div>
@@ -4813,6 +4804,10 @@ function cpCloseDrawer(){
   $("cpDrawer").classList.remove("open");
   document.body.style.overflow="";
   _cpOpenSubId=null;
+  _cpCurrentTab="overview";
+  /* reset back button */
+  const backBtn=$("cpDrawerBackBtn");
+  if(backBtn){ backBtn.style.color=""; backBtn.title="Close"; }
   /* restore coach's own managed id */
   const a=me(); if(a) setManagedId(a.id);
   hydrateHeader();
@@ -4831,6 +4826,16 @@ const _cpTabIdMap = {
    DOM-TRANSPLANT: نقل الصفحة الحقيقية داخل الـ drawer
    ═══════════════════════════════════════════════════ */
 let _cpTransplanted=null; /* {pageId, placeholder} */
+let _cpCurrentTab="overview"; /* track active drawer tab for back button */
+
+/* Smart back button: if on sub-page → go to Overview; if on Overview → close drawer */
+function cpDrawerBackOrClose(){
+  if(_cpCurrentTab && _cpCurrentTab!=="overview"){
+    cpDrawerTab("overview");
+  } else {
+    cpCloseDrawer();
+  }
+}
 
 function cpGoPage(which){
   const pageMap={work:"pWork",weight:"pWeight",calc:"pCalc",week:"pWeek",macros:"pMacros"};
@@ -4879,10 +4884,23 @@ function cpShowBackBar(){ }
 function cpReturnToDrawer(){ }
 
 function cpDrawerTab(tab){
+  _cpCurrentTab=tab;
   Object.keys(_cpTabIdMap).forEach(t=>{
     const el=$(_cpTabIdMap[t]);
     if(el) el.classList.toggle("active", t===tab);
   });
+  /* update back button appearance: arrow icon when on sub-page, X icon when on overview */
+  const backBtn=$("cpDrawerBackBtn");
+  if(backBtn){
+    if(tab==="overview"){
+      backBtn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      backBtn.title="Close";
+    } else {
+      backBtn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      backBtn.title="Back to Overview";
+      backBtn.style.color="#38bdf8";
+    }
+  }
   const body=$("cpDrawerBody"); if(!body) return;
   body.scrollTop=0;
   /* restore any transplanted page before switching tabs */

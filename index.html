@@ -4367,13 +4367,13 @@ function pfRenderNotesChat(){
       </div>
     </div>`;
 
-  /* ── Render Notes ── */
-  const notesBody=$("pfNotesBody"); if(!notesBody) return;
-  pfBuildSubNotes(notesBody, sub, coachId);
+  /* ── Notes: no longer rendered here — subscriber uses icon-grid overlay instead ── */
 }
 
-function pfToggleNoteCard(w){
-  const c=$(`pfNoteCard_${w}`); if(c) c.classList.toggle("open");
+/* toggle by prefix so overlay cards (pfOvNoteCard_) and hidden cards (pfNoteCard_) don't conflict */
+function pfToggleNoteCard(w,prefix){
+  const id=(prefix||"pfNoteCard_")+w;
+  const c=document.getElementById(id); if(c) c.classList.toggle("open");
 }
 function pfSaveSubNote(w,coachId,subId){
   const ta=$(`pfSubNote_${w}`); if(!ta) return;
@@ -4394,36 +4394,44 @@ function pfAddNoteWeek(subId,coachId){
   pfBuildSubNotes(body,sub,coachId);
 }
 
-function pfBuildSubNotes(notesBody, sub, coachId){
+function pfBuildSubNotes(notesBody, sub, coachId, idPrefix){
+  /* idPrefix lets overlay use unique IDs so duplicate-ID bug doesn't break accordion */
+  const prefix = idPrefix || "pfOvNoteCard_";
   /* Weeks = auto-calculated from subscription start (coach controls adding weeks) */
   const startMs=Number(sub.subStartAt||Date.now());
   const autoWeeks=Math.max(1,Math.ceil((Date.now()-startMs)/(7*24*3600*1000))+1);
   const extra=_cpGetExtraWeeks(sub.id);
   const showWeeks=Math.min(autoWeeks+extra,104);
-  notesBody.innerHTML=""; /* no Add Week btn for subscriber */
+  notesBody.innerHTML="";
+  if(showWeeks===0){
+    notesBody.innerHTML=`<div style="text-align:center;padding:40px 20px;opacity:.4;font-size:13px;font-weight:700">No notes yet</div>`;
+    return;
+  }
   for(let w=showWeeks;w>=1;w--){
     const note=_loadNote(coachId,sub.id,w)||{coachNote:"",subNote:"",updatedAt:0};
-    const hasNote=!!(note.coachNote||note.subNote);
+    const hasNote=!!(note.coachNote&&note.coachNote.trim());
     const card=document.createElement("div");
     card.className="cp-week-card"+(hasNote?" has-note":"");
-    card.id=`pfNoteCard_${w}`;
+    card.id=prefix+w;
+    const preview=hasNote ? note.coachNote.slice(0,55) : "No notes yet";
     card.innerHTML=`
-      <div class="cp-week-card-header" onclick="pfToggleNoteCard(${w})">
+      <div class="cp-week-card-header" onclick="pfToggleNoteCard(${w},'${prefix}')">
         <div class="cp-week-badge"><span class="cp-week-badge-n">${w}</span>W</div>
         <div class="cp-week-meta">
           <div class="cp-week-label">Week ${w}</div>
-          <div class="cp-week-preview">${hasNote?(note.coachNote||note.subNote).slice(0,55):"No notes yet"}</div>
+          <div class="cp-week-preview">${_escHtml(preview)}</div>
         </div>
         <span class="cp-week-chevron">›</span>
       </div>
       <div class="cp-week-body">
-        ${note.coachNote
+        ${hasNote
           ? `<div style="font-size:10px;font-weight:800;color:#38bdf8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">📋 Coach Notes</div>
-             <div style="background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.18);border-radius:12px;padding:12px 14px;font-size:13px;color:#cbd5e1;line-height:1.7">${_escHtml(note.coachNote)}</div>`
-          : `<div style="text-align:center;padding:20px;opacity:.35;font-size:12px;font-weight:700">No notes from coach yet</div>`
+             <div style="background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.18);border-radius:12px;padding:12px 14px;font-size:13px;color:#cbd5e1;line-height:1.7;word-break:break-word">${_escHtml(note.coachNote)}</div>`
+          : `<div style="text-align:center;padding:24px 16px;opacity:.35;font-size:12px;font-weight:700">No notes from coach yet</div>`
         }
       </div>`;
     notesBody.appendChild(card);
+    /* auto-open the first (most recent) week */
     if(w===showWeeks) card.classList.add("open");
   }
 }
